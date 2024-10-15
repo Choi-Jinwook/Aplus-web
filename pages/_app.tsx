@@ -4,6 +4,7 @@ import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import ModalProvider from "@shared/components/Modal";
+import "pretendard/dist/web/static/pretendard.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
