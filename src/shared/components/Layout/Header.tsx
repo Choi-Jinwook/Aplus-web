@@ -1,12 +1,23 @@
 import styled from "@emotion/styled";
-import { Shadow } from "styles";
+import { Colors, Shadow } from "styles";
 import Icon from "../Icon";
+import { useRouter } from "next/router";
 
 const Header = () => {
+  const { push } = useRouter();
+
+  const handleClick = () => {
+    push("/setting");
+  };
+
   return (
     <Container>
-      <Icon icon="Logo_Main" />
-      <Icon icon="Settings" />
+      <IconContainer>
+        <Icon icon="Logo_Main" />
+      </IconContainer>
+      <IconContainer onClick={handleClick}>
+        <Icon icon="Settings" />
+      </IconContainer>
     </Container>
   );
 };
@@ -19,5 +30,8 @@ const Container = styled.header`
   height: 48px;
   padding: 12px;
   justify-content: space-between;
+  background-color: ${Colors.White};
   ${Shadow.Small};
 `;
+
+const IconContainer = styled.div``;

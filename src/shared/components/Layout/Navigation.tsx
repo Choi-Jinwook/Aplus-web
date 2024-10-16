@@ -5,7 +5,7 @@ import Icon from "../Icon";
 import { useRouter } from "next/router";
 
 const Navigation = () => {
-  const { push } = useRouter();
+  const { push, pathname } = useRouter();
 
   const handleClick = (_icon: IconType) => {
     switch (_icon) {
@@ -27,6 +27,12 @@ const Navigation = () => {
     }
   };
 
+  const checkPath = (_icon: IconType) => {
+    const currentPath = _icon.split("_")[1].toLowerCase();
+
+    if (pathname.includes(currentPath)) return true;
+  };
+
   const Icons: IconType[] = [
     "Icon_Home",
     "Icon_Food",
@@ -39,7 +45,7 @@ const Navigation = () => {
     <Container>
       {Icons.map((_icon) => (
         <IconContainer key={_icon} onClick={() => handleClick(_icon)}>
-          <Icon icon={_icon} />
+          <Icon icon={_icon} color={checkPath(_icon) && `${Colors.Black}`} />
         </IconContainer>
       ))}
     </Container>

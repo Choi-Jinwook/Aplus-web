@@ -1,14 +1,8 @@
 import styled from "@emotion/styled";
-import { Header, Navigation } from "@shared/components";
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {
-  return (
-    <Container>
-      <Header />
-      <Navigation />
-    </Container>
-  );
+  return <Container></Container>;
 };
 
 export default Home;
