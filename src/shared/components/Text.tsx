@@ -1,24 +1,23 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { FontWeight, ShadowType, TextProps } from "@shared/types";
+import { FontWeight, TextProps } from "@shared/types";
 import { HTMLAttributes, ReactNode } from "react";
-import { Shadow } from "styles";
 
 interface STextProps extends HTMLAttributes<HTMLSpanElement> {
   children: ReactNode;
   type: TextProps;
   weight?: FontWeight;
+  color?: string;
   fontSize?: number;
   lineHeight?: number;
-  shadow?: ShadowType;
 }
 
 const SText = ({
   type = "H1",
-  weight = 400,
+  weight,
+  color = "#161618",
   fontSize,
   lineHeight,
-  shadow,
   children,
   ...props
 }: STextProps) => {
@@ -26,9 +25,9 @@ const SText = ({
     <Text
       type={type}
       weight={weight}
+      color={color}
       fontSize={fontSize}
       lineHeight={lineHeight}
-      shadow={shadow}
       {...props}
     >
       {children}
@@ -40,16 +39,10 @@ export default SText;
 
 const Text = styled.p<STextProps>`
   ${({ type }) => types[type]}
-  ${({ shadow }) => {
-    switch (shadow) {
-      case "Large":
-        return Shadow.Large;
-      case "Medium":
-        return Shadow.Medium;
-      case "Small":
-        return Shadow.Small;
-    }
-  }}
+  ${({ weight }) => weight && `font-weight: ${weight};`}
+  ${({ color }) => color && `color: ${color};`}
+  ${({ fontSize }) => fontSize && `font-size: ${fontSize};`}
+  ${({ lineHeight }) => lineHeight && `line-height: ${lineHeight};`}
 `;
 
 const types = {
@@ -108,9 +101,8 @@ const types = {
     letter-spacing: -0.01em;
   `,
   LabelLight: css`
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 28px;
-    letter-spacing: -0.01em;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
   `,
 };
