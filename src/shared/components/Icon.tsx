@@ -14,9 +14,15 @@ import {
   DotsHorizontal,
   EditButton,
   Hamburger,
+  IconClean,
+  IconEvent,
+  IconFinance,
+  IconFood,
+  IconHome,
   LikeButton,
   LockClose,
   LockOpen,
+  LogoMain,
   Person,
   PersonAdd,
   PlusButton,
@@ -62,12 +68,24 @@ const Icon = ({ icon }: IconProps) => {
       return <EditButton />;
     case "Hamburger":
       return <Hamburger />;
+    case "Icon_Clean":
+      return <IconClean />;
+    case "Icon_Event":
+      return <IconEvent />;
+    case "Icon_Finance":
+      return <IconFinance />;
+    case "Icon_Food":
+      return <IconFood />;
+    case "Icon_Home":
+      return <IconHome />;
     case "Like_Button":
       return <LikeButton />;
     case "Lock_Close":
       return <LockClose />;
     case "Lock_Open":
       return <LockOpen />;
+    case "Logo_Main":
+      return <LogoMain />;
     case "Person_Add":
       return <PersonAdd />;
     case "Person":
