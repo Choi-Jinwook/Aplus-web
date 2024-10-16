@@ -1,4 +1,4 @@
-const Colors = {
+export const Colors = {
   Gray50: "#F7F8F9",
   Gray100: "#E3E8ED",
   Gray200: "#CFD6DD",
@@ -26,11 +26,11 @@ const Colors = {
 };
 
 export const Shadow = {
-  Small: "box-shadow: 0px 1px 2px -2px #0000001, 0px 4px 6px -1px #0000000D;",
+  Small: "box-shadow: 0px 1px 2px -2px #0000001A, 0px 4px 6px -1px #0000000D",
   Medium:
-    "box-shadow: 0px 4px 6px -4px #0000001A, 0px 10px 15px -3px #0000001A;",
+    "box-shadow: 0px 4px 6px -4px #0000001A, 0px 10px 15px -3px #0000001A",
   Large:
-    "box-shadow: 0px 8px 10px -6px #0000001A, 0px 20px 25px -5px #0000001A;",
+    "box-shadow: 0px 8px 10px -6px #0000001A, 0px 20px 25px -5px #0000001A",
 };
 
 Object.freeze(Colors);
