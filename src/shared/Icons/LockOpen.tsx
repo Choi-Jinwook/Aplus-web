@@ -1,4 +1,6 @@
-const LockOpen = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const LockOpen = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

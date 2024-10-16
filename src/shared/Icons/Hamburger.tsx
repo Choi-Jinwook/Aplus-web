@@ -1,4 +1,6 @@
-const Hamburger = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const Hamburger = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

@@ -1,4 +1,6 @@
-const CircleQuestion = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const CircleQuestion = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

@@ -1,4 +1,6 @@
-const LogoMain = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const LogoMain = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="74"

@@ -1,4 +1,6 @@
-const PlusButton = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const PlusButton = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

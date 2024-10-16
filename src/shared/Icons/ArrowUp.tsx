@@ -1,4 +1,6 @@
-const ArrowUp = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const ArrowUp = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

@@ -1,4 +1,6 @@
-const Person = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const Person = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

@@ -1,4 +1,6 @@
-const DotsVertical = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const DotsVertical = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

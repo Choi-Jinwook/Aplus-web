@@ -31,70 +31,75 @@ import {
 } from "@shared/Icons";
 import { IconType } from "@shared/types";
 
-interface IconProps {
+interface IconProps extends IconStyleProps {
   icon: IconType;
 }
 
-const Icon = ({ icon }: IconProps) => {
+export interface IconStyleProps {
+  color?: string;
+  size?: string;
+}
+
+const Icon = ({ icon, color, size }: IconProps) => {
   switch (icon) {
     case "App_List":
-      return <AppList />;
+      return <AppList size={size} color={color} />;
     case "Arrow_Down":
-      return <ArrowDown />;
+      return <ArrowDown size={size} color={color} />;
     case "Arrow_Left":
-      return <ArrowLeft />;
+      return <ArrowLeft size={size} color={color} />;
     case "Arrow_Right":
-      return <ArrowRight />;
+      return <ArrowRight size={size} color={color} />;
     case "Arrow_Up":
-      return <ArrowUp />;
+      return <ArrowUp size={size} color={color} />;
     case "Chevron_Down":
-      return <ChevronDown />;
+      return <ChevronDown size={size} color={color} />;
     case "Chevron_Left":
-      return <ChevronLeft />;
+      return <ChevronLeft size={size} color={color} />;
     case "Chevron_Right":
-      return <ChevronRight />;
+      return <ChevronRight size={size} color={color} />;
     case "Chevron_Up":
-      return <ChevronUp />;
+      return <ChevronUp size={size} color={color} />;
     case "Circle_Information":
-      return <CircleInformation />;
+      return <CircleInformation size={size} color={color} />;
     case "Circle_Question":
-      return <CircleQuestion />;
+      return <CircleQuestion size={size} color={color} />;
     case "Close_Button":
-      return <CloseButton />;
+      return <CloseButton size={size} color={color} />;
     case "Delete_Button":
-      return <DeleteButton />;
+      return <DeleteButton size={size} color={color} />;
     case "Dots_Horizontal":
-      return <DotsHorizontal />;
+      return <DotsHorizontal size={size} color={color} />;
     case "Edit_Button":
-      return <EditButton />;
+      return <EditButton size={size} color={color} />;
     case "Hamburger":
-      return <Hamburger />;
+      return <Hamburger size={size} color={color} />;
     case "Icon_Clean":
-      return <IconClean />;
+      return <IconClean size={size} color={color} />;
     case "Icon_Event":
-      return <IconEvent />;
+      return <IconEvent size={size} color={color} />;
     case "Icon_Finance":
-      return <IconFinance />;
+      return <IconFinance size={size} color={color} />;
     case "Icon_Food":
-      return <IconFood />;
+      return <IconFood size={size} color={color} />;
     case "Icon_Home":
-      return <IconHome />;
+      return <IconHome size={size} color={color} />;
     case "Like_Button":
-      return <LikeButton />;
+      return <LikeButton size={size} color={color} />;
     case "Lock_Close":
-      return <LockClose />;
+      return <LockClose size={size} color={color} />;
     case "Lock_Open":
-      return <LockOpen />;
+      return <LockOpen size={size} color={color} />;
     case "Logo_Main":
-      return <LogoMain />;
+      return <LogoMain size={size} color={color} />;
     case "Person_Add":
-      return <PersonAdd />;
+      return <PersonAdd size={size} color={color} />;
     case "Person":
-      return <Person />;
+      return <Person size={size} color={color} />;
     case "Plus_Button":
-      return <PlusButton />;
+      return <PlusButton size={size} color={color} />;
     case "Settings":
-      return <Settings />;
+      return <Settings size={size} color={color} />;
   }
 };
 

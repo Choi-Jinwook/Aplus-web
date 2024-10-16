@@ -1,4 +1,6 @@
-const AppList = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const AppList = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

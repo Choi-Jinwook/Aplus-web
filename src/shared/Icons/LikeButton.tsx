@@ -1,4 +1,6 @@
-const LikeButton = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const LikeButton = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

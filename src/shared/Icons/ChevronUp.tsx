@@ -1,4 +1,6 @@
-const ChevronUp = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const ChevronUp = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

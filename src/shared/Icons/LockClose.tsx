@@ -1,4 +1,6 @@
-const LockClose = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const LockClose = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

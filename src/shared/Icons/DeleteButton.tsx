@@ -1,4 +1,6 @@
-const DeleteButton = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const DeleteButton = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"

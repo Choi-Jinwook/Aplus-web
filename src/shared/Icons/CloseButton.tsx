@@ -1,4 +1,6 @@
-const CloseButton = () => {
+import { IconStyleProps } from "@shared/components/Icon";
+
+const CloseButton = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width="24"
