@@ -3,7 +3,7 @@ export { default as ArrowDown } from "./ArrowDown";
 export { default as ArrowLeft } from "./ArrowLeft";
 export { default as ArrowRight } from "./ArrowRight";
 export { default as ArrowUp } from "./ArrowUp";
-// export { default as ChevronDown } from "./ChevronDown";
+export { default as ChevronDown } from "./ChevronDown";
 export { default as ChevronLeft } from "./ChevronLeft";
 export { default as ChevronRight } from "./ChevronRight";
 export { default as ChevronUp } from "./ChevronUp";

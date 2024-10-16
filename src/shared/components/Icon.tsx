@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronUp,
@@ -46,8 +47,8 @@ const Icon = ({ icon }: IconProps) => {
       return <ArrowRight />;
     case "Arrow_Up":
       return <ArrowUp />;
-    // case "Chevron_Down":
-    //   return <ChevronDown />;
+    case "Chevron_Down":
+      return <ChevronDown />;
     case "Chevron_Left":
       return <ChevronLeft />;
     case "Chevron_Right":
