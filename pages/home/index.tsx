@@ -6,19 +6,20 @@ import { Colors } from "styles";
 
 const Home = () => {
   const badgeRef = useRef(false);
+  const today = new Date();
   const DAY = 24 * 60 * 60 * 1000;
   const DAY_ALERT = 3;
   const foodData = [
-    { name: "Yogurt", owner: ["Mike"], expire: new Date() },
+    { name: "Yogurt", owner: ["Mike"], expire: today },
     {
       name: "Seoul Milk",
       owner: ["All"],
-      expire: new Date(new Date().getTime() + 4 * DAY),
+      expire: new Date(today.getTime() + 4 * DAY),
     },
     {
       name: "Bread",
       owner: ["Mike", "Jinwook"],
-      expire: new Date(new Date().getTime() + 8 * DAY),
+      expire: new Date(today.getTime() + 8 * DAY),
     },
   ];
 
@@ -26,30 +27,30 @@ const Home = () => {
     {
       name: "Water Charge",
       fee: 32000,
-      date: new Date(new Date().getTime() + 1 * DAY),
+      date: new Date(today.getTime() + 1 * DAY),
     },
     {
       name: "Netflix",
       fee: 12000,
-      date: new Date(new Date().getTime() + 4 * DAY),
+      date: new Date(today.getTime() + 4 * DAY),
     },
     {
       name: "Rent fee",
       fee: 450000,
-      date: new Date(new Date().getTime() - 3 * DAY),
+      date: new Date(today.getTime() - 3 * DAY),
     },
     {
       name: "Electric Charge",
       fee: 9800,
-      date: new Date(new Date().getTime() - 6 * DAY),
+      date: new Date(today.getTime() - 6 * DAY),
     },
   ];
 
   const cleanData = [
-    { locate: "Laundry", date: new Date() },
-    { locate: "Kitchen", date: new Date(new Date().getTime() + 3 * DAY) },
-    { locate: "Restroom", date: new Date(new Date().getTime() + 4 * DAY) },
-    { locate: "Livingroom", date: new Date(new Date().getTime() + 5 * DAY) },
+    { locate: "Laundry", date: today },
+    { locate: "Kitchen", date: new Date(today.getTime() + 3 * DAY) },
+    { locate: "Restroom", date: new Date(today.getTime() + 4 * DAY) },
+    { locate: "Livingroom", date: new Date(today.getTime() + 5 * DAY) },
   ];
 
   return (
@@ -100,7 +101,6 @@ const Home = () => {
         </Text>
         <ListContainer>
           {financeData.map(({ name, fee, date }) => {
-            const today = new Date();
             const { isAlert, day } = calculateRemainDay(date, DAY_ALERT);
             const isPassed = today.getTime() > date.getTime();
             const formattedDate = getYearMonthDay(date);
@@ -151,7 +151,7 @@ const Home = () => {
         </Text>
         <CardView>
           {cleanData.map(({ locate, date }) => {
-            const isToday = date.getDate() === new Date().getDate();
+            const isToday = date.getDate() === today.getDate();
             const formattedDate = getYearMonthDay(date);
 
             return (
