@@ -179,11 +179,11 @@ export default Home;
 
 const Container = styled.main`
   display: flex;
-  position: relative;
+  position: absolute;
   flex-direction: column;
   width: 100vw;
-  height: calc(100vh - 100px);
   top: 48px;
+  bottom: 52px;
   padding: 8px 12px;
   gap: 8px;
   overflow-y: auto;
