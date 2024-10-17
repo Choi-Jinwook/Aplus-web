@@ -26,12 +26,15 @@ export default Header;
 
 const Container = styled.header`
   display: flex;
+  position: fixed;
+  top: 0;
   width: 100vw;
   height: 48px;
   padding: 12px;
   justify-content: space-between;
   background-color: ${Colors.White};
   ${Shadow.Small};
+  z-index: 9999;
 `;
 
 const IconContainer = styled.div``;

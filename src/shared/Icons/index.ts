@@ -20,6 +20,7 @@ export { default as IconEvent } from "./IconEvent";
 export { default as IconFinance } from "./IconFinance";
 export { default as IconFood } from "./IconFood";
 export { default as IconHome } from "./IconHome";
+export { default as IconProtoBall } from "./IconProtoBall";
 export { default as LikeButton } from "./LikeButton";
 export { default as LockClose } from "./LockClose";
 export { default as LockOpen } from "./LockOpen";

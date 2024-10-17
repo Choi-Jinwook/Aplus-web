@@ -20,6 +20,7 @@ import {
   IconFinance,
   IconFood,
   IconHome,
+  IconProtoBall,
   LikeButton,
   LockClose,
   LockOpen,
@@ -84,6 +85,8 @@ const Icon = ({ icon, color, size }: IconProps) => {
       return <IconFood size={size} color={color} />;
     case "Icon_Home":
       return <IconHome size={size} color={color} />;
+    case "Icon_ProtoBall":
+      return <IconProtoBall size={size} color={color} />;
     case "Like_Button":
       return <LikeButton size={size} color={color} />;
     case "Lock_Close":

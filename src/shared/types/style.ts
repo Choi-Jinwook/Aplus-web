@@ -37,6 +37,7 @@ export type IconType =
   | "Icon_Finance"
   | "Icon_Food"
   | "Icon_Home"
+  | "Icon_ProtoBall"
   | "Like_Button"
   | "Lock_Close"
   | "Lock_Open"
@@ -45,3 +46,5 @@ export type IconType =
   | "Person"
   | "Plus_Button"
   | "Settings";
+
+export type ChipSizeType = "Large" | "Medium" | "Small" | "XSmall";
