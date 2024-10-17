@@ -171,6 +171,8 @@ const Home = () => {
           Event
         </Text>
       </HomeSection>
+
+      <AdjustHeight />
     </Container>
   );
 };
@@ -179,11 +181,10 @@ export default Home;
 
 const Container = styled.main`
   display: flex;
-  position: absolute;
+  position: relative;
   flex-direction: column;
   width: 100vw;
   top: 48px;
-  bottom: 52px;
   padding: 8px 12px;
   gap: 8px;
   overflow-y: auto;
@@ -235,4 +236,8 @@ const CardView = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const AdjustHeight = styled.div`
+  height: 44px;
 `;
