@@ -12,11 +12,11 @@ const calculateRemainDay = (date: Date, alert: number) => {
       case 1:
         return { isAlert: true, day: "Tomorrow" };
       default:
-        return { isAlert: true, day: getYearMonthDay(date) };
+        return { isAlert: true, day: `${gap} days left` };
     }
   }
 
-  return { isAlert: false, day: getYearMonthDay(date) };
+  return { isAlert: false, day: `${gap} days left` };
 };
 
 export default calculateRemainDay;
