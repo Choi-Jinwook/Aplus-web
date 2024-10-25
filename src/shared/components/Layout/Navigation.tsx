@@ -7,7 +7,15 @@ import { useRouter } from "next/router";
 const Navigation = () => {
   const { push, pathname } = useRouter();
 
+  const checkPath = (_icon: IconType) => {
+    const currentPath = _icon.split("_")[1].toLowerCase();
+
+    if (pathname.includes(currentPath)) return true;
+  };
+
   const handleClick = (_icon: IconType) => {
+    if (checkPath(_icon)) return;
+
     switch (_icon) {
       case "Icon_Home":
         push("/home");
@@ -25,12 +33,6 @@ const Navigation = () => {
         push("/event");
         break;
     }
-  };
-
-  const checkPath = (_icon: IconType) => {
-    const currentPath = _icon.split("_")[1].toLowerCase();
-
-    if (pathname.includes(currentPath)) return true;
   };
 
   const Icons: IconType[] = [
@@ -62,9 +64,7 @@ const Container = styled.nav`
   height: 52px;
   background-color: ${Colors.White};
   z-index: 9999;
-  box-shadow:
-    0px -4px 4px 0px #00000008,
-    0px 0px 3px 0px #00000014;
+  box-shadow: 0px -4px 4px 0px #00000008, 0px 0px 3px 0px #00000014;
 `;
 
 const IconContainer = styled.div`
