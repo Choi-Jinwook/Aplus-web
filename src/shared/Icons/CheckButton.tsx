@@ -1,6 +1,6 @@
 import { IconStyleProps } from "@shared/components/Icon";
 
-const ChevronLeft = ({ size, color }: IconStyleProps) => {
+const CheckButton = ({ size, color }: IconStyleProps) => {
   return (
     <svg
       width={size}
@@ -10,11 +10,14 @@ const ChevronLeft = ({ size, color }: IconStyleProps) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M15.707 16.586L11.121 12L15.707 7.414L14.293 6L8.29297 12L14.293 18L15.707 16.586Z"
-        fill={color}
+        d="M18.6667 7L9.50004 16.1667L5.33337 12"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="square"
+        strokeLinejoin="round"
       />
     </svg>
   );
 };
 
-export default ChevronLeft;
+export default CheckButton;
