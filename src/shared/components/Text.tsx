@@ -105,4 +105,9 @@ const types = {
     font-weight: 500;
     line-height: 16px;
   `,
+  Navigation: css`
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 12px;
+  `,
 };
