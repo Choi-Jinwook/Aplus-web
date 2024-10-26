@@ -13,10 +13,10 @@ const Header = () => {
   return (
     <Container>
       <IconContainer>
-        <Icon icon="Logo_Main" />
+        <Icon icon="Logo_Main" color={Colors.Black} />
       </IconContainer>
       <IconContainer onClick={handleClick}>
-        <Icon icon="Settings" />
+        <Icon icon="Settings" color={Colors.Black} />
       </IconContainer>
     </Container>
   );

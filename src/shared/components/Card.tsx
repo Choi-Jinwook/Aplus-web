@@ -7,14 +7,15 @@ import Icon from "./Icon";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   icon: IconType;
+  iconColor: string;
   title: string;
   date: string;
 }
 
-const Card = ({ icon, title, date, ...props }: CardProps) => {
+const Card = ({ icon, iconColor, title, date, ...props }: CardProps) => {
   return (
     <Container {...props}>
-      <Icon icon={icon} />
+      <Icon icon={icon} color={iconColor} />
       <TitleContainer>
         <Text type="LabelBold" color="#3D3E3F">
           {title}

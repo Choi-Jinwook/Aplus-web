@@ -5,10 +5,18 @@ import { Colors, Shadow } from "styles";
 interface HomeSectionProps extends HTMLAttributes<HTMLDivElement> {}
 
 const HomeSection = ({ children, ...props }: HomeSectionProps) => {
-  return <Container {...props}>{children}</Container>;
+  return (
+    <ContentPadding>
+      <Container {...props}>{children}</Container>
+    </ContentPadding>
+  );
 };
 
 export default HomeSection;
+
+const ContentPadding = styled.div`
+  padding: 0 12px;
+`;
 
 const Container = styled.section`
   display: flex;
@@ -19,6 +27,7 @@ const Container = styled.section`
   border-radius: 16px;
   padding: 20px 16px;
   gap: 8px;
+  background-color: ${Colors.White};
   ${Shadow.Small};
 
   & > div > div:not(:first-of-type) {

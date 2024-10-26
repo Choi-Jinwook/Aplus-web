@@ -3,6 +3,12 @@ import { IconType } from "@shared/types";
 import { Colors } from "styles";
 import Icon from "../Icon";
 import { useRouter } from "next/router";
+import { Text } from "..";
+
+interface Icons {
+  name: IconType;
+  path: string;
+}
 
 const Navigation = () => {
   const { push, pathname } = useRouter();
@@ -35,21 +41,34 @@ const Navigation = () => {
     }
   };
 
-  const Icons: IconType[] = [
-    "Icon_Home",
-    "Icon_Food",
-    "Icon_Finance",
-    "Icon_Clean",
-    "Icon_Event",
+  const Icons: Icons[] = [
+    { name: "Icon_Home", path: "Home" },
+    { name: "Icon_Food", path: "Foods" },
+    { name: "Icon_Finance", path: "Finance" },
+    { name: "Icon_Clean", path: "Chores" },
+    { name: "Icon_Event", path: "Events" },
   ];
 
   return (
     <Container>
-      {Icons.map((_icon) => (
-        <IconContainer key={_icon} onClick={() => handleClick(_icon)}>
-          <Icon icon={_icon} color={checkPath(_icon) && `${Colors.Black}`} />
-        </IconContainer>
-      ))}
+      {Icons.map(({ name, path }) => {
+        const isClicked = checkPath(name);
+
+        return (
+          <IconContainer key={name + path} onClick={() => handleClick(name)}>
+            <Icon
+              icon={name}
+              color={isClicked ? `${Colors.Black}` : "#A2AEBA"}
+            />
+            <Text
+              type="Navigation"
+              color={isClicked ? `${Colors.Black}` : "#A2AEBA"}
+            >
+              {path}
+            </Text>
+          </IconContainer>
+        );
+      })}
     </Container>
   );
 };
@@ -61,7 +80,7 @@ const Container = styled.nav`
   position: fixed;
   bottom: 0;
   width: 100vw;
-  height: 52px;
+  height: 60px;
   background-color: ${Colors.White};
   z-index: 9999;
   box-shadow: 0px -4px 4px 0px #00000008, 0px 0px 3px 0px #00000014;
@@ -69,6 +88,7 @@ const Container = styled.nav`
 
 const IconContainer = styled.div`
   display: flex;
+  flex-direction: column;
   width: 20%;
   height: 100%;
   justify-content: center;
