@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { Badge, Card, Chip, HomeSection, Text } from "@shared/components";
+import { Badge, Card, Chip, HomeSection, Icon, Text } from "@shared/components";
+import { IconType } from "@shared/types";
 import { calculateRemainDay, getYearMonthDay } from "@shared/utils";
 import React, { useRef } from "react";
 import { Colors } from "styles";
@@ -47,10 +48,37 @@ const Home = () => {
   ];
 
   const cleanData = [
-    { locate: "Laundry", date: today },
-    { locate: "Kitchen", date: new Date(today.getTime() + 3 * DAY) },
-    { locate: "Restroom", date: new Date(today.getTime() + 4 * DAY) },
-    { locate: "Livingroom", date: new Date(today.getTime() + 5 * DAY) },
+    { locate: "Laundry", date: today, owner: "Mike" },
+    {
+      locate: "Kitchen",
+      date: new Date(today.getTime() + 3 * DAY),
+      owner: "Seoyeong",
+    },
+    {
+      locate: "Toilet",
+      date: new Date(today.getTime() + 4 * DAY),
+      owner: "Minsoo",
+    },
+    {
+      locate: "Livingroom",
+      date: new Date(today.getTime() + 5 * DAY),
+      owner: "Jinwook",
+    },
+  ];
+
+  const eventData = [
+    {
+      name: "Firework",
+      date: today,
+      owner: ["Minsoo", "Jinwook", "Sooyeong"],
+      memo: null,
+    },
+    {
+      name: "Hangang Picnic",
+      date: new Date(today.getTime() + 3 * DAY),
+      owner: ["All"],
+      memo: "Don’t forget to bring the mat!",
+    },
   ];
 
   return (
@@ -97,6 +125,25 @@ const Home = () => {
 
       <HomeSection>
         <Text type="H4" color={Colors.Black}>
+          Chores
+        </Text>
+        <CardView>
+          {cleanData.map(({ locate, date, owner }) => {
+            return (
+              <Card
+                key={locate + date}
+                icon={locate as IconType}
+                iconColor={Colors.Blue200}
+                title={locate}
+                person={owner}
+              />
+            );
+          })}
+        </CardView>
+      </HomeSection>
+
+      <HomeSection>
+        <Text type="H4" color={Colors.Black}>
           Finance
         </Text>
         <ListContainer>
@@ -121,16 +168,24 @@ const Home = () => {
                       >
                         {isAlert ? day : formattedDate}
                       </Text>
-                      <Text type="BodyBold" color={Colors.Gray600}>
-                        {name}
-                      </Text>
+                      <ContentContainer>
+                        <Text type="BodyBold" color={Colors.Black}>
+                          {name}
+                        </Text>
+                        <Text
+                          type="BodyBold"
+                          color={Colors.Black}
+                        >{`${fee.toLocaleString()}₩`}</Text>
+                      </ContentContainer>
                     </ListElement>
                   </List>
                 ) : (
                   <PassedContainer>
-                    {showBadge && <Badge>Passed</Badge>}
+                    {showBadge && (
+                      <Badge backgroundColor={Colors.Blue300}>Passed</Badge>
+                    )}
                     <PassedElement>
-                      <Text type="BodyBold" color={Colors.State_Negative}>
+                      <Text type="BodyBold" color={Colors.Gray400}>
                         {name}
                       </Text>
                       <Text type="BodyBold" color={Colors.Gray400}>
@@ -145,32 +200,56 @@ const Home = () => {
         </ListContainer>
       </HomeSection>
 
-      <HomeSection>
-        <Text type="H4" color={Colors.Black}>
-          Clean
-        </Text>
-        <CardView>
-          {cleanData.map(({ locate, date }) => {
-            const isToday = date.getDate() === today.getDate();
-            const formattedDate = getYearMonthDay(date);
+      <InviteBanner>
+        <BannerContainer>
+          <Text type="H4">Invite Your Friends!</Text>
+          <Icon icon="Arrow_Right" size={32} />
+        </BannerContainer>
+      </InviteBanner>
 
-            return (
-              <Card
-                key={locate + date}
-                icon="Icon_ProtoBall"
-                title={locate}
-                date={isToday ? "Today" : formattedDate}
-              />
-            );
-          })}
-        </CardView>
-      </HomeSection>
-
-      <HomeSection>
+      <EventContainer>
         <Text type="H4" color={Colors.Black}>
-          Event
+          Events
         </Text>
-      </HomeSection>
+      </EventContainer>
+      {eventData.map(({ name, date, owner, memo }) => {
+        const { isAlert } = calculateRemainDay(date, DAY_ALERT);
+        date.setHours(21, 0, 0, 0); // 임시
+
+        return (
+          <HomeSection key={date + name} paddingSize="SemiLight">
+            <TitleContainer>
+              <TitleWrapper>
+                <Text type="BodyBold">{name}</Text>
+                <Text
+                  type="LabelLight"
+                  color={isAlert ? Colors.State_Negative : Colors.Black}
+                >
+                  {date.getTime() / DAY}
+                </Text>
+              </TitleWrapper>
+              {memo && (
+                <Text type="Label" color={Colors.Gray400}>
+                  {memo}
+                </Text>
+              )}
+            </TitleContainer>
+            <OwnerContainer>
+              {owner.map((_owner) => (
+                <Chip
+                  key={_owner}
+                  color={_owner === "All" ? Colors.White : undefined}
+                  backgroundColor={
+                    _owner === "All" ? Colors.Orange200 : undefined
+                  }
+                >
+                  {_owner}
+                </Chip>
+              ))}
+            </OwnerContainer>
+          </HomeSection>
+        );
+      })}
 
       <AdjustHeight />
     </Container>
@@ -185,8 +264,9 @@ const Container = styled.main`
   flex-direction: column;
   width: 100vw;
   top: 48px;
-  padding: 8px 12px;
+  padding: 12px 0;
   gap: 8px;
+  background-color: ${Colors.Gray50};
   overflow-y: auto;
 `;
 
@@ -205,6 +285,11 @@ const ListElement = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const PassedContainer = styled.section`
@@ -238,6 +323,36 @@ const CardView = styled.div`
   }
 `;
 
+const EventContainer = styled.section`
+  padding: 0 18px;
+`;
+
 const AdjustHeight = styled.div`
-  height: 44px;
+  height: 52px;
+`;
+
+const InviteBanner = styled.section`
+  position: relative;
+  width: 100%;
+  background-color: #ffeada;
+  padding: 20px;
+  z-index: 999;
+`;
+
+const BannerContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const TitleContainer = styled.div``;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const OwnerContainer = styled.div`
+  display: flex;
+  gap: 4px;
 `;
