@@ -1,5 +1,3 @@
-import getYearMonthDay from "./getYearMonthDay";
-
 const calculateRemainDay = (date: Date, alert: number) => {
   const DAY = 24 * 60 * 60 * 1000;
   const today = new Date();
