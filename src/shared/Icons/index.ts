@@ -15,6 +15,8 @@ export { default as DeleteButton } from "./DeleteButton";
 export { default as DotsHorizontal } from "./DotsHorizontal";
 export { default as DotsVertical } from "./DotsVertical";
 export { default as EditButton } from "./EditButton";
+export { default as EyeClose } from "./EyeClose";
+export { default as EyeOpen } from "./EyeOpen";
 export { default as Hamburger } from "./Hamburger";
 export { default as IconClean } from "./IconClean";
 export { default as IconEvent } from "./IconEvent";

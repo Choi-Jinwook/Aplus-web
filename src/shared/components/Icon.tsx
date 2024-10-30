@@ -15,6 +15,8 @@ import {
   DeleteButton,
   DotsHorizontal,
   EditButton,
+  EyeClose,
+  EyeOpen,
   Hamburger,
   IconClean,
   IconEvent,
@@ -80,6 +82,10 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <DotsHorizontal size={size} color={color} />;
     case "Edit_Button":
       return <EditButton size={size} color={color} />;
+    case "Eye_Close":
+      return <EyeClose size={size} color={color} />;
+    case "Eye_Open":
+      return <EyeOpen size={size} color={color} />;
     case "Hamburger":
       return <Hamburger size={size} color={color} />;
     case "Icon_Clean":

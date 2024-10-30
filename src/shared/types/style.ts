@@ -33,6 +33,8 @@ export type IconType =
   | "Dots_Horizontal"
   | "Dots_Vertical"
   | "Edit_Button"
+  | "Eye_Close"
+  | "Eye_Open"
   | "Hamburger"
   | "Icon_Clean"
   | "Icon_Event"
