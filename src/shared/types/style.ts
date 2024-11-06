@@ -44,6 +44,7 @@ export type IconType =
   | "Kitchen"
   | "Laundry"
   | "Like_Button"
+  | "Like_Button_Filled"
   | "Livingroom"
   | "Lock_Close"
   | "Lock_Open"
@@ -53,6 +54,7 @@ export type IconType =
   | "Plus_Button"
   | "Settings"
   | "Toilet"
+  | "TriangleDown"
   | "Vacuum";
 
 export type ChipSizeType = "Large" | "Medium" | "Small" | "XSmall";

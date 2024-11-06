@@ -26,6 +26,7 @@ import {
   Kitchen,
   Laundry,
   LikeButton,
+  LikeButtonFilled,
   Livingroom,
   LockClose,
   LockOpen,
@@ -35,6 +36,7 @@ import {
   PlusButton,
   Settings,
   Toilet,
+  TriangleDown,
   Vacuum,
 } from "@shared/Icons";
 import { IconType } from "@shared/types";
@@ -104,6 +106,8 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <Laundry size={size} color={color} />;
     case "Like_Button":
       return <LikeButton size={size} color={color} />;
+    case "Like_Button_Filled":
+      return <LikeButtonFilled size={size} color={color} />;
     case "Livingroom":
       return <Livingroom size={size} color={color} />;
     case "Lock_Close":
@@ -122,6 +126,8 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <Settings size={size} color={color} />;
     case "Toilet":
       return <Toilet size={size} color={color} />;
+    case "TriangleDown":
+      return <TriangleDown size={size} color={color} />;
     case "Vacuum":
       return <Vacuum size={size} color={color} />;
   }
