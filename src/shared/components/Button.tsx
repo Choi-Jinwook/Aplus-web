@@ -14,18 +14,25 @@ interface ButtonProps
     TextStyleProps {
   shadow?: ShadowType;
   buttonColor: string;
+  buttonSize?: string;
 }
 
 const Button = ({
   shadow,
   buttonColor,
+  buttonSize = "Small",
   textColor = Colors.White,
   textType = "Label",
   children,
   ...props
 }: ButtonProps) => {
   return (
-    <SButton shadow={shadow} buttonColor={buttonColor} {...props}>
+    <SButton
+      shadow={shadow}
+      buttonColor={buttonColor}
+      buttonSize={buttonSize}
+      {...props}
+    >
       <Text type={textType} color={textColor}>
         {children}
       </Text>
@@ -36,9 +43,8 @@ const Button = ({
 export default Button;
 
 const SButton = styled.button<ButtonProps>`
-  padding: 4px 10px;
+  height: 52px;
   border: none;
-  border-radius: 6px;
   ${({ shadow }) => {
     switch (shadow) {
       case "Large":
@@ -50,4 +56,18 @@ const SButton = styled.button<ButtonProps>`
     }
   }}
   ${({ buttonColor }) => `background-color: ${buttonColor};`}
+  ${({ buttonSize }) => {
+    switch (buttonSize) {
+      case "Small":
+        return `
+        padding: 4px 10px;
+        border-radius: 6px;
+      `;
+      case "Normal":
+        return `
+        padding: 8px 39px;
+        border-radius: 8px;
+      `;
+    }
+  }}
 `;
