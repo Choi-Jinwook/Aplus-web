@@ -33,7 +33,7 @@ const Navigation = () => {
         push("/finance");
         break;
       case "Icon_Clean":
-        push("/clean");
+        push("/chore");
         break;
       case "Icon_Event":
         push("/event");

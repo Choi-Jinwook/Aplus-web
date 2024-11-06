@@ -4,6 +4,7 @@ import Icon from "../Icon";
 import { useRouter } from "next/router";
 import Button from "../Button";
 import { Text } from "..";
+import { upperFirstLetter } from "@shared/utils";
 
 const Header = () => {
   const { push, pathname, back } = useRouter();
@@ -36,8 +37,10 @@ const Header = () => {
       <IconContainer onClick={handleClickLeft}>
         {currentPath === "setting" ? (
           <Icon icon="Arrow_Left" color={Colors.Black} />
-        ) : (
+        ) : currentPath === "home" ? (
           <Icon icon="Logo_Main" color={Colors.Black} />
+        ) : (
+          <Text type="H4">{upperFirstLetter(currentPath)}</Text>
         )}
       </IconContainer>
       {currentPath === "setting" && <Text type="BodyBold">Setting</Text>}
