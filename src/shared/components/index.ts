@@ -1,11 +1,12 @@
+export * from "./Layout";
 export { default as Button } from "./Button";
 export { default as Badge } from "./Badge";
-export { default as Card } from "./Card";
+export * from "./Card";
 export { default as Chip } from "./Chip";
 export { default as Dropdown } from "./Dropdown";
 export { default as HomeSection } from "./HomeSection";
 export { default as Icon } from "./Icon";
 export * from "./Input";
 export { default as Modal } from "./Modal";
+export { default as Slider } from "./Slider";
 export { default as Text } from "./Text";
-export * from "./Layout";
