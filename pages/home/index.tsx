@@ -1,26 +1,25 @@
 import styled from "@emotion/styled";
 import { Badge, Card, Chip, HomeSection, Icon, Text } from "@shared/components";
 import { IconType } from "@shared/types";
-import { calculateRemainDay, getYearMonthDay } from "@shared/utils";
+import { calculateRemainDay } from "@shared/utils";
 import React, { useRef } from "react";
 import { Colors } from "styles";
 
 const Home = () => {
   const badgeRef = useRef(false);
   const today = new Date();
-  const DAY = 24 * 60 * 60 * 1000;
   const DAY_ALERT = 3;
   const foodData = [
-    { name: "Yogurt", owner: ["Mike"], expire: today },
+    { name: "Yogurt", owner: ["Mike"], expire: "2024-11-08" },
     {
       name: "Seoul Milk",
       owner: ["All"],
-      expire: new Date(today.getTime() + 4 * DAY),
+      expire: "2024-11-09",
     },
     {
       name: "Bread",
       owner: ["Mike", "Jinwook"],
-      expire: new Date(today.getTime() + 8 * DAY),
+      expire: "2024-11-19",
     },
   ];
 
@@ -28,40 +27,40 @@ const Home = () => {
     {
       name: "Water Charge",
       fee: 32000,
-      date: new Date(today.getTime() + 1 * DAY),
+      date: "2024-11-07",
     },
     {
       name: "Netflix",
       fee: 12000,
-      date: new Date(today.getTime() + 4 * DAY),
+      date: "2024-11-08",
     },
     {
       name: "Rent fee",
       fee: 450000,
-      date: new Date(today.getTime() - 3 * DAY),
+      date: "2024-11-17",
     },
     {
       name: "Electric Charge",
       fee: 9800,
-      date: new Date(today.getTime() - 6 * DAY),
+      date: "2024-11-27",
     },
   ];
 
   const cleanData = [
-    { locate: "Laundry", date: today, owner: "Mike" },
+    { locate: "Laundry", date: "2024-11-07", owner: "Mike" },
     {
       locate: "Kitchen",
-      date: new Date(today.getTime() + 3 * DAY),
+      date: "2024-11-08",
       owner: "Seoyeong",
     },
     {
       locate: "Toilet",
-      date: new Date(today.getTime() + 4 * DAY),
+      date: "2024-11-18",
       owner: "Minsoo",
     },
     {
       locate: "Livingroom",
-      date: new Date(today.getTime() + 5 * DAY),
+      date: "2024-11-28",
       owner: "Jinwook",
     },
   ];
@@ -69,13 +68,13 @@ const Home = () => {
   const eventData = [
     {
       name: "Firework",
-      date: today,
+      date: "2024-11-16",
       owner: ["Minsoo", "Jinwook", "Sooyeong"],
       memo: null,
     },
     {
       name: "Hangang Picnic",
-      date: new Date(today.getTime() + 3 * DAY),
+      date: "2024-11-20",
       owner: ["All"],
       memo: "Don’t forget to bring the mat!",
     },
@@ -149,8 +148,9 @@ const Home = () => {
         <ListContainer>
           {financeData.map(({ name, fee, date }) => {
             const { isAlert, day } = calculateRemainDay(date, DAY_ALERT);
-            const isPassed = today.getTime() > date.getTime();
-            const formattedDate = getYearMonthDay(date);
+            const targetDay = new Date(date);
+            const isPassed = today.getTime() > targetDay.getTime();
+            const formattedDate = date.split("-").join(".");
             let showBadge = false;
             if (isPassed && !badgeRef.current) {
               showBadge = true;
@@ -214,7 +214,6 @@ const Home = () => {
       </EventContainer>
       {eventData.map(({ name, date, owner, memo }) => {
         const { isAlert } = calculateRemainDay(date, DAY_ALERT);
-        date.setHours(21, 0, 0, 0); // 임시
 
         return (
           <HomeSection key={date + name} paddingSize="SemiLight">
@@ -225,7 +224,7 @@ const Home = () => {
                   type="LabelLight"
                   color={isAlert ? Colors.State_Negative : Colors.Black}
                 >
-                  {date.getTime() / DAY}
+                  {date.split("-").join("/")}
                 </Text>
               </TitleWrapper>
               {memo && (

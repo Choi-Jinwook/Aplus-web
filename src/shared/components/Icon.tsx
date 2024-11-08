@@ -23,6 +23,7 @@ import {
   IconFinance,
   IconFood,
   IconHome,
+  IconMoney,
   Kitchen,
   Laundry,
   LikeButton,
@@ -90,7 +91,7 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <EyeOpen size={size} color={color} />;
     case "Hamburger":
       return <Hamburger size={size} color={color} />;
-    case "Icon_Clean":
+    case "Icon_Chore":
       return <IconClean size={size} color={color} />;
     case "Icon_Event":
       return <IconEvent size={size} color={color} />;
@@ -100,6 +101,8 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <IconFood size={size} color={color} />;
     case "Icon_Home":
       return <IconHome size={size} color={color} />;
+    case "Icon_Money":
+      return <IconMoney size={size} color={color} />;
     case "Kitchen":
       return <Kitchen size={size} color={color} />;
     case "Laundry":

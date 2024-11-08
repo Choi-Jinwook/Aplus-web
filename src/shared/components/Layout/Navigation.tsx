@@ -32,7 +32,7 @@ const Navigation = () => {
       case "Icon_Finance":
         push("/finance");
         break;
-      case "Icon_Clean":
+      case "Icon_Chore":
         push("/chore");
         break;
       case "Icon_Event":
@@ -45,7 +45,7 @@ const Navigation = () => {
     { name: "Icon_Home", path: "Home" },
     { name: "Icon_Food", path: "Foods" },
     { name: "Icon_Finance", path: "Finance" },
-    { name: "Icon_Clean", path: "Chores" },
+    { name: "Icon_Chore", path: "Chores" },
     { name: "Icon_Event", path: "Events" },
   ];
 

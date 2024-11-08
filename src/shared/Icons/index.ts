@@ -23,6 +23,7 @@ export { default as IconEvent } from "./IconEvent";
 export { default as IconFinance } from "./IconFinance";
 export { default as IconFood } from "./IconFood";
 export { default as IconHome } from "./IconHome";
+export { default as IconMoney } from "./IconMoney";
 export { default as Kitchen } from "./Kitchen";
 export { default as Laundry } from "./Laundry";
 export { default as LikeButton } from "./LikeButton";

@@ -2,21 +2,15 @@ import styled from "@emotion/styled";
 import { useGetFoods } from "@shared/apis/Foods";
 import { Badge, FoodCard, Icon, Slider, Text } from "@shared/components";
 import { FoodsBody, StorageType } from "@shared/types";
-import {
-  calculateRemainDay,
-  getYearMonthDay,
-  upperFirstLetter,
-} from "@shared/utils";
+import { calculateRemainDay, upperFirstLetter } from "@shared/utils";
 import { useEffect, useState } from "react";
-import { Colors } from "styles";
+import { Colors, Shadow } from "styles";
 
 export interface Foods {
   [key: string]: FoodsBody[];
 }
 
 const Food = () => {
-  const today = new Date();
-  const DAY = 24 * 60 * 60 * 1000;
   const DAY_ALERT = 3;
   const categories: StorageType[] = [
     "frozen",
@@ -41,16 +35,16 @@ const Food = () => {
   }, [foodData]);
 
   const soon = [
-    { name: "Yogurt", expire: today, owner: ["Mike"], amount: "6" },
+    { name: "Yogurt", expire: "2024-11-08", owner: ["Mike"], amount: "6" },
     {
       name: "Seoul Milk",
-      expire: new Date(today.getTime() + 2 * DAY),
+      expire: "2024-11-20",
       owner: ["All"],
       amount: "75%",
     },
     {
       name: "Cracker",
-      expire: new Date(today.getTime() + 4 * DAY),
+      expire: "2024-11-25",
       owner: ["Minsoo", "Seoyoung"],
       amount: "5%",
     },
@@ -81,7 +75,6 @@ const Food = () => {
       }
     });
   };
-  console.log(foods);
 
   return (
     <Container>
@@ -109,79 +102,88 @@ const Food = () => {
           <Icon icon="TriangleDown" />
         </Sort>
 
-        {categories.map((_category) => (
-          <CategoryContainer key={_category}>
-            <Text type="Label">{`${upperFirstLetter(_category)} Foods`}</Text>
-            <FoodInfoContainer>
-              {foods &&
-                foods[_category].map(
-                  (
-                    { foodName, createAt, memberName, quantity, amount },
-                    index,
-                  ) => {
-                    return (
-                      <FoodInfoWrapper
-                        key={foodName + memberName + index}
-                        index={index}
-                      >
-                        <Icon icon="Like_Button" color={Colors.Gray200} />
-                        <FoodInfo>
-                          <NamdDate>
-                            <Text type="BodyBold">{foodName}</Text>
-                            <Text type="LabelLight" color={Colors.Gray400}>
-                              {`Purchased at ${getYearMonthDay(createAt)}`}
-                            </Text>
-                          </NamdDate>
-                          <OwnerRemain>
-                            <Owner>
-                              <Badge
-                                color={
-                                  memberName === "All"
-                                    ? Colors.White
-                                    : Colors.Orange200
-                                }
-                                backgroundColor={
-                                  memberName === "All"
-                                    ? Colors.Orange200
-                                    : Colors.Orange50
-                                }
-                              >
-                                {memberName}
-                              </Badge>
-                            </Owner>
-                            {amount && !quantity ? (
-                              <Slider
-                                value={amount}
-                                index={index}
-                                storageType={_category}
-                                onChange={(_category, _index, _amount) =>
-                                  handleChangeFoodAmount(
-                                    _category,
-                                    _index,
-                                    _amount,
-                                  )
-                                }
-                              />
-                            ) : (
-                              <RemainContainer>
-                                <Text type="Label" color={Colors.Gray500}>
-                                  remaining
-                                </Text>
-                                <RemainCount>
-                                  <Text type="BodyBold">{quantity}</Text>
-                                </RemainCount>
-                              </RemainContainer>
-                            )}
-                          </OwnerRemain>
-                        </FoodInfo>
-                      </FoodInfoWrapper>
-                    );
-                  },
-                )}
-            </FoodInfoContainer>
-          </CategoryContainer>
-        ))}
+        <FoodAreaWrapper>
+          {categories.map((_category) => (
+            <CategoryContainer key={_category}>
+              <Text type="Label">{`${upperFirstLetter(_category)} Foods`}</Text>
+              <FoodInfoContainer>
+                {foods &&
+                  foods[_category].map(
+                    (
+                      { foodName, createAt, memberName, quantity, amount },
+                      index,
+                    ) => {
+                      return (
+                        <FoodInfoWrapper
+                          key={foodName + memberName + index}
+                          index={index}
+                        >
+                          <Icon icon="Like_Button" color={Colors.Gray200} />
+                          <FoodInfo>
+                            <NamdDate>
+                              <Text type="BodyBold">{foodName}</Text>
+                              <Text type="LabelLight" color={Colors.Gray400}>
+                                {`Purchased at ${createAt}`}
+                              </Text>
+                            </NamdDate>
+                            <OwnerRemain>
+                              <Owner>
+                                <Badge
+                                  color={
+                                    memberName === "All"
+                                      ? Colors.White
+                                      : Colors.Orange200
+                                  }
+                                  backgroundColor={
+                                    memberName === "All"
+                                      ? Colors.Orange200
+                                      : Colors.Orange50
+                                  }
+                                >
+                                  {memberName}
+                                </Badge>
+                              </Owner>
+                              {amount && !quantity ? (
+                                <Slider
+                                  value={amount}
+                                  index={index}
+                                  storageType={_category}
+                                  onChange={(_category, _index, _amount) =>
+                                    handleChangeFoodAmount(
+                                      _category,
+                                      _index,
+                                      _amount,
+                                    )
+                                  }
+                                />
+                              ) : (
+                                <RemainContainer>
+                                  <Text type="Label" color={Colors.Gray500}>
+                                    remaining
+                                  </Text>
+                                  <RemainCount>
+                                    <Text type="BodyBold">{quantity}</Text>
+                                  </RemainCount>
+                                </RemainContainer>
+                              )}
+                            </OwnerRemain>
+                          </FoodInfo>
+                        </FoodInfoWrapper>
+                      );
+                    },
+                  )}
+              </FoodInfoContainer>
+            </CategoryContainer>
+          ))}
+        </FoodAreaWrapper>
       </FoodArea>
+
+      <AddNewButton onClick={() => alert("add New")}>
+        <Icon icon="Plus_Button" color={Colors.White} size={16} />
+        <Text type="Label" color={Colors.White}>
+          Add New
+        </Text>
+      </AddNewButton>
 
       <AdjustHeight />
     </Container>
@@ -221,6 +223,11 @@ const FoodArea = styled.section`
   display: flex;
   flex-direction: column;
   gap: 8px;
+`;
+
+const FoodAreaWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const Sort = styled.div`
@@ -277,20 +284,6 @@ const Owner = styled.div`
   gap: 4px;
 `;
 
-const PercentBar = styled.div`
-  width: 116px;
-  height: 24px;
-  border-radius: 6px;
-  background-color: ${Colors.Gray50};
-`;
-
-const RemainPercentBar = styled.div<{ amount: string }>`
-  width: ${({ amount }) => `${(116 * Number(amount)) / 100}px`};
-  height: 24px;
-  border-radius: 6px 0 0 6px;
-  background-color: ${Colors.Gray300};
-`;
-
 const RemainContainer = styled.div`
   display: flex;
   gap: 9px;
@@ -305,6 +298,23 @@ const RemainCount = styled.div`
   background-color: ${Colors.Orange50};
   justify-content: center;
   align-items: center;
+`;
+
+const AddNewButton = styled.div`
+  display: flex;
+  position: fixed;
+  height: 44px;
+  bottom: 70px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  border-radius: 28px;
+  background-color: ${Colors.Gray600};
+  padding: 8px 20px 8px 16px;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  ${Shadow.Medium};
+  z-index: 9999;
 `;
 
 const AdjustHeight = styled.div`

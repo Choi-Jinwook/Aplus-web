@@ -1,8 +1,9 @@
-const calculateRemainDay = (date: Date | null, alert: number) => {
+const calculateRemainDay = (date: string | null, alert: number) => {
   if (date) {
     const DAY = 24 * 60 * 60 * 1000;
     const today = new Date();
-    const gap = Math.floor((date.getTime() - today.getTime()) / DAY);
+    const targetDay = new Date(date);
+    const gap = Math.floor((targetDay.getTime() - today.getTime()) / DAY);
 
     if (gap <= alert && gap >= 0) {
       switch (gap) {

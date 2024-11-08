@@ -6,60 +6,17 @@ import { useState } from "react";
 import { Colors, Shadow } from "styles";
 
 const Chore = () => {
-  // const { data } = useGetChores("1");
+  const { data: choreData } = useGetChores("1");
 
-  const [todos, setTodos] = useState<ChoresBody[]>([
-    {
-      choreArea: "주방",
-      color: "#FF5733",
-      description: "주말에 주방 청소하기",
-      icon: "Livingroom",
-      choreDay: "MONDAY",
-      choreFrequency: 1,
-      enrolledDate: "2024-11-03",
-      memberIds: [1, 3, 4],
-    },
-    {
-      choreArea: "부엌",
-      color: "#FF5733",
-      description: "주말에 부엌 청소하기",
-      icon: "Kitchen",
-      choreDay: "MONDAY",
-      choreFrequency: 1,
-      enrolledDate: "2024-11-03",
-      memberIds: [1, 3, 4],
-    },
-    {
-      choreArea: "화장실",
-      color: "#FF5733",
-      description: "주말에 화장실 청소하기",
-      icon: "Toilet",
-      choreDay: "MONDAY",
-      choreFrequency: 1,
-      enrolledDate: "2024-11-03",
-      memberIds: [1, 3, 4],
-    },
-    {
-      choreArea: "빨래",
-      color: "#FF5733",
-      description: "주말에 빨래 청소하기",
-      icon: "Laundry",
-      choreDay: "MONDAY",
-      choreFrequency: 1,
-      enrolledDate: "2024-11-03",
-      memberIds: [1, 3, 4],
-    },
-    {
-      choreArea: "사람",
-      color: "#FF5733",
-      description: "주말에 사람 청소하기",
-      icon: "Person",
-      choreDay: "MONDAY",
-      choreFrequency: 1,
-      enrolledDate: "2024-11-03",
-      memberIds: [1, 3, 4],
-    },
-  ]);
+  const getMembersRole = (data?: ChoresBody[]) => {
+    if (data) {
+      const members = data.map(({ choreMembers, choreArea }) => {
+        return { choreMembers, choreArea };
+      });
+
+      return members;
+    }
+  };
 
   return (
     <Container>
@@ -68,15 +25,24 @@ const Chore = () => {
           Chores to do
         </Text>
         <Todos>
-          {todos?.map(
-            ({ choreArea, color, description, icon, enrolledDate }) => {
+          {choreData?.map(
+            ({
+              choreId,
+              choreArea,
+              color,
+              description,
+              icon,
+              choreDay,
+              choreFrequency,
+              choreMembers,
+            }) => {
               return (
-                <TodoCardContainer key={choreArea + description}>
+                <TodoCardContainer key={choreId + choreArea + description}>
                   <Icon icon={icon as IconType} size={38} color={color} />
                   <TodoCardText>
                     <Text type="BodyBold">{choreArea}</Text>
                     <Text type="LabelLight" color={Colors.Gray400}>
-                      {enrolledDate}
+                      {choreDay ?? `weekly ${choreFrequency} times`}
                     </Text>
                   </TodoCardText>
                 </TodoCardContainer>
@@ -95,35 +61,32 @@ const Chore = () => {
       <RolesContainer>
         <RolesTitle>
           <Text type="BodyBold">Roles</Text>
-          <Text type="LabelLight" color={Colors.Gray400}>
-            Updated at 10/8 (Tue)
-          </Text>
+          {/* <Text type="LabelLight" color={Colors.Gray400}>
+            {`Updated at ${choreData.}`}
+          </Text> */}
         </RolesTitle>
         <MemberContainer>
-          <MemberWrapper index={0}>
-            <MemberInner>
-              <Inner>
-                <Text type="Body">@Minsoo</Text>
-                <Chip>Living Room</Chip>
-              </Inner>
-            </MemberInner>
-          </MemberWrapper>
-          <MemberWrapper index={1}>
-            <MemberInner>
-              <Inner>
-                <Text type="Body">@Jinwook</Text>
-                <Chip>Laundry</Chip>
-              </Inner>
-            </MemberInner>
-          </MemberWrapper>
-          <MemberWrapper index={2}>
-            <MemberInner>
-              <Inner>
-                <Text type="Body">@Sooyeong</Text>
-                <Chip>Toilet</Chip>
-              </Inner>
-            </MemberInner>
-          </MemberWrapper>
+          {getMembersRole(choreData)?.map(
+            ({ choreArea, choreMembers }, index) => {
+              return (
+                <MemberWrapper key={choreArea + index} index={index}>
+                  <MemberInner>
+                    <Inner>
+                      <div>
+                        {choreMembers.map((member, index) => (
+                          <Text
+                            key={index + member.memberId}
+                            type="Body"
+                          >{`@${member.memberName}`}</Text>
+                        ))}
+                      </div>
+                      <Chip>{choreArea}</Chip>
+                    </Inner>
+                  </MemberInner>
+                </MemberWrapper>
+              );
+            },
+          )}
         </MemberContainer>
         <Button
           textType="LabelBold"
