@@ -28,7 +28,7 @@ const Food = () => {
   const [roomNumber, setRoomNumber] = useState<string | null>(null);
   const [foods, setFoods] = useState<Foods>();
   const [soon, setSoon] = useState<FoodsBody[] | null>(null);
-  const { data: foodData } = useGetFoods(roomNumber);
+  const { data: foodData } = useGetFoods("1");
 
   const handleClickSort = () => {
     setIsOpenSort((prev) => !prev);
