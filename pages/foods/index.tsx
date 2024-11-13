@@ -2,7 +2,11 @@ import styled from "@emotion/styled";
 import { useGetFoods } from "@shared/apis/Foods";
 import { Badge, FoodCard, Icon, Slider, Text } from "@shared/components";
 import { FoodsBody, StorageType } from "@shared/types";
-import { calculateRemainDay, upperFirstLetter } from "@shared/utils";
+import {
+  calculateRemainDay,
+  getSoonExpiredFoods,
+  upperFirstLetter,
+} from "@shared/utils";
 import { useEffect, useState } from "react";
 import { Colors, Shadow } from "styles";
 
@@ -12,6 +16,7 @@ export interface Foods {
 
 const Food = () => {
   const DAY_ALERT = 3;
+  const today = new Date();
   const categories: StorageType[] = [
     "frozen",
     "refrigerated",
@@ -22,33 +27,8 @@ const Food = () => {
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [roomNumber, setRoomNumber] = useState<string | null>(null);
   const [foods, setFoods] = useState<Foods>();
+  const [soon, setSoon] = useState<FoodsBody[] | null>(null);
   const { data: foodData } = useGetFoods(roomNumber);
-
-  useEffect(() => {
-    if (localStorage.getItem("roomNum")) {
-      setRoomNumber(localStorage.getItem("roomNum"));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (foodData) setFoods(foodData);
-  }, [foodData]);
-
-  const soon = [
-    { name: "Yogurt", expire: "2024-11-08", owner: ["Mike"], amount: "6" },
-    {
-      name: "Seoul Milk",
-      expire: "2024-11-20",
-      owner: ["All"],
-      amount: "75%",
-    },
-    {
-      name: "Cracker",
-      expire: "2024-11-25",
-      owner: ["Minsoo", "Seoyoung"],
-      amount: "5%",
-    },
-  ];
 
   const handleClickSort = () => {
     setIsOpenSort((prev) => !prev);
@@ -68,7 +48,7 @@ const Food = () => {
         const newFoods = { ...prev };
         newFoods[storageType][index] = {
           ...newFoods[storageType][index],
-          amount: amount,
+          amount: Number(amount),
         };
 
         return newFoods;
@@ -76,22 +56,48 @@ const Food = () => {
     });
   };
 
+  const handleSoon = (data: FoodsBody[]) => {
+    setSoon(data);
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("roomNum")) {
+      setRoomNumber(localStorage.getItem("roomNum"));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (foodData) setFoods(foodData);
+    getSoonExpiredFoods(handleSoon, foodData);
+  }, [foodData]);
+
   return (
     <Container>
       <CardContainer>
-        {soon.map(({ name, expire, owner, amount }) => {
-          const { day } = calculateRemainDay(expire, DAY_ALERT);
+        {soon &&
+          soon.map(
+            ({
+              foodId,
+              foodName,
+              expirationDate,
+              quantity,
+              amount,
+              memberName,
+            }) => {
+              const { day } = calculateRemainDay(expirationDate, DAY_ALERT);
 
-          return (
-            <FoodCard
-              key={name + amount}
-              owner={owner}
-              name={name}
-              expire={day}
-              amount={amount}
-            />
-          );
-        })}
+              return (
+                <FoodCard
+                  key={foodId}
+                  owner={[memberName]}
+                  name={foodName}
+                  expire={day}
+                  amount={amount}
+                  quantity={quantity}
+                />
+              );
+            },
+          )}
       </CardContainer>
 
       <FoodArea>
@@ -145,7 +151,7 @@ const Food = () => {
                               </Owner>
                               {amount && !quantity ? (
                                 <Slider
-                                  value={amount}
+                                  value={String(amount)}
                                   index={index}
                                   storageType={_category}
                                   onChange={(_category, _index, _amount) =>
@@ -179,10 +185,7 @@ const Food = () => {
       </FoodArea>
 
       <AddNewButton onClick={() => alert("add New")}>
-        <Icon icon="Plus_Button" color={Colors.White} size={16} />
-        <Text type="Label" color={Colors.White}>
-          Add New
-        </Text>
+        <Icon icon="Plus_Button" color={Colors.White} size={32} />
       </AddNewButton>
 
       <AdjustHeight />
@@ -303,13 +306,13 @@ const RemainCount = styled.div`
 const AddNewButton = styled.div`
   display: flex;
   position: fixed;
-  height: 44px;
+  width: 56px;
+  height: 56px;
   bottom: 70px;
-  left: 50%;
-  transform: translate(-50%, 0);
+  right: 20px;
   border-radius: 28px;
   background-color: ${Colors.Gray600};
-  padding: 8px 20px 8px 16px;
+  padding: 16px;
   gap: 10px;
   justify-content: center;
   align-items: center;

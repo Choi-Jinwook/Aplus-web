@@ -17,6 +17,7 @@ const Chore = () => {
       return members;
     }
   };
+  console.log(choreData);
 
   return (
     <Container>
@@ -97,7 +98,7 @@ const Chore = () => {
         </Button>
       </RolesContainer>
 
-      <AdjustHeight />
+      {/* <AdjustHeight /> */}
     </Container>
   );
 };

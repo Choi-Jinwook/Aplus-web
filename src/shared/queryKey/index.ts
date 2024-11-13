@@ -7,6 +7,20 @@ export const QueryKey = {
     history: "financeHistory",
     income: "financeIncome",
     expense: "financeExpense",
-    account: "financeAccount",
+    account: { post: "financeAccountPost", put: "financeAccountPut" },
+    savingGoal: { post: "financeSavingGoalPost", put: "financeSavingGoalPut" },
+    expectedIncome: {
+      post: "financeExpectedIncomePost",
+      put: "financeExpectedIncomePut",
+    },
+    expectedExpense: {
+      post: "financeExpectedExpensePost",
+      put: "financeExpectedExpensePut",
+    },
+    ie: { post: "financeIEPost", put: "financeIEPut" },
+    transfer: { post: "financeTransferPost", put: "financeTransferPut" },
+    ig: "getIncome",
+    eg: "getExpense",
   },
+  event: { get: "eventGet", post: "eventPost" },
 };

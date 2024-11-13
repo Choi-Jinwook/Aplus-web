@@ -27,16 +27,16 @@ const Navigation = () => {
         push("/home");
         break;
       case "Icon_Food":
-        push("/food");
+        push("/foods");
         break;
       case "Icon_Finance":
         push("/finance");
         break;
       case "Icon_Chore":
-        push("/chore");
+        push("/chores");
         break;
       case "Icon_Event":
-        push("/event");
+        push("/events");
         break;
     }
   };

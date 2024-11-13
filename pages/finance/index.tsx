@@ -3,18 +3,29 @@ import {
   useGetFinanceHistory,
   useGetFinanceInfo,
   usePostFinanceAccount,
+  usePostSavingGoal,
+  usePutSavingGoal,
 } from "@shared/apis";
 import { Button, CheckBox, Chip, Icon, Text } from "@shared/components";
+import { getMonth } from "@shared/utils";
 import { useEffect, useState } from "react";
 import { Colors, Shadow } from "styles";
 
 const Finance = () => {
   const [isChecked, setIsChecked] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [YYMM, setYYMM] = useState({ year: 2024, month: 11 });
   const { data: financeInfo } = useGetFinanceInfo("1", "2024", "11");
   const { data: financeHistory } = useGetFinanceHistory("1", "1", "2024", "11");
-  const { mutate } = usePostFinanceAccount();
+  const { mutate: postFinanceAccount } = usePostFinanceAccount();
+  const { mutate: postSavingGoal } = usePostSavingGoal();
+  const { mutate: putSavingGoal } = usePutSavingGoal();
 
   const handleAddChangeClick = () => {};
+
+  const handleDropdownClick = () => {
+    setIsOpen((prev) => !prev);
+  };
 
   const handleChange = () => {
     setIsChecked((prev) => !prev);
@@ -26,7 +37,7 @@ const Finance = () => {
         <>
           <CashFlowContainer>
             <Text type="BodyBold" color={Colors.Gray600}>
-              Cash Flow
+              Financial Transaction
             </Text>
             <ChangeContainer>
               <CurrentCash>
@@ -91,11 +102,79 @@ const Finance = () => {
               <PlanTitle>
                 <PlanTitlePadding>
                   <Text type="H4" color={Colors.Gray600}>
-                    Plans
+                    Budget Plan
                   </Text>
                 </PlanTitlePadding>
-                <div>zz</div>
+                <Dropdown>
+                  <DropdownInner>
+                    <Text type="LabelLight" color={Colors.Gray500}>
+                      {`${getMonth(YYMM.month)} ${YYMM.year}`}
+                    </Text>
+                    <IconBox onClick={handleDropdownClick}>
+                      <Icon icon="TriangleDown" />
+                    </IconBox>
+                  </DropdownInner>
+                </Dropdown>
               </PlanTitle>
+
+              <PlansContainer>
+                <ExpectedContainer>
+                  <Text type="Body" color={Colors.Gray400}>
+                    Saving Goal
+                  </Text>
+                  <RemainMoney>
+                    <Text type="BodyBold">{`${(550000).toLocaleString()}`}</Text>
+                    <Text type="BodyBold">₩</Text>
+                  </RemainMoney>
+                  <DepositContainer>
+                    {financeInfo.savingGoals.map(
+                      (
+                        {
+                          savingGoalId,
+                          description,
+                          amount,
+                          isChecked: hasChecked,
+                          dueDate,
+                          enrolledDate,
+                        },
+                        index,
+                      ) => {
+                        return (
+                          <DepositContent
+                            key={savingGoalId + description}
+                            index={index}
+                          >
+                            <DepositInner>
+                              <DepositInnerBox>
+                                <CheckBoxContainer>
+                                  <CheckBox
+                                    value={isChecked}
+                                    onChange={handleChange}
+                                  />
+                                </CheckBoxContainer>
+                                <DepositCheck>
+                                  <RemainMoney>
+                                    <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
+                                    <Text type="BodyBold">₩</Text>
+                                  </RemainMoney>
+                                  <DepositDesc>
+                                    <Text type="Label" color={Colors.Gray400}>
+                                      {description.split(",")[0]}
+                                    </Text>
+                                  </DepositDesc>
+                                </DepositCheck>
+                              </DepositInnerBox>
+                            </DepositInner>
+                            <Chip>
+                              {description.split(",")[1] ?? "Someone"}
+                            </Chip>
+                          </DepositContent>
+                        );
+                      },
+                    )}
+                  </DepositContainer>
+                </ExpectedContainer>
+              </PlansContainer>
 
               <PlansContainer>
                 <ExpectedContainer>
@@ -127,21 +206,80 @@ const Finance = () => {
                         >
                           <DepositInner>
                             <DepositInnerBox>
-                              <DepositCheck>
+                              <CheckBoxContainer>
                                 <CheckBox
                                   value={isChecked}
                                   onChange={handleChange}
                                 />
+                              </CheckBoxContainer>
+                              <DepositCheck>
                                 <RemainMoney>
                                   <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
                                   <Text type="BodyBold">₩</Text>
                                 </RemainMoney>
+                                <DepositDesc>
+                                  <Text type="Label" color={Colors.Gray400}>
+                                    {description.split(",")[0]}
+                                  </Text>
+                                </DepositDesc>
                               </DepositCheck>
-                              <DepositDesc>
-                                <Text type="Label" color={Colors.Gray400}>
-                                  {description.split(",")[0]}
-                                </Text>
-                              </DepositDesc>
+                            </DepositInnerBox>
+                          </DepositInner>
+                          <Chip>{description.split(",")[1] ?? "Someone"}</Chip>
+                        </DepositContent>
+                      );
+                    },
+                  )}
+                </DepositContainer>
+              </PlansContainer>
+
+              <PlansContainer>
+                <ExpectedContainer>
+                  <Text type="Body" color={Colors.Gray400}>
+                    Expected Expenses
+                  </Text>
+                  <RemainMoney>
+                    <Text type="BodyBold">{`${(900000).toLocaleString()}`}</Text>
+                    <Text type="BodyBold">₩</Text>
+                  </RemainMoney>
+                </ExpectedContainer>
+                <DepositContainer>
+                  {financeInfo.predictedExpenses.map(
+                    (
+                      {
+                        expenseId,
+                        description,
+                        amount,
+                        isChecked: hasChecked,
+                        dueDate,
+                        enrolledDate,
+                      },
+                      index,
+                    ) => {
+                      return (
+                        <DepositContent
+                          key={expenseId + description}
+                          index={index}
+                        >
+                          <DepositInner>
+                            <DepositInnerBox>
+                              <CheckBoxContainer>
+                                <CheckBox
+                                  value={isChecked}
+                                  onChange={handleChange}
+                                />
+                              </CheckBoxContainer>
+                              <DepositCheck>
+                                <RemainMoney>
+                                  <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
+                                  <Text type="BodyBold">₩</Text>
+                                </RemainMoney>
+                                <DepositDesc>
+                                  <Text type="Label" color={Colors.Gray400}>
+                                    {description.split(",")[0]}
+                                  </Text>
+                                </DepositDesc>
+                              </DepositCheck>
                             </DepositInnerBox>
                           </DepositInner>
                           <Chip>{description.split(",")[1] ?? "Someone"}</Chip>
@@ -294,6 +432,24 @@ const PlanTitlePadding = styled.div`
   padding-left: 6px;
 `;
 
+const Dropdown = styled.div`
+  display: flex;
+  height: 28px;
+  padding-right: 8px;
+  align-items: center;
+`;
+
+const DropdownInner = styled.div`
+  display: flex;
+  border-radius: 6px;
+  background-color: ${Colors.White};
+  padding: 2px 0 2px 16px;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+const IconBox = styled.div``;
+
 const PlansContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -338,18 +494,20 @@ const DepositInner = styled.div`
 
 const DepositInnerBox = styled.div`
   display: flex;
-  flex-direction: column;
+  gap: 12px;
+`;
+
+const CheckBoxContainer = styled.div`
+  padding-top: 4px;
 `;
 
 const DepositCheck = styled.div`
   display: flex;
-  gap: 12px;
-  align-items: center;
+  flex-direction: column;
 `;
 
 const DepositDesc = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
 `;
 

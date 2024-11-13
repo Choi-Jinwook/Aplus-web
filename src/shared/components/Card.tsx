@@ -37,7 +37,8 @@ interface FoodCardProps extends HTMLAttributes<HTMLDivElement> {
   owner: string[];
   name: string;
   expire: string;
-  amount: string;
+  amount: number | null;
+  quantity: number | null;
 }
 
 export const FoodCard = ({
@@ -45,14 +46,15 @@ export const FoodCard = ({
   name,
   expire,
   amount,
+  quantity,
   ...props
 }: FoodCardProps) => {
   const formattingAmount = () => {
-    if (amount.includes("%")) {
-      return { type: "percent", value: amount.split("%")[0] };
+    if (amount) {
+      return { type: "percent", value: amount };
     }
 
-    return { type: "number", value: amount };
+    return { type: "number", value: quantity };
   };
 
   return (
@@ -85,7 +87,9 @@ export const FoodCard = ({
             <RemainPercentBar amount={formattingAmount().value} />
           </PercentBar>
         ) : (
-          <Text type="Label" color={Colors.Gray500}>{`${amount} remains`}</Text>
+          <Text type="Label" color={Colors.Gray500}>{`${
+            amount || quantity
+          } remains`}</Text>
         )}
       </FoodCardContainer>
     </FoodCardC>
@@ -117,6 +121,7 @@ const FoodCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 140px;
+  max-width: fit-content;
   border-radius: 16px;
   background-color: ${Colors.White};
   gap: 16px;
@@ -138,7 +143,7 @@ const PercentBar = styled.div`
   background-color: ${Colors.Gray50};
 `;
 
-const RemainPercentBar = styled.div<{ amount: string }>`
+const RemainPercentBar = styled.div<{ amount: string | number | null }>`
   width: ${({ amount }) => `${(116 * Number(amount)) / 100}px`};
   height: 24px;
   border-radius: 6px 0 0 6px;

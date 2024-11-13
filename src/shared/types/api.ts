@@ -1,11 +1,12 @@
 export type StorageType = "refrigerated" | "frozen" | "roomTemperature";
 
 export interface FoodsBody {
+  foodId: number;
   foodName: string;
   createAt: string;
   expirationDate: string;
   quantity: number | null;
-  amount: string | null;
+  amount: number | null;
   isFavorite: boolean;
   memberName: string;
   isShared: boolean;
@@ -92,4 +93,46 @@ export interface GetFinanceHistory {
   description: string;
   fromTxnId: string | null;
   toTxnId: number;
+}
+
+export interface IncomeOrExpense {
+  amount: number;
+  txnType: string;
+  txnDate: string;
+  description: string;
+}
+
+export interface Transaction {
+  amount: number;
+  txnType: string;
+  txnDate: string;
+  description: string;
+}
+
+export interface Txns {
+  accountTxnId: number;
+  amount: number;
+  txnType: string;
+  txnDate: string;
+  description: string;
+  fromTxnId: number | null;
+  toTxnId: number | null;
+}
+
+export interface IncomeGet {
+  txns: Txns[];
+  totalIncome: number;
+}
+
+export interface ExpenseGet {
+  txns: Txns[];
+  totalExpense: number;
+}
+
+export interface EventsGet {
+  eventId: number;
+  eventName: string;
+  eventDay: string;
+  eventTime: string;
+  members: ChoreMembers[];
 }

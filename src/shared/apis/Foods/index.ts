@@ -1,4 +1,4 @@
-import { Foods } from "@pages/food";
+import { Foods } from "@pages/foods";
 import { QueryKey } from "@shared/queryKey";
 import { FoodsBody } from "@shared/types";
 import { useQuery } from "@tanstack/react-query";
