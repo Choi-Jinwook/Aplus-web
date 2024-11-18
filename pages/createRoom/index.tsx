@@ -21,7 +21,7 @@ const CreateRoom = () => {
   }, []);
 
   const handleCreateRoom = () => {
-    push("/createRoom/makeProfile");
+    if (validate.name && validate.password) push("/createRoom/makeProfile");
   };
 
   useEffect(() => {
