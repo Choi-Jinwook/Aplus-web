@@ -39,7 +39,6 @@ const CreateRoom = () => {
             Room Name
           </Text>
           <ControlledInput
-            value={name}
             inputType="text"
             placeholder="Room Name"
             onChange={handleChangeName}
@@ -50,7 +49,6 @@ const CreateRoom = () => {
             Room Password
           </Text>
           <ControlledInput
-            value={password}
             placeholder="Password"
             onChange={handleChangePassword}
           />

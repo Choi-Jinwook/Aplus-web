@@ -69,6 +69,7 @@ const CreateMember = () => {
             Password
           </Text>
           <ControlledInput
+            inputMode="numeric"
             placeholder="Password"
             onChange={handleChangePassword}
           />
