@@ -1,4 +1,4 @@
-import { Foods } from "@pages/foods";
+import { Foods } from "@pages/[roomId]/foods";
 import { QueryKey } from "@shared/queryKey";
 import { FoodsBody } from "@shared/types";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +14,7 @@ export const useGetFoods = (roomNumber?: string | null) => {
 
       return _res.data;
     },
-    enabled: roomNumber !== null,
+    enabled: roomNumber !== "undefined",
   });
 
   return res;

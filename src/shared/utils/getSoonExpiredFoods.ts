@@ -1,4 +1,4 @@
-import { Foods } from "@pages/foods";
+import { Foods } from "@pages/[roomId]/foods";
 import { FoodsBody } from "@shared/types";
 import calculateRemainDay from "./calculateRemainDay";
 

@@ -136,3 +136,17 @@ export interface EventsGet {
   eventTime: string;
   members: ChoreMembers[];
 }
+
+export interface RoomBody {
+  roomName: string;
+  description: string;
+  roomPassword: string;
+  masterMemberName: string;
+  masterMemberPassword: string | null;
+}
+
+export interface UserBody {
+  memberName: string;
+  memberPassword: string;
+  memberIcon: string;
+}

@@ -7,18 +7,19 @@ import { Text } from "..";
 import { upperFirstLetter } from "@shared/utils";
 
 const Header = () => {
-  const { push, pathname, back } = useRouter();
-  const currentPath = pathname.split("/")[1];
+  const {
+    push,
+    pathname,
+    back,
+    query: { roomId },
+  } = useRouter();
+  const currentPath = pathname.split("/")[2];
+  const paths = ["home", "foods", "finance", "events", "chores"];
 
   const handleClickLeft = () => {
-    switch (currentPath) {
-      case "setting":
-        back();
-        break;
-      default:
-        push("/home");
-        break;
-    }
+    if (currentPath && paths.some((path) => currentPath.includes(path)))
+      push(`/${roomId}/${currentPath}`);
+    else back();
   };
 
   const handleClickRight = () => {
@@ -27,7 +28,7 @@ const Header = () => {
         // TODO: api call
         break;
       default:
-        push("/setting");
+        push(`/${roomId}/setting`);
         break;
     }
   };
@@ -35,12 +36,12 @@ const Header = () => {
   return (
     <Container>
       <IconContainer onClick={handleClickLeft}>
-        {currentPath === "setting" ? (
-          <Icon icon="Arrow_Left" color={Colors.Black} />
-        ) : currentPath === "home" ? (
+        {currentPath === "home" ? (
           <Icon icon="Logo_Main" color={Colors.Black} />
-        ) : (
+        ) : currentPath && paths.some((path) => currentPath.includes(path)) ? (
           <Text type="H4">{upperFirstLetter(currentPath)}</Text>
+        ) : (
+          <Icon icon="Arrow_Left" color={Colors.Black} />
         )}
       </IconContainer>
       {currentPath === "setting" && <Text type="BodyBold">Setting</Text>}
@@ -50,7 +51,10 @@ const Header = () => {
             Save
           </Button>
         ) : (
-          <Icon icon="Settings" color={Colors.Black} />
+          currentPath &&
+          paths.some((path) => currentPath.includes(path)) && (
+            <Icon icon="Settings" color={Colors.Black} />
+          )
         )}
       </IconContainer>
     </Container>

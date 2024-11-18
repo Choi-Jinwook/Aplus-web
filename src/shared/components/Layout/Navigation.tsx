@@ -11,7 +11,11 @@ interface Icons {
 }
 
 const Navigation = () => {
-  const { push, pathname } = useRouter();
+  const {
+    push,
+    pathname,
+    query: { roomId },
+  } = useRouter();
 
   const checkPath = (_icon: IconType) => {
     const currentPath = _icon.split("_")[1].toLowerCase();
@@ -24,19 +28,19 @@ const Navigation = () => {
 
     switch (_icon) {
       case "Icon_Home":
-        push("/home");
+        push(`/${roomId}/home`);
         break;
       case "Icon_Food":
-        push("/foods");
+        push(`/${roomId}/foods`);
         break;
       case "Icon_Finance":
-        push("/finance");
+        push(`/${roomId}/finance`);
         break;
       case "Icon_Chore":
-        push("/chores");
+        push(`/${roomId}/chores`);
         break;
       case "Icon_Event":
-        push("/events");
+        push(`/${roomId}/events`);
         break;
     }
   };

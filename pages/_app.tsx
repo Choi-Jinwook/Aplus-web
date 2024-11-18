@@ -1,4 +1,4 @@
-import { RecoilRoot } from "recoil";
+import { RecoilEnv, RecoilRoot } from "recoil";
 import "../src/styles/globals.css";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,7 +9,10 @@ import { Header, Navigation } from "@shared/components";
 import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false;
   const { pathname } = useRouter();
+  const currentPath = pathname.split("/")[2];
+  const paths = ["home", "foods", "finance", "events", "chores"];
 
   const [queryClient] = useState(
     () =>
@@ -29,11 +32,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <ModalProvider>
-          <Header />
-          {/* {pathname !== "/" && <Header />} */}
+          {pathname !== "/" && <Header />}
           <Component {...pageProps} />
-          <Navigation />
-          {/* {pathname !== "/" && <Navigation />} */}
+          {currentPath && paths.some((path) => currentPath.includes(path)) && (
+            <Navigation />
+          )}
         </ModalProvider>
       </RecoilRoot>
     </QueryClientProvider>

@@ -6,12 +6,14 @@ import Icon from "./Icon";
 interface ControlledInputProps
   extends Omit<HTMLAttributes<HTMLInputElement>, "onChange"> {
   value?: string;
+  inputType?: string;
   onChange: (value: string) => void;
   placeholder: string;
 }
 
 export const ControlledInput = ({
   value: initialValue,
+  inputType,
   onChange,
   placeholder,
   ...props
@@ -26,18 +28,20 @@ export const ControlledInput = ({
   return (
     <InputContainer>
       <SInput
-        type={showPassword ? "text" : "password"}
+        type={inputType ? "text" : showPassword ? "text" : "password"}
         value={value}
         onChange={({ target: { value } }) => setValue(value)}
         placeholder={placeholder}
         {...props}
       />
-      <IconContainer onClick={() => setShowPassword((prev) => !prev)}>
-        <Icon
-          icon={showPassword ? "Eye_Close" : "Eye_Open"}
-          color={Colors.Gray300}
-        />
-      </IconContainer>
+      {!inputType && (
+        <IconContainer onClick={() => setShowPassword((prev) => !prev)}>
+          <Icon
+            icon={showPassword ? "Eye_Close" : "Eye_Open"}
+            color={Colors.Gray300}
+          />
+        </IconContainer>
+      )}
     </InputContainer>
   );
 };

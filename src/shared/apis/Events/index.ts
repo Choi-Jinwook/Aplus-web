@@ -21,7 +21,7 @@ export const useGetEvents = (roomNumber: string) => {
 
       return res.data;
     },
-    enabled: roomNumber !== null,
+    enabled: roomNumber !== "undefined",
     select: (data) => {
       return data.reduce((acc, event) => {
         const [year, month] = event.eventDay.split("-");

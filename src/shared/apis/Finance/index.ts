@@ -28,7 +28,7 @@ export const useGetFinanceInfo = (
 
       return res.data;
     },
-    enabled: roomNumber !== null,
+    enabled: roomNumber !== "undefined",
   });
 };
 
@@ -91,7 +91,7 @@ export const useGetFinanceHistory = (
 
       return res.data;
     },
-    enabled: roomNumber !== null,
+    enabled: roomNumber !== "undefined",
   });
 };
 
@@ -211,7 +211,7 @@ export const useGetIncome = ({
 
       return res.data;
     },
-    enabled: roomNumber !== null,
+    enabled: roomNumber !== "undefined",
   });
 };
 
@@ -233,7 +233,7 @@ export const useGetExpense = ({
 
       return res.data;
     },
-    enabled: roomNumber !== null,
+    enabled: roomNumber !== "undefined",
   });
 };
 

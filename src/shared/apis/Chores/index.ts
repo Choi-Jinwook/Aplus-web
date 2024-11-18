@@ -13,6 +13,6 @@ export const useGetChores = (roomNumber: string) => {
 
       return _res.data;
     },
-    enabled: roomNumber !== null,
+    enabled: roomNumber !== "undefined",
   });
 };
