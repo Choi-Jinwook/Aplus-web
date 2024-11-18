@@ -43,6 +43,7 @@ const Button = ({
 export default Button;
 
 const SButton = styled.button<ButtonProps>`
+  width: 100%;
   height: 52px;
   border: none;
   ${({ shadow }) => {

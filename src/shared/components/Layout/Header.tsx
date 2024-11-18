@@ -47,9 +47,11 @@ const Header = () => {
       {currentPath === "setting" && <Text type="BodyBold">Setting</Text>}
       <IconContainer onClick={handleClickRight}>
         {currentPath === "setting" ? (
-          <Button buttonColor={Colors.Gray400} textColor={Colors.White}>
-            Save
-          </Button>
+          <SaveButton>
+            <Text type="Label" color={Colors.White}>
+              Save
+            </Text>
+          </SaveButton>
         ) : (
           currentPath &&
           paths.some((path) => currentPath.includes(path)) && (
@@ -78,3 +80,13 @@ const Container = styled.header`
 `;
 
 const IconContainer = styled.div``;
+
+const SaveButton = styled.button`
+  display: flex;
+  border: none;
+  border-radius: 6px;
+  background-color: ${Colors.Gray400};
+  padding: 4px 10px;
+  justify-content: center;
+  align-items: center;
+`;
