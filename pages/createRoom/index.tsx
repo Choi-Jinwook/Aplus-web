@@ -100,7 +100,7 @@ const Container = styled.main`
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 30px 12px;
+  padding: 12px;
   gap: 12px;
 `;
 
