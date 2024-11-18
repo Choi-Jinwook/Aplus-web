@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { Badge, Card, Chip, HomeSection, Icon, Text } from "@shared/components";
 import { IconType } from "@shared/types";
 import { calculateRemainDay } from "@shared/utils";
+import { useRouter } from "next/router";
 import React, { useRef } from "react";
 import { Colors } from "styles";
 
@@ -9,6 +10,11 @@ const Home = () => {
   const badgeRef = useRef(false);
   const today = new Date();
   const DAY_ALERT = 3;
+
+  const {
+    query: { roomId },
+  } = useRouter();
+
   const foodData = [
     { name: "Yogurt", owner: ["Mike"], expire: "2024-11-08" },
     {

@@ -2,11 +2,16 @@ import styled from "@emotion/styled";
 import { useGetChores } from "@shared/apis/Chores";
 import { Button, Chip, Icon, Text } from "@shared/components";
 import { ChoresBody, IconType } from "@shared/types";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Colors, Shadow } from "styles";
 
 const Chore = () => {
-  const { data: choreData } = useGetChores("1");
+  const {
+    query: { roomId },
+  } = useRouter();
+
+  const { data: choreData } = useGetChores(String(roomId));
 
   const getMembersRole = (data?: ChoresBody[]) => {
     if (data) {

@@ -8,15 +8,25 @@ import {
 } from "@shared/apis";
 import { Button, CheckBox, Chip, Icon, Text } from "@shared/components";
 import { getMonth } from "@shared/utils";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { Colors, Shadow } from "styles";
 
 const Finance = () => {
+  const {
+    query: { roomId },
+  } = useRouter();
+
   const [isChecked, setIsChecked] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [YYMM, setYYMM] = useState({ year: 2024, month: 11 });
-  const { data: financeInfo } = useGetFinanceInfo("1", "2024", "11");
-  const { data: financeHistory } = useGetFinanceHistory("1", "1", "2024", "11");
+  const { data: financeInfo } = useGetFinanceInfo(String(roomId), "2024", "11");
+  const { data: financeHistory } = useGetFinanceHistory(
+    String(roomId),
+    "1",
+    "2024",
+    "11",
+  );
   const { mutate: postFinanceAccount } = usePostFinanceAccount();
   const { mutate: postSavingGoal } = usePostSavingGoal();
   const { mutate: putSavingGoal } = usePutSavingGoal();

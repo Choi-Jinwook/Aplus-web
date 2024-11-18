@@ -2,13 +2,18 @@ import styled from "@emotion/styled";
 import { useGetEvents } from "@shared/apis/Events";
 import { Chip, Icon, Text } from "@shared/components";
 import { getMonth } from "@shared/utils";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Colors } from "styles";
 
 const Event = () => {
+  const {
+    query: { roomId },
+  } = useRouter();
+
   const containerRef = useRef<HTMLElement | null>(null);
   const [showScroll2Top, setShowScroll2Top] = useState(false);
-  const { data: eventData } = useGetEvents("1");
+  const { data: eventData } = useGetEvents(String(roomId));
 
   const handleScroll2TopView = () => {
     const Y = window.scrollY;

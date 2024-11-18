@@ -5,10 +5,15 @@ import {
   HomeSection,
   Text,
 } from "@shared/components";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Colors } from "styles";
 
 const Setting = () => {
+  const {
+    query: { roomId },
+  } = useRouter();
+
   const [members, setMembers] = useState([
     { name: "Mins00", auth: "Master" },
     { name: "Jinwook", auth: "Member" },

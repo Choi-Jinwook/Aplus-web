@@ -7,6 +7,7 @@ import {
   getSoonExpiredFoods,
   upperFirstLetter,
 } from "@shared/utils";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Colors, Shadow } from "styles";
 
@@ -23,12 +24,16 @@ const Food = () => {
     "roomTemperature",
   ];
 
+  const {
+    query: { roomId },
+  } = useRouter();
+
   const [sort, setSort] = useState("Purchased Date");
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [roomNumber, setRoomNumber] = useState<string | null>(null);
   const [foods, setFoods] = useState<Foods>();
   const [soon, setSoon] = useState<FoodsBody[] | null>(null);
-  const { data: foodData } = useGetFoods("1");
+  const { data: foodData } = useGetFoods(String(roomId));
 
   const handleClickSort = () => {
     setIsOpenSort((prev) => !prev);
