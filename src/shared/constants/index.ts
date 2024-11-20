@@ -4,4 +4,5 @@ export const ERROR_MESSAGE = {
     USER_NEW: "User password should be 4 digits",
     ROOM_NEW: "Room password should be 6 digits",
   },
+  NORMAL: (error: unknown) => `Critical Bug. Call Team A, Error: ${error}`,
 };

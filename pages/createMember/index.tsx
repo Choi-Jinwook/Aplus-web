@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { usePostCreateRoom } from "@shared/apis";
 import { roomName, roomPassword, userName, userPassword } from "@shared/atoms";
 import { Button, ControlledInput, Text } from "@shared/components";
+import { ERROR_MESSAGE } from "@shared/constants";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
@@ -15,7 +16,7 @@ const CreateMember = () => {
   const [password, setPassword] = useRecoilState(userPassword);
   const [validate, setValidate] = useState({ name: false, password: false });
 
-  const { mutateAsync: postRoom } = usePostCreateRoom();
+  const { mutateAsync: postRoom, isPending, isSuccess } = usePostCreateRoom();
 
   const handleChangeName = useCallback((value: string) => {
     setName(value);
@@ -26,6 +27,8 @@ const CreateMember = () => {
   }, []);
 
   const handleCreateMember = async () => {
+    if (isPending || isSuccess) return;
+
     if (validate.name && validate.password) {
       try {
         const roomData = await postRoom({
@@ -38,7 +41,7 @@ const CreateMember = () => {
 
         push(`/${roomData.roomId}/home`);
       } catch (error) {
-        console.error("member failed", error);
+        alert(ERROR_MESSAGE.NORMAL(error));
       }
     }
   };
