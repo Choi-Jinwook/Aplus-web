@@ -88,7 +88,6 @@ const Container = styled.main`
   position: relative;
   flex-direction: column;
   width: 100vw;
-  height: ${window.innerHeight - 108}px;
   top: 48px;
   gap: 8px;
   background-color: ${Colors.White};

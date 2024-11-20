@@ -102,6 +102,8 @@ const Chore = () => {
           Assign Random Roles
         </Button>
       </RolesContainer>
+
+      {/* <AdjustHeight /> */}
     </Container>
   );
 };
@@ -113,7 +115,6 @@ const Container = styled.main`
   position: relative;
   flex-direction: column;
   width: 100vw;
-  height: ${window.innerHeight - 108}px;
   top: 48px;
   gap: 8px;
   background-color: ${Colors.Gray50};
@@ -210,4 +211,8 @@ const Inner = styled.div`
   padding: 11px 0px;
   gap: 10px;
   justify-content: space-between;
+`;
+
+const AdjustHeight = styled.div`
+  height: 52px;
 `;

@@ -44,84 +44,57 @@ const Event = () => {
   }, []);
 
   return (
-    <>
-      {eventData && Object.keys(eventData).length !== 0 ? (
-        <Container ref={containerRef}>
-          <ScrollTopContainer isShown={showScroll2Top}>
-            <Icon icon="Chevron_Up" color={Colors.Gray400} />
-            <Text type="LabelLight" color={Colors.Gray400}>
-              Scroll to see previous events
-            </Text>
-          </ScrollTopContainer>
-          <EventContainer>
-            {eventData &&
-              Object.entries(eventData).map(([year, months]) =>
-                Object.entries(months).map(([month, events]) => {
-                  const monthName = getMonth(Number(month));
+    <Container ref={containerRef}>
+      <ScrollTopContainer isShown={showScroll2Top}>
+        <Icon icon="Chevron_Up" color={Colors.Gray400} />
+        <Text type="LabelLight" color={Colors.Gray400}>
+          Scroll to see previous events
+        </Text>
+      </ScrollTopContainer>
+      <EventContainer>
+        {eventData &&
+          Object.entries(eventData).map(([year, months]) =>
+            Object.entries(months).map(([month, events]) => {
+              const monthName = getMonth(Number(month));
 
-                  return (
-                    <EventWrapper
-                      key={`${year}-${month}`}
-                      id={`${year}-${month}`}
-                    >
-                      <Text type="BodyBold" color={Colors.Gray500}>
-                        {monthName} {year}
-                      </Text>
-                      <Events>
-                        {events.map(
-                          ({ eventId, eventName, eventDay, members }) => (
-                            <EventCard key={eventId}>
-                              <EventAlert>
-                                <Text type="BodyBold">{eventName}</Text>
-                                <Text type="LabelLight">{eventDay}</Text>
-                              </EventAlert>
-                              <MemberContainer>
-                                {members.map(({ memberId, memberName }) => (
-                                  <Chip key={memberId}>{memberName}</Chip>
-                                ))}
-                              </MemberContainer>
-                            </EventCard>
-                          ),
-                        )}
-                      </Events>
-                    </EventWrapper>
-                  );
-                }),
-              )}
-          </EventContainer>
-        </Container>
-      ) : (
-        <Empty>
-          <Text type="Body" color={Colors.Gray500}>
-            Your event list is empty!
-          </Text>
-          <Text type="Body" color={Colors.Gray500}>
-            {`Add items and manage them with HOUSIT :)`}
-          </Text>
-        </Empty>
-      )}
-    </>
+              return (
+                <EventWrapper key={`${year}-${month}`} id={`${year}-${month}`}>
+                  <Text type="BodyBold" color={Colors.Gray500}>
+                    {monthName} {year}
+                  </Text>
+                  <Events>
+                    {events.map(({ eventId, eventName, eventDay, members }) => (
+                      <EventCard key={eventId}>
+                        <EventAlert>
+                          <Text type="BodyBold">{eventName}</Text>
+                          <Text type="LabelLight">{eventDay}</Text>
+                        </EventAlert>
+                        <MemberContainer>
+                          {members.map(({ memberId, memberName }) => (
+                            <Chip key={memberId}>{memberName}</Chip>
+                          ))}
+                        </MemberContainer>
+                      </EventCard>
+                    ))}
+                  </Events>
+                </EventWrapper>
+              );
+            }),
+          )}
+      </EventContainer>
+
+      <AdjustHeight />
+    </Container>
   );
 };
 
 export default Event;
-
-const Empty = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  height: ${window.innerHeight}px;
-  background-color: ${Colors.Gray50};
-  justify-content: center;
-  align-items: center;
-`;
 
 const Container = styled.main`
   display: flex;
   position: relative;
   flex-direction: column;
   width: 100vw;
-  height: ${window.innerHeight - 108}px;
   top: 48px;
   gap: 8px;
   background-color: ${Colors.Gray50};
@@ -183,4 +156,8 @@ const MemberContainer = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
+`;
+
+const AdjustHeight = styled.div`
+  height: 66px;
 `;

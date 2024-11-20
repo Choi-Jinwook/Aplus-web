@@ -255,6 +255,8 @@ const Home = () => {
           </HomeSection>
         );
       })}
+
+      <AdjustHeight />
     </Container>
   );
 };
@@ -266,7 +268,6 @@ const Container = styled.main`
   position: relative;
   flex-direction: column;
   width: 100vw;
-  height: ${window.innerHeight - 108}px;
   top: 48px;
   padding: 12px 0;
   gap: 8px;
@@ -329,6 +330,10 @@ const CardView = styled.div`
 
 const EventContainer = styled.section`
   padding: 0 18px;
+`;
+
+const AdjustHeight = styled.div`
+  height: 52px;
 `;
 
 const InviteBanner = styled.section`

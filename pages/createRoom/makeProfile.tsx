@@ -39,7 +39,7 @@ const Container = styled.main`
   position: relative;
   flex-direction: column;
   width: 100vw;
-  height: ${window.innerHeight - 108}px;
+  height: 100vh;
 `;
 
 const TextContainer = styled.section`

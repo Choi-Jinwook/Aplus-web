@@ -54,6 +54,8 @@ const MemberProfile = () => {
             </Text>
           </CardWrapper>
         )}
+
+        <AdjustHeight />
       </CardContainer>
     </Container>
   );
@@ -66,7 +68,7 @@ const Container = styled.main`
   position: relative;
   flex-direction: column;
   width: 100vw;
-  height: ${window.innerHeight - 108}px;
+  height: 100vh;
 `;
 
 const TextContainer = styled.section`
@@ -122,4 +124,8 @@ const CardWrapper = styled.div<{ isAddNew?: boolean; index: number }>`
       padding: 49px 51px;
     `;
   }}
+`;
+
+const AdjustHeight = styled.div`
+  height: 52px;
 `;
