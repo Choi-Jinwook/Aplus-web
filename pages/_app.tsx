@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false;
   const { pathname } = useRouter();
   const currentPath = pathname.split("/")[2];
-  const paths = ["home", "foods", "finance", "events", "chores"];
+  const paths = ["home", "foods", "finance", "events", "chores", "setting"];
 
   const [queryClient] = useState(
     () =>

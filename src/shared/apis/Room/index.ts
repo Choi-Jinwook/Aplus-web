@@ -39,12 +39,39 @@ export const usePostMember = () => {
   });
 };
 
-export const useGetMember = (roomNumber: string) => {
+export const usePutMember = () => {
+  return useMutation({
+    mutationFn: async ({
+      roomNumber,
+      memberId,
+      data,
+    }: {
+      roomNumber: string;
+      memberId: string;
+      data: UserBody;
+    }) => {
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/member/${memberId}`,
+        data,
+      );
+
+      return res.data;
+    },
+    mutationKey: [QueryKey.user.put],
+    onSuccess: (data) => console.log(data),
+  });
+};
+
+export const useGetMember = (
+  roomNumber: string,
+  data: { roomPassword: string },
+) => {
   return useQuery({
     queryKey: [QueryKey.user.get],
     queryFn: async () => {
-      const res = await axios.get<UserData[]>(
-        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/member`,
+      const res = await axios.post<UserData[]>(
+        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/join`,
+        data,
       );
 
       return res.data;

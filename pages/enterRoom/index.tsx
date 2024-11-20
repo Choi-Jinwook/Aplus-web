@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
 import { Button, ControlledInput, Text } from "@shared/components";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Colors } from "styles";
 
-const CreateRoom = () => {
+const EnterRoomFromMain = () => {
+  const { push } = useRouter();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [alert, setAlert] = useState(false);
@@ -17,7 +19,9 @@ const CreateRoom = () => {
     setPassword(value);
   };
 
-  const handleClick = () => {};
+  const handleClick = () => {
+    // api call
+  };
 
   useEffect(() => {
     // if (incorrect) setAlert(true)
@@ -67,6 +71,7 @@ const CreateRoom = () => {
 
       <FixedArea>
         <Button
+          onClick={handleClick}
           textColor={
             validate.name && validate.password ? Colors.White : Colors.Gray500
           }
@@ -85,7 +90,7 @@ const CreateRoom = () => {
   );
 };
 
-export default CreateRoom;
+export default EnterRoomFromMain;
 
 const Container = styled.main`
   display: flex;

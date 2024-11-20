@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { Colors, Shadow } from "styles";
 import Icon from "../Icon";
 import { useRouter } from "next/router";
-import Button from "../Button";
 import { Text } from "..";
 import { upperFirstLetter } from "@shared/utils";
 
@@ -44,9 +43,11 @@ const Header = () => {
           <Icon icon="Arrow_Left" color={Colors.Black} />
         )}
       </IconContainer>
-      {currentPath === "setting" && <Text type="BodyBold">Setting</Text>}
+      {currentPath === "setting" && !pathname.split("/")[3] && (
+        <Text type="BodyBold">Setting</Text>
+      )}
       <IconContainer onClick={handleClickRight}>
-        {currentPath === "setting" ? (
+        {currentPath === "setting" && !pathname.split("/")[3] ? (
           <SaveButton>
             <Text type="Label" color={Colors.White}>
               Save

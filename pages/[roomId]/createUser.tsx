@@ -32,7 +32,7 @@ const CreateUser = () => {
           data: {
             memberName: name,
             memberPassword: password,
-            memberIcon: "",
+            memberIcon: "ICON1",
           },
         });
         push(`/${res.roomId}/home`);

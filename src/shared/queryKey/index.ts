@@ -24,5 +24,5 @@ export const QueryKey = {
   },
   event: { get: "eventGet", post: "eventPost" },
   room: { get: "roomGet", post: "roomPost" },
-  user: { get: "userGet", post: "userPost" },
+  user: { get: "userGet", post: "userPost", put: "userPut" },
 };

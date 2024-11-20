@@ -1,28 +1,31 @@
 import styled from "@emotion/styled";
 import { useGetMember } from "@shared/apis";
+import { currentUser } from "@shared/atoms";
 import { Button, ControlledInput, Text } from "@shared/components";
-import { UserData } from "@shared/types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import { Colors } from "styles";
 
-const CreateRoom = () => {
+const EnterRoom = () => {
   const {
-    query: { member, roomId, memberId: id },
+    query: { member, roomId, memberId: id, roomPassword },
     push,
   } = useRouter();
   const [password, setPassword] = useState("");
   const [isError, setIsError] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserData[] | null>(null);
+  const [user, setUser] = useRecoilState(currentUser);
 
-  const { data } = useGetMember(String(roomId));
+  const { data } = useGetMember(String(roomId), {
+    roomPassword: String(roomPassword),
+  });
 
   const handleChangePassword = (value: string) => {
     setPassword(value);
   };
 
   const handleClick = async () => {
-    if (currentUser && currentUser[0].memberPassword === password) {
+    if (user && user[0].memberPassword === password) {
       push(`/${roomId}/home`);
       return;
     }
@@ -33,7 +36,7 @@ const CreateRoom = () => {
   useEffect(() => {
     if (data) {
       const user = data.filter(({ memberId }) => memberId === Number(id));
-      setCurrentUser(user);
+      setUser(user);
     }
   }, [data]);
 
@@ -78,7 +81,7 @@ const CreateRoom = () => {
   );
 };
 
-export default CreateRoom;
+export default EnterRoom;
 
 const Container = styled.main`
   display: flex;

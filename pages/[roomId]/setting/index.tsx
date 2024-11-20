@@ -3,6 +3,7 @@ import {
   ControlledInput,
   Dropdown,
   HomeSection,
+  Icon,
   Text,
 } from "@shared/components";
 import { useRouter } from "next/router";
@@ -12,6 +13,7 @@ import { Colors } from "styles";
 const Setting = () => {
   const {
     query: { roomId },
+    push,
   } = useRouter();
 
   const [members, setMembers] = useState([
@@ -19,8 +21,6 @@ const Setting = () => {
     { name: "Jinwook", auth: "Member" },
     { name: "Sooyoung", auth: "Member" },
   ]);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
 
   const handleRoleChange = (name: string, newRole: string) => {
     console.log(newRole);
@@ -32,12 +32,15 @@ const Setting = () => {
     );
   };
 
-  const handleChangeOldPassword = (value: string) => {
-    setOldPassword(value);
-  };
-
-  const handleChangeNewPassword = (value: string) => {
-    setNewPassword(value);
+  const handleClickChangePassword = (type: string) => {
+    switch (type) {
+      case "personal":
+        push(`/${roomId}/setting/mypw`);
+        return;
+      case "room":
+        push(`/${roomId}/setting/roompw`);
+        return;
+    }
   };
 
   return (
@@ -111,8 +114,17 @@ const Setting = () => {
       </MemberContainer>
 
       <PasswordContainer>
-        <Text type="H4">Change Password</Text>
-        <PasswordWrapper>
+        <PasswordWrapper onClick={() => handleClickChangePassword("personal")}>
+          <Text type="H4">Change Password</Text>
+          <Icon icon="Arrow_Right" />
+        </PasswordWrapper>
+        <Divider />
+        <PasswordWrapper onClick={() => handleClickChangePassword("room")}>
+          <Text type="H4">Change Room Password</Text>
+          <Icon icon="Arrow_Right" />
+        </PasswordWrapper>
+      </PasswordContainer>
+      {/* <PasswordWrapper>
           <ControlledInput
             value={oldPassword}
             onChange={handleChangeOldPassword}
@@ -123,8 +135,7 @@ const Setting = () => {
             onChange={handleChangeNewPassword}
             placeholder="new password"
           />
-        </PasswordWrapper>
-      </PasswordContainer>
+        </PasswordWrapper> */}
 
       <AdjustHeight />
     </Container>
@@ -194,8 +205,12 @@ const PasswordContainer = styled.section`
 
 const PasswordWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Divider = styled.div`
+  border: 1px solid ${Colors.Gray50};
 `;
 
 const AdjustHeight = styled.div`

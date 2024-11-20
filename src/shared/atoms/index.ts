@@ -1,3 +1,4 @@
+import { UserData } from "@shared/types";
 import { atom } from "recoil";
 
 export const roomName = atom<string>({
@@ -18,4 +19,9 @@ export const userName = atom<string>({
 export const userPassword = atom<string>({
   default: "",
   key: "userPassword",
+});
+
+export const currentUser = atom<UserData[] | null>({
+  default: null,
+  key: "currentUser",
 });

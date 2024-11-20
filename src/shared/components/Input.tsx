@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { HTMLAttributes, useEffect, useState } from "react";
-import { Colors } from "styles";
+import { Colors, Shadow } from "styles";
 import Icon from "./Icon";
 
 interface ControlledInputProps
@@ -8,6 +8,8 @@ interface ControlledInputProps
   value?: string;
   maxLength?: number;
   inputType?: string;
+  disabled?: boolean;
+  isError?: boolean;
   onChange: (value: string) => void;
   placeholder: string;
 }
@@ -16,6 +18,8 @@ export const ControlledInput = ({
   value: initialValue,
   maxLength,
   inputType,
+  disabled,
+  isError,
   onChange,
   placeholder,
   ...props
@@ -28,9 +32,10 @@ export const ControlledInput = ({
   }, [value, onChange]);
 
   return (
-    <InputContainer>
+    <InputContainer isError={isError} disabled={disabled}>
       <SInput
         maxLength={maxLength}
+        disabled={disabled}
         type={inputType ? "text" : showPassword ? "text" : "password"}
         value={value}
         onChange={({ target: { value } }) => setValue(value)}
@@ -49,13 +54,30 @@ export const ControlledInput = ({
   );
 };
 
-const InputContainer = styled.div`
+const InputContainer = styled.div<{ isError?: boolean; disabled?: boolean }>`
   display: flex;
-  border: 1px solid ${Colors.Gray100};
   border-radius: 8px;
   padding: 10px 14px;
   justify-content: space-between;
   align-items: center;
+
+  ${({ disabled, isError }) => {
+    if (disabled) {
+      return `
+        border: 1px solid ${Colors.Gray200};
+        background-color: ${Colors.Gray50};
+        ${Shadow.Small};
+      `;
+    }
+    if (isError) {
+      return `
+        border: 1px solid ${Colors.State_Negative};
+      `;
+    }
+    return `
+      border: 1px solid ${Colors.Gray100};
+    `;
+  }}
 `;
 
 const SInput = styled.input`
