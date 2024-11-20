@@ -150,3 +150,7 @@ export interface UserBody {
   memberPassword: string;
   memberIcon: string;
 }
+
+export interface UserData extends UserBody {
+  memberId: number;
+}

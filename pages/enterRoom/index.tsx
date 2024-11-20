@@ -46,6 +46,7 @@ const CreateRoom = () => {
             Room Password
           </Text>
           <ControlledInput
+            maxLength={6}
             placeholder="Password"
             onChange={handleChangePassword}
           />

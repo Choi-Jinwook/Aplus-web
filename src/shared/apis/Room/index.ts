@@ -1,6 +1,6 @@
 import { QueryKey } from "@shared/queryKey";
-import { RoomBody, UserBody } from "@shared/types";
-import { useMutation } from "@tanstack/react-query";
+import { RoomBody, UserBody, UserData } from "@shared/types";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const usePostCreateRoom = () => {
@@ -36,5 +36,19 @@ export const usePostMember = () => {
     },
     mutationKey: [QueryKey.user.post],
     onSuccess: (data) => console.log(data),
+  });
+};
+
+export const useGetMember = (roomNumber: string) => {
+  return useQuery({
+    queryKey: [QueryKey.user.get],
+    queryFn: async () => {
+      const res = await axios.get<UserData[]>(
+        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/member`,
+      );
+
+      return res.data;
+    },
+    enabled: roomNumber !== "undefined",
   });
 };

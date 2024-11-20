@@ -6,6 +6,7 @@ import Icon from "./Icon";
 interface ControlledInputProps
   extends Omit<HTMLAttributes<HTMLInputElement>, "onChange"> {
   value?: string;
+  maxLength?: number;
   inputType?: string;
   onChange: (value: string) => void;
   placeholder: string;
@@ -13,6 +14,7 @@ interface ControlledInputProps
 
 export const ControlledInput = ({
   value: initialValue,
+  maxLength,
   inputType,
   onChange,
   placeholder,
@@ -28,6 +30,7 @@ export const ControlledInput = ({
   return (
     <InputContainer>
       <SInput
+        maxLength={maxLength}
         type={inputType ? "text" : showPassword ? "text" : "password"}
         value={value}
         onChange={({ target: { value } }) => setValue(value)}
@@ -50,7 +53,7 @@ const InputContainer = styled.div`
   display: flex;
   border: 1px solid ${Colors.Gray100};
   border-radius: 8px;
-  padding: 16px 12px;
+  padding: 10px 14px;
   justify-content: space-between;
   align-items: center;
 `;

@@ -1,16 +1,20 @@
 import styled from "@emotion/styled";
-import { roomName, roomPassword } from "@shared/atoms";
+import { usePostMember } from "@shared/apis";
 import { Button, ControlledInput, Text } from "@shared/components";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
 import { Colors } from "styles";
 
-const CreateRoom = () => {
-  const { push } = useRouter();
-  const [name, setName] = useRecoilState(roomName);
-  const [password, setPassword] = useRecoilState(roomPassword);
+const CreateUser = () => {
+  const {
+    push,
+    query: { roomId },
+  } = useRouter();
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
   const [validate, setValidate] = useState({ name: false, password: false });
+
+  const { mutateAsync: postUser } = usePostMember();
 
   const handleChangeName = useCallback((value: string) => {
     setName(value);
@@ -20,15 +24,30 @@ const CreateRoom = () => {
     setPassword(value);
   }, []);
 
-  const handleCreateRoom = () => {
-    if (validate.name && validate.password) push("/createRoom/makeProfile");
+  const handleCreateMember = async () => {
+    if (validate.name && validate.password) {
+      try {
+        const res = await postUser({
+          roomNumber: String(roomId),
+          data: {
+            memberName: name,
+            memberPassword: password,
+            memberIcon: "",
+          },
+        });
+        push(`/${res.roomId}/home`);
+      } catch (error) {
+        console.error("member failed", error);
+      }
+    }
   };
 
   useEffect(() => {
-    setValidate({
-      password: password.length >= 6,
+    setValidate((prev) => ({
+      ...prev,
+      password: password.length === 4,
       name: name.trim().length >= 2,
-    });
+    }));
   }, [name, password]);
 
   return (
@@ -36,29 +55,32 @@ const CreateRoom = () => {
       <InputContainer>
         <InputWrapper>
           <Text type="LabelBold" color={Colors.Gray700}>
-            Room Name
+            Name
           </Text>
           <ControlledInput
             inputType="text"
-            placeholder="Room Name"
+            placeholder="Member Name"
             onChange={handleChangeName}
           />
         </InputWrapper>
         <InputWrapper>
           <Text type="LabelBold" color={Colors.Gray700}>
-            Room Password
+            Password
           </Text>
           <ControlledInput
-            maxLength={6}
+            maxLength={4}
+            inputMode="numeric"
             placeholder="Password"
             onChange={handleChangePassword}
           />
-          <Text
-            type="Label"
-            color={validate.password ? Colors.Gray400 : Colors.State_Negative}
-          >
-            Room password should be 6 digits
-          </Text>
+          {!validate.password && (
+            <Text
+              type="Label"
+              color={validate.password ? Colors.Gray400 : Colors.State_Negative}
+            >
+              User password should be 4 digits
+            </Text>
+          )}
         </InputWrapper>
       </InputContainer>
 
@@ -74,7 +96,7 @@ const CreateRoom = () => {
               : Colors.Gray200
           }
           buttonSize="Normal"
-          onClick={handleCreateRoom}
+          onClick={handleCreateMember}
         >
           Create
         </Button>
@@ -83,7 +105,7 @@ const CreateRoom = () => {
   );
 };
 
-export default CreateRoom;
+export default CreateUser;
 
 const Container = styled.main`
   display: flex;
