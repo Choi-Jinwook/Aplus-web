@@ -92,7 +92,7 @@ const Home = () => {
 
   useEffect(() => {
     setHeight(window.innerHeight);
-  }, [window]);
+  }, []);
 
   return (
     <Container height={height}>
