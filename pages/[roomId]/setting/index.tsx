@@ -1,13 +1,9 @@
 import styled from "@emotion/styled";
-import {
-  ControlledInput,
-  Dropdown,
-  HomeSection,
-  Icon,
-  Text,
-} from "@shared/components";
+import { deviceHeight } from "@shared/atoms";
+import { Dropdown, HomeSection, Icon, Text } from "@shared/components";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
 import { Colors } from "styles";
 
 const Setting = () => {
@@ -21,6 +17,7 @@ const Setting = () => {
     { name: "Jinwook", auth: "Member" },
     { name: "Sooyoung", auth: "Member" },
   ]);
+  const height = useRecoilValue(deviceHeight);
 
   const handleRoleChange = (name: string, newRole: string) => {
     console.log(newRole);
@@ -44,7 +41,7 @@ const Setting = () => {
   };
 
   return (
-    <Container>
+    <Container height={height}>
       <AlertContainer>
         <HomeSection>
           <Text type="BodyBold">Foods</Text>
@@ -144,11 +141,12 @@ const Setting = () => {
 
 export default Setting;
 
-const Container = styled.main`
+const Container = styled.main<{ height: number | null }>`
   display: flex;
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${({ height }) => height && `${height - 108}px`};
   top: 48px;
   padding: 12px 0;
   gap: 20px;

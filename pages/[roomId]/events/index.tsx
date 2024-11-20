@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
 import { useGetEvents } from "@shared/apis/Events";
+import { deviceHeight } from "@shared/atoms";
 import { Chip, Icon, Text } from "@shared/components";
 import { getMonth } from "@shared/utils";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { useRecoilValue } from "recoil";
 import { Colors } from "styles";
 
 const Event = () => {
@@ -13,6 +15,8 @@ const Event = () => {
 
   const containerRef = useRef<HTMLElement | null>(null);
   const [showScroll2Top, setShowScroll2Top] = useState(false);
+  const height = useRecoilValue(deviceHeight);
+
   const { data: eventData } = useGetEvents(String(roomId));
 
   const handleScroll2TopView = () => {
@@ -44,7 +48,7 @@ const Event = () => {
   }, []);
 
   return (
-    <Container ref={containerRef}>
+    <Container height={height} ref={containerRef}>
       <ScrollTopContainer isShown={showScroll2Top}>
         <Icon icon="Chevron_Up" color={Colors.Gray400} />
         <Text type="LabelLight" color={Colors.Gray400}>
@@ -90,11 +94,12 @@ const Event = () => {
 
 export default Event;
 
-const Container = styled.main`
+const Container = styled.main<{ height: number | null }>`
   display: flex;
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${({ height }) => height && `${height - 108}px`};
   top: 48px;
   gap: 8px;
   background-color: ${Colors.Gray50};

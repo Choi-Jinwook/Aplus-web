@@ -25,3 +25,8 @@ export const currentUser = atom<UserData[] | null>({
   default: null,
   key: "currentUser",
 });
+
+export const deviceHeight = atom<number | null>({
+  default: null,
+  key: "deviceHeight",
+});

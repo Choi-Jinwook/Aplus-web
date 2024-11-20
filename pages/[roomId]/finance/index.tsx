@@ -6,10 +6,12 @@ import {
   usePostSavingGoal,
   usePutSavingGoal,
 } from "@shared/apis";
+import { deviceHeight } from "@shared/atoms";
 import { Button, CheckBox, Chip, Icon, Text } from "@shared/components";
 import { getMonth } from "@shared/utils";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
 import { Colors, Shadow } from "styles";
 
 const Finance = () => {
@@ -20,6 +22,8 @@ const Finance = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [YYMM, setYYMM] = useState({ year: 2024, month: 11 });
+  const height = useRecoilValue(deviceHeight);
+
   const { data: financeInfo } = useGetFinanceInfo(String(roomId), "2024", "11");
   const { data: financeHistory } = useGetFinanceHistory(
     String(roomId),
@@ -42,7 +46,7 @@ const Finance = () => {
   };
 
   return (
-    <Container>
+    <Container height={height}>
       {financeInfo && (
         <>
           <CashFlowContainer>
@@ -301,8 +305,6 @@ const Finance = () => {
               </PlansContainer>
             </PlanWrapper>
           </PlanContainer>
-
-          <AdjustHeight />
         </>
       )}
     </Container>
@@ -311,11 +313,12 @@ const Finance = () => {
 
 export default Finance;
 
-const Container = styled.main`
+const Container = styled.main<{ height: number | null }>`
   display: flex;
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${({ height }) => height && `${height - 108}px`};
   top: 48px;
   background-color: ${Colors.Gray50};
   gap: 21px;
@@ -519,8 +522,4 @@ const DepositCheck = styled.div`
 const DepositDesc = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const AdjustHeight = styled.div`
-  height: 52px;
 `;

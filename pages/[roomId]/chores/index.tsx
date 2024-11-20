@@ -1,15 +1,18 @@
 import styled from "@emotion/styled";
 import { useGetChores } from "@shared/apis/Chores";
+import { deviceHeight } from "@shared/atoms";
 import { Button, Chip, Icon, Text } from "@shared/components";
 import { ChoresBody, IconType } from "@shared/types";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useRecoilValue } from "recoil";
 import { Colors, Shadow } from "styles";
 
 const Chore = () => {
   const {
     query: { roomId },
   } = useRouter();
+
+  const height = useRecoilValue(deviceHeight);
 
   const { data: choreData } = useGetChores(String(roomId));
 
@@ -22,10 +25,9 @@ const Chore = () => {
       return members;
     }
   };
-  console.log(choreData);
 
   return (
-    <Container>
+    <Container height={height}>
       <TodoSection>
         <Text type="BodyBold" color={Colors.Black}>
           Chores to do
@@ -102,19 +104,18 @@ const Chore = () => {
           Assign Random Roles
         </Button>
       </RolesContainer>
-
-      {/* <AdjustHeight /> */}
     </Container>
   );
 };
 
 export default Chore;
 
-const Container = styled.main`
+const Container = styled.main<{ height: number | null }>`
   display: flex;
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${({ height }) => height && `${height - 108}px`};
   top: 48px;
   gap: 8px;
   background-color: ${Colors.Gray50};
@@ -211,8 +212,4 @@ const Inner = styled.div`
   padding: 11px 0px;
   gap: 10px;
   justify-content: space-between;
-`;
-
-const AdjustHeight = styled.div`
-  height: 52px;
 `;

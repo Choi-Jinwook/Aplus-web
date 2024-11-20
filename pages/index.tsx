@@ -1,11 +1,15 @@
 import styled from "@emotion/styled";
+import { deviceHeight } from "@shared/atoms";
 import { Button, Text } from "@shared/components";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
 import { Colors } from "styles";
 
 const Home: NextPage = () => {
   const { push } = useRouter();
+  const [, setHeight] = useRecoilState(deviceHeight);
 
   const handleClick = (type: string) => {
     switch (type) {
@@ -17,6 +21,10 @@ const Home: NextPage = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    setHeight(window.innerHeight);
+  }, []);
 
   return (
     <Container>
@@ -64,7 +72,7 @@ const TextContainer = styled.section`
   display: flex;
   position: relative;
   flex-direction: column;
-  top: 200px;
+  top: 150px;
   margin: 0 17px;
   gap: 16px;
 `;
@@ -78,7 +86,7 @@ const ButtonContainer = styled.section`
   display: flex;
   position: relative;
   flex-direction: column;
-  top: 400px;
+  top: 350px;
   margin: 0 12px;
   gap: 12px;
 `;

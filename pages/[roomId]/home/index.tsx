@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
+import { deviceHeight } from "@shared/atoms";
 import { Badge, Card, Chip, HomeSection, Icon, Text } from "@shared/components";
 import { IconType } from "@shared/types";
 import { calculateRemainDay } from "@shared/utils";
 import { useRouter } from "next/router";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { useRecoilState } from "recoil";
 import { Colors } from "styles";
 
 const Home = () => {
@@ -14,6 +16,8 @@ const Home = () => {
   const {
     query: { roomId },
   } = useRouter();
+
+  const [height, setHeight] = useRecoilState(deviceHeight);
 
   const foodData = [
     { name: "Yogurt", owner: ["Mike"], expire: "2024-11-08" },
@@ -86,8 +90,12 @@ const Home = () => {
     },
   ];
 
+  useEffect(() => {
+    setHeight(window.innerHeight);
+  }, [window]);
+
   return (
-    <Container>
+    <Container height={height}>
       <HomeSection>
         <Text type="H4" color={Colors.Black}>
           Foods
@@ -263,11 +271,12 @@ const Home = () => {
 
 export default Home;
 
-const Container = styled.main`
+const Container = styled.main<{ height: number | null }>`
   display: flex;
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${({ height }) => height && `${height - 108}px`};
   top: 48px;
   padding: 12px 0;
   gap: 8px;
