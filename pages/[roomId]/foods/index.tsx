@@ -30,7 +30,6 @@ const Food = () => {
 
   const [sort, setSort] = useState("Purchased Date");
   const [isOpenSort, setIsOpenSort] = useState(false);
-  const [roomNumber, setRoomNumber] = useState<string | null>(null);
   const [foods, setFoods] = useState<Foods>();
   const [soon, setSoon] = useState<FoodsBody[] | null>(null);
   const { data: foodData } = useGetFoods(String(roomId));
@@ -66,145 +65,195 @@ const Food = () => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("roomNum")) {
-      setRoomNumber(localStorage.getItem("roomNum"));
-    }
-  }, []);
-
-  useEffect(() => {
     if (foodData) setFoods(foodData);
     getSoonExpiredFoods(handleSoon, foodData);
   }, [foodData]);
 
   return (
-    <Container>
-      <CardContainer>
-        {soon &&
-          soon.map(
-            ({
-              foodId,
-              foodName,
-              expirationDate,
-              quantity,
-              amount,
-              memberName,
-            }) => {
-              const { day } = calculateRemainDay(expirationDate, DAY_ALERT);
+    <>
+      {foods &&
+      !Object.values(foods).every(
+        (array) => Array.isArray(array) && array.length === 0,
+      ) ? (
+        <Container>
+          <CardContainer>
+            {soon &&
+              soon.map(
+                ({
+                  foodId,
+                  foodName,
+                  expirationDate,
+                  quantity,
+                  amount,
+                  memberName,
+                }) => {
+                  const { day } = calculateRemainDay(expirationDate, DAY_ALERT);
 
-              return (
-                <FoodCard
-                  key={foodId}
-                  owner={[memberName]}
-                  name={foodName}
-                  expire={day}
-                  amount={amount}
-                  quantity={quantity}
-                />
-              );
-            },
-          )}
-      </CardContainer>
+                  return (
+                    <FoodCard
+                      key={foodId}
+                      owner={[memberName]}
+                      name={foodName}
+                      expire={day}
+                      amount={amount}
+                      quantity={quantity}
+                    />
+                  );
+                },
+              )}
+          </CardContainer>
 
-      <FoodArea>
-        <Sort onClick={handleClickSort}>
-          <Text type="LabelLight" color={Colors.Gray500}>
-            {`Sorted by: ${sort}`}
-          </Text>
-          <Icon icon="TriangleDown" />
-        </Sort>
+          {foods &&
+            !Object.values(foods).every(
+              (array) => Array.isArray(array) && array.length === 0,
+            ) && (
+              <FoodArea>
+                <Sort onClick={handleClickSort}>
+                  <Text type="LabelLight" color={Colors.Gray500}>
+                    {`Sorted by: ${sort}`}
+                  </Text>
+                  <Icon icon="TriangleDown" />
+                </Sort>
 
-        <FoodAreaWrapper>
-          {categories.map((_category) => (
-            <CategoryContainer key={_category}>
-              <Text type="Label">{`${upperFirstLetter(_category)} Foods`}</Text>
-              <FoodInfoContainer>
-                {foods &&
-                  foods[_category].map(
-                    (
-                      { foodName, createAt, memberName, quantity, amount },
-                      index,
-                    ) => {
-                      return (
-                        <FoodInfoWrapper
-                          key={foodName + memberName + index}
-                          index={index}
-                        >
-                          <Icon icon="Like_Button" color={Colors.Gray200} />
-                          <FoodInfo>
-                            <NamdDate>
-                              <Text type="BodyBold">{foodName}</Text>
-                              <Text type="LabelLight" color={Colors.Gray400}>
-                                {`Purchased at ${createAt}`}
-                              </Text>
-                            </NamdDate>
-                            <OwnerRemain>
-                              <Owner>
-                                <Badge
-                                  color={
-                                    memberName === "All"
-                                      ? Colors.White
-                                      : Colors.Orange200
-                                  }
-                                  backgroundColor={
-                                    memberName === "All"
-                                      ? Colors.Orange200
-                                      : Colors.Orange50
-                                  }
-                                >
-                                  {memberName}
-                                </Badge>
-                              </Owner>
-                              {amount && !quantity ? (
-                                <Slider
-                                  value={String(amount)}
-                                  index={index}
-                                  storageType={_category}
-                                  onChange={(_category, _index, _amount) =>
-                                    handleChangeFoodAmount(
-                                      _category,
-                                      _index,
-                                      _amount,
-                                    )
-                                  }
+                <FoodAreaWrapper>
+                  {categories.map((_category) => (
+                    <CategoryContainer key={_category}>
+                      <Text type="Label">{`${upperFirstLetter(
+                        _category,
+                      )} Foods`}</Text>
+                      <FoodInfoContainer>
+                        {foods[_category].map(
+                          (
+                            {
+                              foodName,
+                              createAt,
+                              memberName,
+                              quantity,
+                              amount,
+                            },
+                            index,
+                          ) => {
+                            return (
+                              <FoodInfoWrapper
+                                key={foodName + memberName + index}
+                                index={index}
+                              >
+                                <Icon
+                                  icon="Like_Button"
+                                  color={Colors.Gray200}
                                 />
-                              ) : (
-                                <RemainContainer>
-                                  <Text type="Label" color={Colors.Gray500}>
-                                    remaining
-                                  </Text>
-                                  <RemainCount>
-                                    <Text type="BodyBold">{quantity}</Text>
-                                  </RemainCount>
-                                </RemainContainer>
-                              )}
-                            </OwnerRemain>
-                          </FoodInfo>
-                        </FoodInfoWrapper>
-                      );
-                    },
-                  )}
-              </FoodInfoContainer>
-            </CategoryContainer>
-          ))}
-        </FoodAreaWrapper>
-      </FoodArea>
+                                <FoodInfo>
+                                  <NamdDate>
+                                    <Text type="BodyBold">{foodName}</Text>
+                                    <Text
+                                      type="LabelLight"
+                                      color={Colors.Gray400}
+                                    >
+                                      {`Purchased at ${createAt}`}
+                                    </Text>
+                                  </NamdDate>
+                                  <OwnerRemain>
+                                    <Owner>
+                                      <Badge
+                                        color={
+                                          memberName === "All"
+                                            ? Colors.White
+                                            : Colors.Orange200
+                                        }
+                                        backgroundColor={
+                                          memberName === "All"
+                                            ? Colors.Orange200
+                                            : Colors.Orange50
+                                        }
+                                      >
+                                        {memberName}
+                                      </Badge>
+                                    </Owner>
+                                    {amount && !quantity ? (
+                                      <Slider
+                                        value={String(amount)}
+                                        index={index}
+                                        storageType={_category}
+                                        onChange={(
+                                          _category,
+                                          _index,
+                                          _amount,
+                                        ) =>
+                                          handleChangeFoodAmount(
+                                            _category,
+                                            _index,
+                                            _amount,
+                                          )
+                                        }
+                                      />
+                                    ) : (
+                                      <RemainContainer>
+                                        <Text
+                                          type="Label"
+                                          color={Colors.Gray500}
+                                        >
+                                          remaining
+                                        </Text>
+                                        <RemainCount>
+                                          <Text type="BodyBold">
+                                            {quantity}
+                                          </Text>
+                                        </RemainCount>
+                                      </RemainContainer>
+                                    )}
+                                  </OwnerRemain>
+                                </FoodInfo>
+                              </FoodInfoWrapper>
+                            );
+                          },
+                        )}
+                      </FoodInfoContainer>
+                    </CategoryContainer>
+                  ))}
+                </FoodAreaWrapper>
+              </FoodArea>
+            )}
 
-      <AddNewButton onClick={() => alert("add New")}>
-        <Icon icon="Plus_Button" color={Colors.White} size={32} />
-      </AddNewButton>
+          <AddNewButton onClick={() => alert("add New")}>
+            <Icon icon="Plus_Button" color={Colors.White} size={32} />
+          </AddNewButton>
+        </Container>
+      ) : (
+        <Empty>
+          <Text type="Body" color={Colors.Gray500}>
+            Your food list is empty!
+          </Text>
+          <Text type="Body" color={Colors.Gray500}>
+            {`Add items and manage them with HOUSIT :)`}
+          </Text>
 
-      <AdjustHeight />
-    </Container>
+          <AddNewButton onClick={() => alert("add New")}>
+            <Icon icon="Plus_Button" color={Colors.White} size={32} />
+          </AddNewButton>
+        </Empty>
+      )}
+    </>
   );
 };
 
 export default Food;
+
+const Empty = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: ${window.innerHeight}px;
+  background-color: ${Colors.Gray50};
+  justify-content: center;
+  align-items: center;
+`;
 
 const Container = styled.main`
   display: flex;
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${window.innerHeight - 108}px;
   top: 48px;
   padding: 12px 0;
   gap: 20px;
@@ -323,8 +372,4 @@ const AddNewButton = styled.div`
   align-items: center;
   ${Shadow.Medium};
   z-index: 9999;
-`;
-
-const AdjustHeight = styled.div`
-  height: 52px;
 `;

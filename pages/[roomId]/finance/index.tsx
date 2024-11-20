@@ -301,8 +301,6 @@ const Finance = () => {
               </PlansContainer>
             </PlanWrapper>
           </PlanContainer>
-
-          <AdjustHeight />
         </>
       )}
     </Container>
@@ -316,8 +314,10 @@ const Container = styled.main`
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${window.innerHeight - 108}px;
   top: 48px;
   background-color: ${Colors.Gray50};
+  padding-bottom: 20px;
   gap: 21px;
   overflow-y: auto;
 `;
@@ -519,8 +519,4 @@ const DepositCheck = styled.div`
 const DepositDesc = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const AdjustHeight = styled.div`
-  height: 52px;
 `;

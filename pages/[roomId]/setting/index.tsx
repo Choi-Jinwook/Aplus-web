@@ -136,8 +136,6 @@ const Setting = () => {
             placeholder="new password"
           />
         </PasswordWrapper> */}
-
-      <AdjustHeight />
     </Container>
   );
 };
@@ -149,6 +147,7 @@ const Container = styled.main`
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${window.innerHeight - 108}px;
   top: 48px;
   padding: 12px 0;
   gap: 20px;
@@ -211,8 +210,4 @@ const PasswordWrapper = styled.div`
 
 const Divider = styled.div`
   border: 1px solid ${Colors.Gray50};
-`;
-
-const AdjustHeight = styled.div`
-  height: 52px;
 `;
