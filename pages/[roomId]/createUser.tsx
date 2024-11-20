@@ -45,7 +45,7 @@ const CreateUser = () => {
   useEffect(() => {
     setValidate((prev) => ({
       ...prev,
-      password: password.length === 4,
+      password: password.length === 4 || password === "",
       name: name.trim().length >= 2,
     }));
   }, [name, password]);
@@ -70,7 +70,7 @@ const CreateUser = () => {
           <ControlledInput
             maxLength={4}
             inputMode="numeric"
-            placeholder="Password"
+            placeholder="Don't have to make your password"
             onChange={handleChangePassword}
           />
           {!validate.password && (
