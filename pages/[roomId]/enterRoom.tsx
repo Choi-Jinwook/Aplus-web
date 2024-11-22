@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-import { useGetMember } from "@shared/apis";
-import { currentUser } from "@shared/atoms";
+import { currentUser, roomMembers } from "@shared/atoms";
 import { Button, ControlledInput, Text } from "@shared/components";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -9,22 +8,21 @@ import { Colors } from "styles";
 
 const EnterRoom = () => {
   const {
-    query: { member, roomId, memberId: id, roomPassword },
+    query: { roomId, member: memberName, memberId: id },
     push,
   } = useRouter();
+
   const [password, setPassword] = useState("");
   const [isError, setIsError] = useState(false);
   const [user, setUser] = useRecoilState(currentUser);
-
-  const { data } = useGetMember(String(roomId), {
-    roomPassword: String(roomPassword),
-  });
+  const [member, setMember] = useRecoilState(roomMembers);
 
   const handleChangePassword = (value: string) => {
     setPassword(value);
   };
 
   const handleClick = async () => {
+    // TODO: Backend Error
     if (user && user[0].memberPassword === password) {
       push(`/${roomId}/home`);
       return;
@@ -34,11 +32,11 @@ const EnterRoom = () => {
   };
 
   useEffect(() => {
-    if (data) {
-      const user = data.filter(({ memberId }) => memberId === Number(id));
+    if (member) {
+      const user = member.filter(({ memberId }) => memberId === Number(id));
       setUser(user);
     }
-  }, [data]);
+  }, [member, id]);
 
   useEffect(() => {
     if (isError) setIsError(false);
@@ -47,7 +45,7 @@ const EnterRoom = () => {
   return (
     <Container>
       <TitleContainer>
-        <Text type="H2">{`Hi, ${member}!`}</Text>
+        <Text type="H2">{`Hi, ${memberName}!`}</Text>
         <Text type="H4">Enter your password to continue</Text>
       </TitleContainer>
 
@@ -97,7 +95,7 @@ const Container = styled.main`
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 120px 17px;
+  padding: 40px 17px;
   gap: 16px;
 `;
 

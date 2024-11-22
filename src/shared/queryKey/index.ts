@@ -1,5 +1,5 @@
 export const QueryKey = {
-  food: "Food",
+  food: { get: "foodGet", post: "foodPost", put: "foodPut" },
   home: "Home",
   chore: "Chore",
   finance: {
@@ -23,6 +23,6 @@ export const QueryKey = {
     eg: "getExpense",
   },
   event: { get: "eventGet", post: "eventPost" },
-  room: { get: "roomGet", post: "roomPost" },
+  room: { get: "roomGet", post: "roomPost", roomId: "getRoomId" },
   user: { get: "userGet", post: "userPost", put: "userPut" },
 };

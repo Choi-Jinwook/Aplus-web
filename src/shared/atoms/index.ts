@@ -1,4 +1,4 @@
-import { UserData } from "@shared/types";
+import { FoodsBody, UserData } from "@shared/types";
 import { atom } from "recoil";
 
 export const roomName = atom<string>({
@@ -29,4 +29,14 @@ export const currentUser = atom<UserData[] | null>({
 export const deviceHeight = atom<number | null>({
   default: null,
   key: "deviceHeight",
+});
+
+export const currentChangeFood = atom<FoodsBody | null>({
+  default: null,
+  key: "currentChangeFood",
+});
+
+export const roomMembers = atom<UserData[] | null>({
+  default: null,
+  key: "roomMembers",
 });

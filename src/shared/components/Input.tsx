@@ -10,6 +10,8 @@ interface ControlledInputProps
   inputType?: string;
   disabled?: boolean;
   isError?: boolean;
+  showOutline?: boolean;
+  shaded?: boolean;
   onChange: (value: string) => void;
   placeholder: string;
 }
@@ -20,6 +22,8 @@ export const ControlledInput = ({
   inputType,
   disabled,
   isError,
+  showOutline,
+  shaded,
   onChange,
   placeholder,
   ...props
@@ -32,8 +36,14 @@ export const ControlledInput = ({
   }, [value, onChange]);
 
   return (
-    <InputContainer isError={isError} disabled={disabled}>
+    <InputContainer
+      isError={isError}
+      disabled={disabled}
+      showOutline={showOutline}
+      shaded={shaded}
+    >
       <SInput
+        shaded={shaded}
         maxLength={maxLength}
         disabled={disabled}
         type={inputType ? "text" : showPassword ? "text" : "password"}
@@ -54,33 +64,40 @@ export const ControlledInput = ({
   );
 };
 
-const InputContainer = styled.div<{ isError?: boolean; disabled?: boolean }>`
+const InputContainer = styled.div<{
+  isError?: boolean;
+  disabled?: boolean;
+  showOutline?: boolean;
+  shaded?: boolean;
+}>`
   display: flex;
   border-radius: 8px;
   padding: 10px 14px;
   justify-content: space-between;
   align-items: center;
 
-  ${({ disabled, isError }) => {
+  ${({ shaded }) => shaded && `background-color: ${Colors.Gray50};`}
+
+  ${({ disabled, isError, showOutline }) => {
     if (disabled) {
       return `
-        border: 1px solid ${Colors.Gray200};
+        border: ${showOutline ? "none" : `1px solid ${Colors.Gray200}`} ;
         background-color: ${Colors.Gray50};
         ${Shadow.Small};
       `;
     }
     if (isError) {
       return `
-        border: 1px solid ${Colors.State_Negative};
+        border: ${showOutline ? "none" : `1px solid ${Colors.State_Negative}`};
       `;
     }
     return `
-      border: 1px solid ${Colors.Gray100};
+      border: ${showOutline ? "none" : `1px solid ${Colors.Gray100}`};
     `;
   }}
 `;
 
-const SInput = styled.input`
+const SInput = styled.input<{ shaded?: boolean }>`
   width: 100%;
   border: none;
   font-size: 16px;
@@ -89,6 +106,8 @@ const SInput = styled.input`
   letter-spacing: -0.01em;
   padding: 3px 0;
   outline: none;
+
+  ${({ shaded }) => shaded && `background-color: ${Colors.Gray50};`}
 `;
 
 const IconContainer = styled.div`

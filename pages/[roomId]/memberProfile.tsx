@@ -1,20 +1,20 @@
 import styled from "@emotion/styled";
-import { useGetMember } from "@shared/apis";
+import { roomMembers } from "@shared/atoms";
 import { Icon, Text } from "@shared/components";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
 import { Colors } from "styles";
 
 const MemberProfile = () => {
   const {
     push,
-    query: { roomId, roomPassword },
+    query: { roomId },
   } = useRouter();
-  const { data } = useGetMember(String(roomId), {
-    roomPassword: String("123456"),
-  });
 
-  const handleClickMember = (member: string, memberId: string) => {
-    push(`/${roomId}/enterRoom?member=${member}&memberId=${memberId}`);
+  const [member, setMember] = useRecoilState(roomMembers);
+
+  const handleClickMember = (value: string, memberId: number) => {
+    push(`/${roomId}/enterRoom?member=${value}&memberId=${memberId}`);
   };
 
   const handleClickNew = () => {
@@ -32,13 +32,13 @@ const MemberProfile = () => {
       </TextContainer>
 
       <CardContainer>
-        {data &&
-          data.map(({ memberId, memberName, memberIcon }, index) => {
+        {member &&
+          member.map(({ memberId, memberName, memberIcon }, index) => {
             return (
               <CardWrapper
                 index={index}
                 key={memberId}
-                onClick={handleClickNew}
+                onClick={() => handleClickMember(memberName, memberId)}
               >
                 <Text type="Body" color={Colors.Black}>
                   {memberName}
@@ -46,8 +46,8 @@ const MemberProfile = () => {
               </CardWrapper>
             );
           })}
-        {data && (
-          <CardWrapper index={data.length} isAddNew onClick={handleClickNew}>
+        {member && (
+          <CardWrapper index={member.length} isAddNew onClick={handleClickNew}>
             <Icon icon="Plus_Button" color={Colors.White} />
             <Text type="Body" color={Colors.White}>
               Create New

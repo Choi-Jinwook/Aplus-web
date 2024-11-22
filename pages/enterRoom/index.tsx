@@ -1,7 +1,10 @@
 import styled from "@emotion/styled";
+import { useGetMember, useGetRoomId } from "@shared/apis";
+import { roomMembers } from "@shared/atoms";
 import { Button, ControlledInput, Text } from "@shared/components";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import { Colors } from "styles";
 
 const EnterRoomFromMain = () => {
@@ -10,6 +13,10 @@ const EnterRoomFromMain = () => {
   const [password, setPassword] = useState("");
   const [alert, setAlert] = useState(false);
   const [validate, setValidate] = useState({ name: false, password: false });
+  const [, setMember] = useRecoilState(roomMembers);
+
+  const { mutateAsync: getMember } = useGetMember();
+  const { mutateAsync: getRoomId, isPending, isSuccess } = useGetRoomId();
 
   const handleChangeName = (value: string) => {
     setName(value);
@@ -19,8 +26,24 @@ const EnterRoomFromMain = () => {
     setPassword(value);
   };
 
-  const handleClick = () => {
-    // api call
+  const handleClick = async () => {
+    if (!validate.name || !validate.password) return;
+    if (isPending || isSuccess) return;
+
+    const res = await getRoomId(name);
+
+    const member = await getMember({
+      roomNumber: String(res),
+      roomPassword: password,
+    });
+
+    if (member.status === 403) {
+      setAlert(true);
+      return;
+    }
+
+    setMember(member.data);
+    push(`/${res}/memberProfile`);
   };
 
   useEffect(() => {

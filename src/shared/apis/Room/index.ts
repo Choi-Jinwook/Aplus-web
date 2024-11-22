@@ -62,20 +62,38 @@ export const usePutMember = () => {
   });
 };
 
-export const useGetMember = (
-  roomNumber: string,
-  data: { roomPassword: string },
-) => {
-  return useQuery({
-    queryKey: [QueryKey.user.get],
-    queryFn: async () => {
+export const useGetMember = () => {
+  return useMutation({
+    mutationKey: [QueryKey.user.get],
+    mutationFn: async ({
+      roomNumber,
+      roomPassword,
+    }: {
+      roomNumber: string;
+      roomPassword: string;
+    }) => {
       const res = await axios.post<UserData[]>(
         `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/join`,
-        data,
+        { roomPassword: roomPassword },
+      );
+
+      return res;
+    },
+    onSuccess: (data) => console.log(data),
+  });
+};
+
+export const useGetRoomId = () => {
+  return useMutation({
+    mutationKey: [QueryKey.room.roomId],
+    mutationFn: async (roomName: string) => {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/room/roomId`,
+        { roomName: roomName },
       );
 
       return res.data;
     },
-    enabled: roomNumber !== "undefined",
+    onSuccess: (data) => console.log(data),
   });
 };
