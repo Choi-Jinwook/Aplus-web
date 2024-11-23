@@ -1,319 +1,380 @@
 import styled from "@emotion/styled";
-import {
-  useGetFinanceHistory,
-  useGetFinanceInfo,
-  usePostFinanceAccount,
-  usePostSavingGoal,
-  usePutSavingGoal,
-} from "@shared/apis";
+import { useGetFinanceInfo } from "@shared/apis";
 import { deviceHeight } from "@shared/atoms";
 import { Button, CheckBox, Chip, Icon, Text } from "@shared/components";
-import { getMonth } from "@shared/utils";
+import {
+  AccountAddModal,
+  BudgetPlanModal,
+} from "@shared/components/ModalContent";
+import { getExpense } from "@shared/utils";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { Colors, Shadow } from "styles";
 
 const Finance = () => {
+  const today = new Date();
+
   const {
     query: { roomId },
+    push,
   } = useRouter();
 
   const [isChecked, setIsChecked] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [YYMM, setYYMM] = useState({ year: 2024, month: 11 });
+  const [YYMM, setYYMM] = useState({ year: 0, month: 0 });
+  const [expected, setExpected] = useState({
+    income: 0,
+    expense: 0,
+    saving: 0,
+  });
+  const [showAccountModal, setShowAccountModal] = useState(false);
+  const [showBudgetPlanModal, setShowBudgetPlanModal] = useState(false);
   const height = useRecoilValue(deviceHeight);
 
-  const { data: financeInfo } = useGetFinanceInfo(String(roomId), "2024", "11");
-  const { data: financeHistory } = useGetFinanceHistory(
+  const { data: financeInfo, refetch: infoRefetch } = useGetFinanceInfo(
     String(roomId),
-    "1",
-    "2024",
-    "11",
+    String(YYMM.year),
+    String(YYMM.month),
   );
-  const { mutate: postFinanceAccount } = usePostFinanceAccount();
-  const { mutate: postSavingGoal } = usePostSavingGoal();
-  const { mutate: putSavingGoal } = usePutSavingGoal();
 
-  const handleAddChangeClick = () => {};
+  const handleClickRoute = (type: string) => {
+    push(`/${roomId}/finance/${type}`);
+  };
 
-  const handleDropdownClick = () => {
-    setIsOpen((prev) => !prev);
+  const handleAddTransactionClick = () => {};
+
+  const handleAccountModal = () => {
+    setShowAccountModal((prev) => !prev);
+  };
+
+  const handleBudgetPlanModal = () => {
+    setShowBudgetPlanModal((prev) => !prev);
   };
 
   const handleChange = () => {
     setIsChecked((prev) => !prev);
   };
 
-  return (
-    <Container height={height}>
-      {financeInfo && (
-        <>
-          <CashFlowContainer>
-            <Text type="BodyBold" color={Colors.Gray600}>
-              Financial Transaction
-            </Text>
-            <ChangeContainer>
-              <CurrentCash>
-                <CurrentCashCard>
-                  <CurrentCashCardTitle>
-                    <Text type="LabelBold" color={Colors.Gray500}>
-                      Expense
-                    </Text>
-                    <Text type="H4">{`${financeInfo.expense.toLocaleString()}₩`}</Text>
-                  </CurrentCashCardTitle>
-                </CurrentCashCard>
-                <CurrentCashCard>
-                  <CurrentCashCardTitle>
-                    <Text type="LabelBold" color={Colors.Gray500}>
-                      Income
-                    </Text>
-                    <Text type="H4">{`${financeInfo.income.toLocaleString()}₩`}</Text>
-                  </CurrentCashCardTitle>
-                </CurrentCashCard>
-              </CurrentCash>
-              <Button buttonColor={Colors.Orange200}>Add Change</Button>
-            </ChangeContainer>
-          </CashFlowContainer>
+  useEffect(() => {
+    setYYMM({ year: today.getFullYear(), month: today.getMonth() + 1 });
+  }, []);
 
-          <BalanceContainer>
-            <BalanceWrapper>
-              <Text type="BodyBold" color={Colors.Gray600}>
-                Account Balances
+  useEffect(() => {
+    if (financeInfo) {
+      const expectedIncome = getExpense(financeInfo.predictedIncomes);
+      const expectedExpense = getExpense(financeInfo.predictedExpenses);
+      const expectedSaving = getExpense(financeInfo.savingGoals);
+
+      setExpected({
+        income: expectedIncome,
+        expense: expectedExpense,
+        saving: expectedSaving,
+      });
+    }
+  }, [financeInfo]);
+
+  return (
+    <Container height={height} isOpen={showAccountModal || showBudgetPlanModal}>
+      {showAccountModal && (
+        <AccountAddModal
+          handleAccountModal={handleAccountModal}
+          infoRefetch={infoRefetch}
+        />
+      )}
+
+      {showBudgetPlanModal && (
+        <BudgetPlanModal
+          handleBudgetPlanModal={handleBudgetPlanModal}
+          infoRefetch={infoRefetch}
+        />
+      )}
+
+      <CashFlowContainer>
+        <Text type="BodyBold" color={Colors.Gray600}>
+          Financial Transaction
+        </Text>
+        <ChangeContainer>
+          <CurrentCash>
+            <CurrentCashCard onClick={() => handleClickRoute("income")}>
+              <CurrentCashCardTitle>
+                <Text type="LabelBold" color={Colors.Gray500}>
+                  Income
+                </Text>
+                <Text type="H4">{`${financeInfo?.income.toLocaleString()}₩`}</Text>
+              </CurrentCashCardTitle>
+            </CurrentCashCard>
+            <CurrentCashCard onClick={() => handleClickRoute("expense")}>
+              <CurrentCashCardTitle>
+                <Text type="LabelBold" color={Colors.Gray500}>
+                  Expense
+                </Text>
+                <Text type="H4">{`${financeInfo?.expense.toLocaleString()}₩`}</Text>
+              </CurrentCashCardTitle>
+            </CurrentCashCard>
+          </CurrentCash>
+          <Button
+            buttonColor={Colors.Orange200}
+            onClick={handleAddTransactionClick}
+          >
+            Add Transaction
+          </Button>
+        </ChangeContainer>
+      </CashFlowContainer>
+
+      <BalanceContainer>
+        <BalanceWrapper>
+          <BalanceTitle>
+            <Text type="BodyBold" color={Colors.Gray600}>
+              Account Balances
+            </Text>
+            <AddNewAccount onClick={handleAccountModal}>
+              <Text type="LabelLight" color={Colors.Gray400}>
+                Add Account
               </Text>
-              <AccountContainer>
-                {financeInfo.accounts.map(
-                  ({ accountId, accountName, balance, color }, index) => {
+            </AddNewAccount>
+          </BalanceTitle>
+          <AccountContainer>
+            {financeInfo?.accounts.length !== 0 ? (
+              financeInfo?.accounts.map(
+                ({ accountId, accountName, balance, color }, index) => {
+                  return (
+                    <AccountWrapper
+                      key={accountId + accountName}
+                      index={index}
+                      onClick={() =>
+                        handleClickRoute(`balance?accountId=${accountId}`)
+                      }
+                    >
+                      <Account>
+                        <IconContainer>
+                          <Icon icon="Icon_Money" />
+                        </IconContainer>
+                        <AccountDesc>
+                          <RemainMoney>
+                            <Text type="BodyBold">{`${balance.toLocaleString()}`}</Text>
+                            <Text type="BodyBold">₩</Text>
+                          </RemainMoney>
+                          <Text type="Label" color={Colors.Gray400}>
+                            {`${accountName}`}
+                          </Text>
+                        </AccountDesc>
+                      </Account>
+                    </AccountWrapper>
+                  );
+                },
+              )
+            ) : (
+              <>
+                <Text type="Label" color={Colors.Gray400}>
+                  Add new account
+                </Text>
+                <Text type="Label" color={Colors.Gray400}>
+                  and manage it with HOUSIT!
+                </Text>
+              </>
+            )}
+          </AccountContainer>
+        </BalanceWrapper>
+      </BalanceContainer>
+
+      <PlanContainer>
+        <PlanWrapper>
+          <PlanTitle>
+            <PlanTitlePadding>
+              <Text type="H4" color={Colors.Gray600}>
+                Budget Plan
+              </Text>
+            </PlanTitlePadding>
+            <AddNewAccount onClick={handleBudgetPlanModal}>
+              <Text type="LabelLight" color={Colors.Gray400}>
+                Edit
+              </Text>
+            </AddNewAccount>
+          </PlanTitle>
+
+          <PlansContainer>
+            <ExpectedContainer>
+              <TextContainer>
+                <Text type="Body" color={Colors.Gray400}>
+                  Saving Goal
+                </Text>
+              </TextContainer>
+              <RemainMoney>
+                <Text type="BodyBold">{`${expected.saving.toLocaleString()}`}</Text>
+                <Text type="BodyBold">₩</Text>
+              </RemainMoney>
+              <DepositContainer>
+                {financeInfo?.savingGoals.map(
+                  (
+                    {
+                      savingGoalId,
+                      description,
+                      amount,
+                      isChecked: hasChecked,
+                      dueDate,
+                      enrolledDate,
+                    },
+                    index,
+                  ) => {
                     return (
-                      <AccountWrapper
-                        key={accountId + accountName}
+                      <DepositContent
+                        key={savingGoalId + description}
                         index={index}
                       >
-                        <Account>
-                          <IconContainer>
-                            <Icon icon="Icon_Money" />
-                          </IconContainer>
-                          <AccountDesc>
-                            <RemainMoney>
-                              <Text type="BodyBold">{`${balance.toLocaleString()}`}</Text>
-                              <Text type="BodyBold">₩</Text>
-                            </RemainMoney>
-                            <Text type="Label" color={Colors.Gray400}>
-                              {`${accountName}`}
-                            </Text>
-                          </AccountDesc>
-                        </Account>
-                      </AccountWrapper>
+                        <DepositInner>
+                          <DepositInnerBox>
+                            <CheckBoxContainer>
+                              <CheckBox
+                                value={isChecked}
+                                onChange={handleChange}
+                              />
+                            </CheckBoxContainer>
+                            <DepositCheck>
+                              <RemainMoney>
+                                <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
+                                <Text type="BodyBold">₩</Text>
+                              </RemainMoney>
+                              <DepositDesc>
+                                <Text type="Label" color={Colors.Gray400}>
+                                  {description.split(",")[0]}
+                                </Text>
+                              </DepositDesc>
+                            </DepositCheck>
+                          </DepositInnerBox>
+                        </DepositInner>
+                        <Chip>{description.split(",")[1] ?? "Someone"}</Chip>
+                      </DepositContent>
                     );
                   },
                 )}
-              </AccountContainer>
-            </BalanceWrapper>
-          </BalanceContainer>
+              </DepositContainer>
+            </ExpectedContainer>
+          </PlansContainer>
 
-          <PlanContainer>
-            <PlanWrapper>
-              <PlanTitle>
-                <PlanTitlePadding>
-                  <Text type="H4" color={Colors.Gray600}>
-                    Budget Plan
-                  </Text>
-                </PlanTitlePadding>
-                <Dropdown>
-                  <DropdownInner>
-                    <Text type="LabelLight" color={Colors.Gray500}>
-                      {`${getMonth(YYMM.month)} ${YYMM.year}`}
-                    </Text>
-                    <IconBox onClick={handleDropdownClick}>
-                      <Icon icon="TriangleDown" />
-                    </IconBox>
-                  </DropdownInner>
-                </Dropdown>
-              </PlanTitle>
+          <PlansContainer>
+            <ExpectedContainer>
+              <TextContainer>
+                <Text type="Body" color={Colors.Gray400}>
+                  Expecetd Income
+                </Text>
+              </TextContainer>
+              <RemainMoney>
+                <Text type="BodyBold">{`${expected.income.toLocaleString()}`}</Text>
+                <Text type="BodyBold">₩</Text>
+              </RemainMoney>
+            </ExpectedContainer>
+            <DepositContainer>
+              {financeInfo?.predictedIncomes.map(
+                (
+                  {
+                    incomeId,
+                    description,
+                    amount,
+                    isChecked: hasChecked,
+                    dueDate,
+                    enrolledDate,
+                  },
+                  index,
+                ) => {
+                  return (
+                    <DepositContent key={incomeId + description} index={index}>
+                      <DepositInner>
+                        <DepositInnerBox>
+                          <CheckBoxContainer>
+                            <CheckBox
+                              value={isChecked}
+                              onChange={handleChange}
+                            />
+                          </CheckBoxContainer>
+                          <DepositCheck>
+                            <RemainMoney>
+                              <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
+                              <Text type="BodyBold">₩</Text>
+                            </RemainMoney>
+                            <DepositDesc>
+                              <Text type="Label" color={Colors.Gray400}>
+                                {description.split(",")[0]}
+                              </Text>
+                            </DepositDesc>
+                          </DepositCheck>
+                        </DepositInnerBox>
+                      </DepositInner>
+                      <Chip>{description.split(",")[1] ?? "Someone"}</Chip>
+                    </DepositContent>
+                  );
+                },
+              )}
+            </DepositContainer>
+          </PlansContainer>
 
-              <PlansContainer>
-                <ExpectedContainer>
-                  <Text type="Body" color={Colors.Gray400}>
-                    Saving Goal
-                  </Text>
-                  <RemainMoney>
-                    <Text type="BodyBold">{`${(550000).toLocaleString()}`}</Text>
-                    <Text type="BodyBold">₩</Text>
-                  </RemainMoney>
-                  <DepositContainer>
-                    {financeInfo.savingGoals.map(
-                      (
-                        {
-                          savingGoalId,
-                          description,
-                          amount,
-                          isChecked: hasChecked,
-                          dueDate,
-                          enrolledDate,
-                        },
-                        index,
-                      ) => {
-                        return (
-                          <DepositContent
-                            key={savingGoalId + description}
-                            index={index}
-                          >
-                            <DepositInner>
-                              <DepositInnerBox>
-                                <CheckBoxContainer>
-                                  <CheckBox
-                                    value={isChecked}
-                                    onChange={handleChange}
-                                  />
-                                </CheckBoxContainer>
-                                <DepositCheck>
-                                  <RemainMoney>
-                                    <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
-                                    <Text type="BodyBold">₩</Text>
-                                  </RemainMoney>
-                                  <DepositDesc>
-                                    <Text type="Label" color={Colors.Gray400}>
-                                      {description.split(",")[0]}
-                                    </Text>
-                                  </DepositDesc>
-                                </DepositCheck>
-                              </DepositInnerBox>
-                            </DepositInner>
-                            <Chip>
-                              {description.split(",")[1] ?? "Someone"}
-                            </Chip>
-                          </DepositContent>
-                        );
-                      },
-                    )}
-                  </DepositContainer>
-                </ExpectedContainer>
-              </PlansContainer>
+          <PlansContainer>
+            <ExpectedContainer>
+              <TextContainer>
+                <Text type="Body" color={Colors.Gray400}>
+                  Expected Expenses
+                </Text>
+              </TextContainer>
+              <RemainMoney>
+                <Text type="BodyBold">{`${expected.expense.toLocaleString()}`}</Text>
+                <Text type="BodyBold">₩</Text>
+              </RemainMoney>
+            </ExpectedContainer>
+            <DepositContainer>
+              {financeInfo?.predictedExpenses.map(
+                (
+                  {
+                    expenseId,
+                    description,
+                    amount,
+                    isChecked: hasChecked,
+                    dueDate,
+                    enrolledDate,
+                  },
+                  index,
+                ) => {
+                  return (
+                    <DepositContent key={expenseId + description} index={index}>
+                      <DepositInner>
+                        <DepositInnerBox>
+                          <CheckBoxContainer>
+                            <CheckBox
+                              value={isChecked}
+                              onChange={handleChange}
+                            />
+                          </CheckBoxContainer>
+                          <DepositCheck>
+                            <RemainMoney>
+                              <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
+                              <Text type="BodyBold">₩</Text>
+                            </RemainMoney>
+                            <DepositDesc>
+                              <Text type="Label" color={Colors.Gray400}>
+                                {description.split(",")[0]}
+                              </Text>
+                            </DepositDesc>
+                          </DepositCheck>
+                        </DepositInnerBox>
+                      </DepositInner>
+                      <Chip>{description.split(",")[1] ?? "Someone"}</Chip>
+                    </DepositContent>
+                  );
+                },
+              )}
+            </DepositContainer>
+          </PlansContainer>
+        </PlanWrapper>
+      </PlanContainer>
 
-              <PlansContainer>
-                <ExpectedContainer>
-                  <Text type="Body" color={Colors.Gray400}>
-                    Expected Income
-                  </Text>
-                  <RemainMoney>
-                    <Text type="BodyBold">{`${(900000).toLocaleString()}`}</Text>
-                    <Text type="BodyBold">₩</Text>
-                  </RemainMoney>
-                </ExpectedContainer>
-                <DepositContainer>
-                  {financeInfo.predictedIncomes.map(
-                    (
-                      {
-                        incomeId,
-                        description,
-                        amount,
-                        isChecked: hasChecked,
-                        dueDate,
-                        enrolledDate,
-                      },
-                      index,
-                    ) => {
-                      return (
-                        <DepositContent
-                          key={incomeId + description}
-                          index={index}
-                        >
-                          <DepositInner>
-                            <DepositInnerBox>
-                              <CheckBoxContainer>
-                                <CheckBox
-                                  value={isChecked}
-                                  onChange={handleChange}
-                                />
-                              </CheckBoxContainer>
-                              <DepositCheck>
-                                <RemainMoney>
-                                  <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
-                                  <Text type="BodyBold">₩</Text>
-                                </RemainMoney>
-                                <DepositDesc>
-                                  <Text type="Label" color={Colors.Gray400}>
-                                    {description.split(",")[0]}
-                                  </Text>
-                                </DepositDesc>
-                              </DepositCheck>
-                            </DepositInnerBox>
-                          </DepositInner>
-                          <Chip>{description.split(",")[1] ?? "Someone"}</Chip>
-                        </DepositContent>
-                      );
-                    },
-                  )}
-                </DepositContainer>
-              </PlansContainer>
-
-              <PlansContainer>
-                <ExpectedContainer>
-                  <Text type="Body" color={Colors.Gray400}>
-                    Expected Expenses
-                  </Text>
-                  <RemainMoney>
-                    <Text type="BodyBold">{`${(900000).toLocaleString()}`}</Text>
-                    <Text type="BodyBold">₩</Text>
-                  </RemainMoney>
-                </ExpectedContainer>
-                <DepositContainer>
-                  {financeInfo.predictedExpenses.map(
-                    (
-                      {
-                        expenseId,
-                        description,
-                        amount,
-                        isChecked: hasChecked,
-                        dueDate,
-                        enrolledDate,
-                      },
-                      index,
-                    ) => {
-                      return (
-                        <DepositContent
-                          key={expenseId + description}
-                          index={index}
-                        >
-                          <DepositInner>
-                            <DepositInnerBox>
-                              <CheckBoxContainer>
-                                <CheckBox
-                                  value={isChecked}
-                                  onChange={handleChange}
-                                />
-                              </CheckBoxContainer>
-                              <DepositCheck>
-                                <RemainMoney>
-                                  <Text type="BodyBold">{`${amount.toLocaleString()}`}</Text>
-                                  <Text type="BodyBold">₩</Text>
-                                </RemainMoney>
-                                <DepositDesc>
-                                  <Text type="Label" color={Colors.Gray400}>
-                                    {description.split(",")[0]}
-                                  </Text>
-                                </DepositDesc>
-                              </DepositCheck>
-                            </DepositInnerBox>
-                          </DepositInner>
-                          <Chip>{description.split(",")[1] ?? "Someone"}</Chip>
-                        </DepositContent>
-                      );
-                    },
-                  )}
-                </DepositContainer>
-              </PlansContainer>
-            </PlanWrapper>
-          </PlanContainer>
-        </>
-      )}
+      <AddNewButton onClick={handleBudgetPlanModal}>
+        <Icon icon="Plus_Button" color={Colors.White} size={32} />
+      </AddNewButton>
     </Container>
   );
 };
 
 export default Finance;
 
-const Container = styled.main<{ height: number | null }>`
+const Container = styled.main<{ height: number | null; isOpen?: boolean }>`
   display: flex;
   position: relative;
   flex-direction: column;
@@ -321,8 +382,9 @@ const Container = styled.main<{ height: number | null }>`
   height: ${({ height }) => height && `${height - 108}px`};
   top: 48px;
   background-color: ${Colors.Gray50};
+  padding-bottom: 12px;
   gap: 21px;
-  overflow-y: auto;
+  ${({ isOpen }) => (isOpen ? `overflow-y: hidden;` : `overflow-y: scroll;`)}
 `;
 
 const CashFlowContainer = styled.section`
@@ -375,6 +437,17 @@ const BalanceWrapper = styled.div`
   padding: 16px 16px 12px 16px;
   gap: 4px;
   ${Shadow.Small};
+`;
+
+const BalanceTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const AddNewAccount = styled.div`
+  height: fit-content;
+  border-bottom: 1px solid ${Colors.Gray400};
 `;
 
 const AccountContainer = styled.div`
@@ -437,6 +510,7 @@ const PlanWrapper = styled.div`
 
 const PlanTitle = styled.div`
   display: flex;
+  padding: 0 14px 0 0;
   justify-content: space-between;
   align-items: center;
 `;
@@ -444,24 +518,6 @@ const PlanTitle = styled.div`
 const PlanTitlePadding = styled.div`
   padding-left: 6px;
 `;
-
-const Dropdown = styled.div`
-  display: flex;
-  height: 28px;
-  padding-right: 8px;
-  align-items: center;
-`;
-
-const DropdownInner = styled.div`
-  display: flex;
-  border-radius: 6px;
-  background-color: ${Colors.White};
-  padding: 2px 0 2px 16px;
-  justify-content: flex-end;
-  align-items: center;
-`;
-
-const IconBox = styled.div``;
 
 const PlansContainer = styled.div`
   display: flex;
@@ -522,4 +578,27 @@ const DepositCheck = styled.div`
 const DepositDesc = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const TextContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const AddNewButton = styled.div`
+  display: flex;
+  position: fixed;
+  width: 56px;
+  height: 56px;
+  bottom: 70px;
+  right: 20px;
+  border-radius: 28px;
+  background-color: ${Colors.Gray600};
+  padding: 16px;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  ${Shadow.Medium};
+  z-index: 999;
 `;
