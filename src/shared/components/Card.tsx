@@ -58,41 +58,39 @@ export const FoodCard = ({
   };
 
   return (
-    <FoodCardC>
-      <FoodCardContainer {...props}>
-        <BadgeWrapper>
-          {owner.map((person) => (
-            <Badge
-              key={person}
-              color={owner[0] === "All" ? Colors.White : Colors.Orange200}
-              backgroundColor={
-                owner[0] === "All" ? Colors.Orange200 : Colors.Orange50
-              }
-            >
-              {person}
-            </Badge>
-          ))}
-        </BadgeWrapper>
-        <TextContainer>
-          <Text type="BodyBold">{name}</Text>
-          <Text
-            type="LabelLight"
-            color={expire === "Today" ? Colors.Orange300 : Colors.Gray400}
+    <FoodCardContainer {...props}>
+      <BadgeWrapper>
+        {owner.map((person) => (
+          <Badge
+            key={person}
+            color={owner[0] === "All" ? Colors.White : Colors.Orange200}
+            backgroundColor={
+              owner[0] === "All" ? Colors.Orange200 : Colors.Orange50
+            }
           >
-            {expire}
-          </Text>
-        </TextContainer>
-        {formattingAmount().type === "percent" ? (
-          <PercentBar>
-            <RemainPercentBar amount={formattingAmount().value} />
-          </PercentBar>
-        ) : (
-          <Text type="Label" color={Colors.Gray500}>{`${
-            amount || quantity
-          } remains`}</Text>
-        )}
-      </FoodCardContainer>
-    </FoodCardC>
+            {person}
+          </Badge>
+        ))}
+      </BadgeWrapper>
+      <TextContainer>
+        <Text type="BodyBold">{name}</Text>
+        <Text
+          type="LabelLight"
+          color={expire === "Today" ? Colors.Orange300 : Colors.Gray400}
+        >
+          {expire}
+        </Text>
+      </TextContainer>
+      {formattingAmount().type === "percent" ? (
+        <PercentBar>
+          <RemainPercentBar amount={formattingAmount().value} />
+        </PercentBar>
+      ) : (
+        <Text type="Label" color={Colors.Gray500}>{`${
+          amount || quantity
+        } remains`}</Text>
+      )}
+    </FoodCardContainer>
   );
 };
 
@@ -112,10 +110,6 @@ const Container = styled.article`
 `;
 
 const TitleContainer = styled.div``;
-
-const FoodCardC = styled.div`
-  width: 100%;
-`;
 
 const FoodCardContainer = styled.div`
   display: flex;
