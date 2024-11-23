@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
-import { deviceHeight } from "@shared/atoms";
+import { useGetHome } from "@shared/apis";
+import { currentUser, deviceHeight } from "@shared/atoms";
 import { Badge, Card, Chip, HomeSection, Icon, Text } from "@shared/components";
-import { IconType } from "@shared/types";
+import { FoodsBody, IconType } from "@shared/types";
 import { calculateRemainDay } from "@shared/utils";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef } from "react";
-import { useRecoilState } from "recoil";
+import React, { useEffect, useRef, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { Colors } from "styles";
 
 const Home = () => {
@@ -17,82 +18,40 @@ const Home = () => {
     query: { roomId },
   } = useRouter();
 
+  const [foodData, setFoodData] = useState<FoodsBody[]>();
+  const user = useRecoilValue(currentUser);
   const [height, setHeight] = useRecoilState(deviceHeight);
 
-  const foodData = [
-    { name: "Yogurt", owner: ["Mike"], expire: "2024-11-08" },
-    {
-      name: "Seoul Milk",
-      owner: ["All"],
-      expire: "2024-11-09",
-    },
-    {
-      name: "Bread",
-      owner: ["Mike", "Jinwook"],
-      expire: "2024-11-19",
-    },
-  ];
-
-  const financeData = [
-    {
-      name: "Water Charge",
-      fee: 32000,
-      date: "2024-11-07",
-    },
-    {
-      name: "Netflix",
-      fee: 12000,
-      date: "2024-11-08",
-    },
-    {
-      name: "Rent fee",
-      fee: 450000,
-      date: "2024-11-17",
-    },
-    {
-      name: "Electric Charge",
-      fee: 9800,
-      date: "2024-11-27",
-    },
-  ];
-
-  const cleanData = [
-    { locate: "Laundry", date: "2024-11-07", owner: "Mike" },
-    {
-      locate: "Kitchen",
-      date: "2024-11-08",
-      owner: "Seoyeong",
-    },
-    {
-      locate: "Toilet",
-      date: "2024-11-18",
-      owner: "Minsoo",
-    },
-    {
-      locate: "Livingroom",
-      date: "2024-11-28",
-      owner: "Jinwook",
-    },
-  ];
-
-  const eventData = [
-    {
-      name: "Firework",
-      date: "2024-11-16",
-      owner: ["Minsoo", "Jinwook", "Sooyeong"],
-      memo: null,
-    },
-    {
-      name: "Hangang Picnic",
-      date: "2024-11-20",
-      owner: ["All"],
-      memo: "Don’t forget to bring the mat!",
-    },
-  ];
+  const { data: homeData, refetch } = useGetHome(
+    String(roomId),
+    String(user?.[0].memberId),
+  );
+  console.log(homeData);
 
   useEffect(() => {
+    refetch();
     setHeight(window.innerHeight);
   }, []);
+
+  useEffect(() => {
+    if (homeData) {
+      const sortedFoodData = homeData.expiringSoonFoods
+        .filter(({ expirationDate }) => {
+          const expire = new Date(expirationDate);
+          today.setHours(0, 0, 0, 0);
+
+          return expire.getTime() >= today.getTime();
+        })
+        .sort((a, b) => {
+          const _a = new Date(a.expirationDate).getTime();
+          const _b = new Date(b.expirationDate).getTime();
+
+          return _a - _b;
+        });
+
+      setFoodData(sortedFoodData);
+    }
+  }, [homeData]);
 
   return (
     <Container height={height}>
@@ -101,11 +60,14 @@ const Home = () => {
           Foods
         </Text>
         <ListContainer>
-          {foodData.map(({ name, owner, expire }) => {
-            const { isAlert, day } = calculateRemainDay(expire, DAY_ALERT);
+          {foodData?.map(({ foodId, foodName, expirationDate, memberName }) => {
+            const { isAlert, day } = calculateRemainDay(
+              expirationDate,
+              DAY_ALERT,
+            );
 
             return (
-              <List key={name + expire}>
+              <List key={foodId}>
                 <ListElement>
                   <Text
                     type="LabelLight"
@@ -114,22 +76,18 @@ const Home = () => {
                     {isAlert ? "Today" : day}
                   </Text>
                   <Text type="BodyBold" color={Colors.Gray600}>
-                    {name}
+                    {foodName}
                   </Text>
                 </ListElement>
-                {owner.map((_owner) => {
-                  return (
-                    <Chip
-                      key={_owner}
-                      color={_owner === "All" ? Colors.White : undefined}
-                      backgroundColor={
-                        _owner === "All" ? Colors.Orange200 : undefined
-                      }
-                    >
-                      {_owner}
-                    </Chip>
-                  );
-                })}
+                <Chip
+                  key={memberName + foodId}
+                  color={memberName === "All" ? Colors.White : undefined}
+                  backgroundColor={
+                    memberName === "All" ? Colors.Orange200 : undefined
+                  }
+                >
+                  {memberName}
+                </Chip>
               </List>
             );
           })}
@@ -141,17 +99,25 @@ const Home = () => {
           Chores
         </Text>
         <CardView>
-          {cleanData.map(({ locate, date, owner }) => {
-            return (
-              <Card
-                key={locate + date}
-                icon={locate as IconType}
-                iconColor={Colors.Blue200}
-                title={locate}
-                person={owner}
-              />
-            );
-          })}
+          {homeData?.choreDtos.map(
+            ({ choreArea, choreId, choreMembers, color, icon }) => {
+              const choreMember =
+                choreMembers.length === 1
+                  ? choreMembers[0].memberName
+                  : `${choreMembers[0].memberName} and ${
+                      choreMembers.length - 1
+                    } others`;
+              return (
+                <Card
+                  key={choreId}
+                  icon={icon as IconType}
+                  iconColor={color}
+                  title={choreArea}
+                  person={choreMember}
+                />
+              );
+            },
+          )}
         </CardView>
       </HomeSection>
 
@@ -160,57 +126,61 @@ const Home = () => {
           Finance
         </Text>
         <ListContainer>
-          {financeData.map(({ name, fee, date }) => {
-            const { isAlert, day } = calculateRemainDay(date, DAY_ALERT);
-            const targetDay = new Date(date);
-            const isPassed = today.getTime() > targetDay.getTime();
-            const formattedDate = date.split("-").join(".");
-            let showBadge = false;
-            if (isPassed && !badgeRef.current) {
-              showBadge = true;
-              badgeRef.current = true;
-            }
+          {homeData?.predictedExpenses.map(
+            ({ amount, expenseId, description, dueDate }) => {
+              const { isAlert, day } = calculateRemainDay(dueDate, DAY_ALERT);
+              const targetDay = new Date(dueDate);
+              const isPassed = today.getTime() > targetDay.getTime();
+              const formattedDate = dueDate.split("-").join(".");
+              let showBadge = false;
+              if (isPassed && !badgeRef.current) {
+                showBadge = true;
+                badgeRef.current = true;
+              }
 
-            return (
-              <React.Fragment key={name + fee}>
-                {!isPassed ? (
-                  <List>
-                    <ListElement>
-                      <Text
-                        type="LabelLight"
-                        color={isAlert ? Colors.State_Negative : Colors.Gray400}
-                      >
-                        {isAlert ? day : formattedDate}
-                      </Text>
-                      <ContentContainer>
-                        <Text type="BodyBold" color={Colors.Black}>
-                          {name}
-                        </Text>
+              return (
+                <React.Fragment key={expenseId}>
+                  {!isPassed ? (
+                    <List>
+                      <ListElement>
                         <Text
-                          type="BodyBold"
-                          color={Colors.Black}
-                        >{`${fee.toLocaleString()}₩`}</Text>
-                      </ContentContainer>
-                    </ListElement>
-                  </List>
-                ) : (
-                  <PassedContainer>
-                    {showBadge && (
-                      <Badge backgroundColor={Colors.Blue300}>Passed</Badge>
-                    )}
-                    <PassedElement>
-                      <Text type="BodyBold" color={Colors.Gray400}>
-                        {name}
-                      </Text>
-                      <Text type="BodyBold" color={Colors.Gray400}>
-                        {`${fee.toLocaleString()}₩`}
-                      </Text>
-                    </PassedElement>
-                  </PassedContainer>
-                )}
-              </React.Fragment>
-            );
-          })}
+                          type="LabelLight"
+                          color={
+                            isAlert ? Colors.State_Negative : Colors.Gray400
+                          }
+                        >
+                          {isAlert ? day : formattedDate}
+                        </Text>
+                        <ContentContainer>
+                          <Text type="BodyBold" color={Colors.Black}>
+                            {description}
+                          </Text>
+                          <Text
+                            type="BodyBold"
+                            color={Colors.Black}
+                          >{`${amount.toLocaleString()}₩`}</Text>
+                        </ContentContainer>
+                      </ListElement>
+                    </List>
+                  ) : (
+                    <PassedContainer>
+                      {showBadge && (
+                        <Badge backgroundColor={Colors.Blue300}>Passed</Badge>
+                      )}
+                      <PassedElement>
+                        <Text type="BodyBold" color={Colors.Gray400}>
+                          {description}
+                        </Text>
+                        <Text type="BodyBold" color={Colors.Gray400}>
+                          {`${amount.toLocaleString()}₩`}
+                        </Text>
+                      </PassedElement>
+                    </PassedContainer>
+                  )}
+                </React.Fragment>
+              );
+            },
+          )}
         </ListContainer>
       </HomeSection>
 
@@ -226,45 +196,45 @@ const Home = () => {
           Events
         </Text>
       </EventContainer>
-      {eventData.map(({ name, date, owner, memo }) => {
-        const { isAlert } = calculateRemainDay(date, DAY_ALERT);
+      {homeData?.eventDtos.map(
+        ({ description, eventDay, eventId, eventName, eventTime, members }) => {
+          const { isAlert } = calculateRemainDay(eventDay, DAY_ALERT);
 
-        return (
-          <HomeSection key={date + name} paddingSize="SemiLight">
-            <TitleContainer>
-              <TitleWrapper>
-                <Text type="BodyBold">{name}</Text>
-                <Text
-                  type="LabelLight"
-                  color={isAlert ? Colors.State_Negative : Colors.Black}
-                >
-                  {date.split("-").join("/")}
-                </Text>
-              </TitleWrapper>
-              {memo && (
-                <Text type="Label" color={Colors.Gray400}>
-                  {memo}
-                </Text>
-              )}
-            </TitleContainer>
-            <OwnerContainer>
-              {owner.map((_owner) => (
-                <Chip
-                  key={_owner}
-                  color={_owner === "All" ? Colors.White : undefined}
-                  backgroundColor={
-                    _owner === "All" ? Colors.Orange200 : undefined
-                  }
-                >
-                  {_owner}
-                </Chip>
-              ))}
-            </OwnerContainer>
-          </HomeSection>
-        );
-      })}
-
-      <AdjustHeight />
+          return (
+            <HomeSection key={eventId} paddingSize="SemiLight">
+              <TitleContainer>
+                <TitleWrapper>
+                  <Text type="BodyBold">{eventName}</Text>
+                  <Text
+                    type="LabelLight"
+                    color={isAlert ? Colors.State_Negative : Colors.Black}
+                  >
+                    {eventDay.split("-").join("/")}
+                  </Text>
+                </TitleWrapper>
+                {description && (
+                  <Text type="Label" color={Colors.Gray400}>
+                    {description}
+                  </Text>
+                )}
+              </TitleContainer>
+              <OwnerContainer>
+                {members.map(({ memberId, memberName }) => (
+                  <Chip
+                    key={memberId}
+                    color={memberName === "All" ? Colors.White : undefined}
+                    backgroundColor={
+                      memberName === "All" ? Colors.Orange200 : undefined
+                    }
+                  >
+                    {memberName}
+                  </Chip>
+                ))}
+              </OwnerContainer>
+            </HomeSection>
+          );
+        },
+      )}
     </Container>
   );
 };
@@ -339,10 +309,6 @@ const CardView = styled.div`
 
 const EventContainer = styled.section`
   padding: 0 18px;
-`;
-
-const AdjustHeight = styled.div`
-  height: 52px;
 `;
 
 const InviteBanner = styled.section`
