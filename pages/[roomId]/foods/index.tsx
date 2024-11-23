@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { useGetFoods } from "@shared/apis/Foods";
-import { deviceHeight } from "@shared/atoms";
+import { currentChangeFood, deviceHeight } from "@shared/atoms";
 import { Badge, FoodCard, Icon, Slider, Text } from "@shared/components";
 import { FoodsBody, StorageType } from "@shared/types";
 import {
@@ -10,7 +10,7 @@ import {
 } from "@shared/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { Colors, Shadow } from "styles";
 
 export interface Foods {
@@ -19,7 +19,6 @@ export interface Foods {
 
 const Food = () => {
   const DAY_ALERT = 3;
-  const today = new Date();
   const categories: StorageType[] = [
     "frozen",
     "refrigerated",
@@ -28,6 +27,7 @@ const Food = () => {
 
   const {
     query: { roomId },
+    push,
   } = useRouter();
 
   const [sort, setSort] = useState("Purchased Date");
@@ -35,8 +35,9 @@ const Food = () => {
   const [foods, setFoods] = useState<Foods>();
   const [soon, setSoon] = useState<FoodsBody[] | null>(null);
   const height = useRecoilValue(deviceHeight);
+  const [, setCurrentFood] = useRecoilState(currentChangeFood);
 
-  const { data: foodData } = useGetFoods(String(roomId));
+  const { data: foodData, isLoading, refetch } = useGetFoods(String(roomId));
 
   const handleClickSort = () => {
     setIsOpenSort((prev) => !prev);
@@ -46,27 +47,25 @@ const Food = () => {
     setSort(value);
   };
 
-  const handleChangeFoodAmount = (
-    storageType: string,
-    index: number,
-    amount: string,
-  ) => {
-    setFoods((prev) => {
-      if (prev) {
-        const newFoods = { ...prev };
-        newFoods[storageType][index] = {
-          ...newFoods[storageType][index],
-          amount: Number(amount),
-        };
+  const handleClickAddNew = () => {
+    push(`/${roomId}/foods/add`);
+  };
 
-        return newFoods;
-      }
-    });
+  const handleClickFood = (category: string, index: number) => {
+    if (foods) {
+      setCurrentFood(foods[category][index]);
+      push(`/${roomId}/foods/change?category=${category}`);
+    }
   };
 
   const handleSoon = (data: FoodsBody[]) => {
     setSoon(data);
   };
+  console.log(soon);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   useEffect(() => {
     if (foodData) setFoods(foodData);
@@ -75,11 +74,17 @@ const Food = () => {
 
   return (
     <>
-      {foods &&
-      !Object.values(foods).every(
-        (array) => Array.isArray(array) && array.length === 0,
-      ) ? (
-        <Container>
+      {isLoading ? (
+        <Empty height={height}>
+          <Text type="Body" color={Colors.Gray500}>
+            Loading...
+          </Text>
+        </Empty>
+      ) : foods &&
+        !Object.values(foods).every(
+          (array) => Array.isArray(array) && array.length === 0,
+        ) ? (
+        <Container height={height}>
           <CardContainer>
             {soon &&
               soon.map(
@@ -124,15 +129,32 @@ const Food = () => {
                   <FoodInfoContainer>
                     {foods[_category].map(
                       (
-                        { foodName, createAt, memberName, quantity, amount },
+                        {
+                          foodName,
+                          createAt,
+                          memberName,
+                          quantity,
+                          amount,
+                          isFavorite,
+                        },
                         index,
                       ) => {
                         return (
                           <FoodInfoWrapper
                             key={foodName + memberName + index}
                             index={index}
+                            onClick={() => handleClickFood(_category, index)}
                           >
-                            <Icon icon="Like_Button" color={Colors.Gray200} />
+                            <IconContainer>
+                              <Icon
+                                icon={
+                                  isFavorite
+                                    ? "Like_Button_Filled"
+                                    : "Like_Button"
+                                }
+                                color={Colors.Gray200}
+                              />
+                            </IconContainer>
                             <FoodInfo>
                               <NamdDate>
                                 <Text type="BodyBold">{foodName}</Text>
@@ -162,13 +184,6 @@ const Food = () => {
                                     value={String(amount)}
                                     index={index}
                                     storageType={_category}
-                                    onChange={(_category, _index, _amount) =>
-                                      handleChangeFoodAmount(
-                                        _category,
-                                        _index,
-                                        _amount,
-                                      )
-                                    }
                                   />
                                 ) : (
                                   <RemainContainer>
@@ -192,7 +207,7 @@ const Food = () => {
             </FoodAreaWrapper>
           </FoodArea>
 
-          <AddNewButton onClick={() => alert("add New")}>
+          <AddNewButton onClick={handleClickAddNew}>
             <Icon icon="Plus_Button" color={Colors.White} size={32} />
           </AddNewButton>
         </Container>
@@ -205,7 +220,7 @@ const Food = () => {
             {`Add items and manage them with HOUSIT :)`}
           </Text>
 
-          <AddNewButton onClick={() => alert("add New")}>
+          <AddNewButton onClick={handleClickAddNew}>
             <Icon icon="Plus_Button" color={Colors.White} size={32} />
           </AddNewButton>
         </Empty>
@@ -228,16 +243,17 @@ const Empty = styled.div<{ height: number | null }>`
   align-items: center;
 `;
 
-const Container = styled.main`
+const Container = styled.main<{ height: number | null }>`
   display: flex;
   position: relative;
   flex-direction: column;
   width: 100vw;
+  height: ${({ height }) => height && `${height - 108}px`};
   top: 48px;
   padding: 12px 0;
   gap: 20px;
   background-color: ${Colors.Gray50};
-  overflow-y: auto;
+  overflow-y: scroll;
 
   &::-webkit-scrollbar {
     display: none;
@@ -246,9 +262,9 @@ const Container = styled.main`
 
 const CardContainer = styled.section`
   display: flex;
-  gap: 8px;
   padding: 0 12px;
-  overflow-x: auto;
+  gap: 8px;
+  overflow-x: scroll;
 
   &::-webkit-scrollbar {
     display: none;
@@ -289,6 +305,10 @@ const FoodInfoWrapper = styled.div<{ index: number }>`
   padding: 8px 0;
   gap: 12px;
 
+  &:hover {
+    background-color: ${Colors.Gray50};
+  }
+
   ${({ index }) => {
     switch (index) {
       case 0:
@@ -298,6 +318,8 @@ const FoodInfoWrapper = styled.div<{ index: number }>`
     }
   }}
 `;
+
+const IconContainer = styled.div``;
 
 const FoodInfo = styled.div`
   display: flex;
