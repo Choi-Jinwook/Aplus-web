@@ -1,6 +1,7 @@
 export * from "./Layout";
 export { default as Button } from "./Button";
 export { default as Badge } from "./Badge";
+export { default as BottomSheet } from "./BottomSheet";
 export * from "./Card";
 export { default as CheckBox } from "./CheckBox";
 export { default as Chip } from "./Chip";

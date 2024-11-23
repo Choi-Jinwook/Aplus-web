@@ -17,7 +17,7 @@ const Chip = ({
   ...props
 }: ChipProps) => {
   return (
-    <Container backgroundColor={backgroundColor}>
+    <Container backgroundColor={backgroundColor} {...props}>
       <Text type={textType} color={color}>
         {props.children}
       </Text>

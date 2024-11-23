@@ -12,6 +12,7 @@ interface ControlledInputProps
   isError?: boolean;
   showOutline?: boolean;
   shaded?: boolean;
+  size?: string;
   onChange: (value: string) => void;
   placeholder: string;
 }
@@ -24,6 +25,7 @@ export const ControlledInput = ({
   isError,
   showOutline,
   shaded,
+  size = "Normal",
   onChange,
   placeholder,
   ...props
@@ -41,6 +43,7 @@ export const ControlledInput = ({
       disabled={disabled}
       showOutline={showOutline}
       shaded={shaded}
+      size={size}
     >
       <SInput
         shaded={shaded}
@@ -69,12 +72,15 @@ const InputContainer = styled.div<{
   disabled?: boolean;
   showOutline?: boolean;
   shaded?: boolean;
+  size?: string;
 }>`
   display: flex;
   border-radius: 8px;
-  padding: 10px 14px;
   justify-content: space-between;
   align-items: center;
+
+  ${({ size }) =>
+    size === "Normal" ? `padding: 10px 14px;` : `padding: 8px; height: 44px;`}
 
   ${({ shaded }) => shaded && `background-color: ${Colors.Gray50};`}
 

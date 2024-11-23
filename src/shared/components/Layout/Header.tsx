@@ -13,6 +13,8 @@ const Header = () => {
     query: { roomId },
   } = useRouter();
   const currentPath = pathname.split("/")[2];
+  const isChange =
+    pathname.split("/")[3] === "change" || pathname.split("/")[3] === "balance";
   const paths = ["home", "foods", "finance", "events", "chores"];
 
   const handleClickLeft = () => {
@@ -21,7 +23,12 @@ const Header = () => {
     else back();
   };
 
-  const handleClickRight = () => {
+  const handleClickRight = async () => {
+    if (isChange) {
+      // TODO: api call
+      return;
+    }
+
     switch (currentPath) {
       case "setting":
         // TODO: api call
@@ -37,7 +44,9 @@ const Header = () => {
       <IconContainer onClick={handleClickLeft}>
         {currentPath === "home" ? (
           <Icon icon="Logo_Main" color={Colors.Black} />
-        ) : currentPath && paths.some((path) => currentPath.includes(path)) ? (
+        ) : currentPath &&
+          paths.some((path) => currentPath.includes(path)) &&
+          !isChange ? (
           <Text type="H4">{upperFirstLetter(currentPath)}</Text>
         ) : (
           <Icon icon="Arrow_Left" color={Colors.Black} />
@@ -54,6 +63,7 @@ const Header = () => {
             </Text>
           </SaveButton>
         ) : (
+          !isChange &&
           currentPath &&
           paths.some((path) => currentPath.includes(path)) && (
             <Icon icon="Settings" color={Colors.Black} />
