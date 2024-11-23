@@ -10,6 +10,7 @@ export interface FoodsBody {
   isFavorite: boolean;
   memberName: string;
   isShared: boolean;
+  storageType?: string;
 }
 
 export interface ChoreMembers {
@@ -117,6 +118,7 @@ export interface Txns {
   description: string;
   fromTxnId: number | null;
   toTxnId: number | null;
+  account: FinanceAccounts;
 }
 
 export interface IncomeGet {
@@ -134,6 +136,7 @@ export interface EventsGet {
   eventName: string;
   eventDay: string;
   eventTime: string;
+  description: string | null;
   members: ChoreMembers[];
 }
 
@@ -153,4 +156,14 @@ export interface UserBody {
 
 export interface UserData extends UserBody {
   memberId: number;
+}
+
+export interface HomeData {
+  expiringSoonFoods: FoodsBody[];
+  outOfFavoriteFoods: FoodsBody[];
+  predictedIncomes: FinancePredictedIncomes[];
+  savingGoals: FinanceSavingGoals[];
+  predictedExpenses: FinancePredictedExpenses[];
+  choreDtos: ChoresBody[];
+  eventDtos: EventsGet[];
 }
