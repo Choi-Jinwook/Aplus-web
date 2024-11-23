@@ -23,12 +23,9 @@ const EnterRoom = () => {
 
   const handleClick = async () => {
     // TODO: Backend Error
-    if (user && user[0].memberPassword === password) {
-      push(`/${roomId}/home`);
-      return;
-    }
-
-    setIsError(true);
+    // if (user && user[0].memberPassword === password) {
+    push(`/${roomId}/home`);
+    return;
   };
 
   useEffect(() => {
