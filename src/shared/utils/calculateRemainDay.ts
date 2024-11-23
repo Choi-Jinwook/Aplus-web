@@ -3,6 +3,8 @@ const calculateRemainDay = (date: string | null, alert: number) => {
     const DAY = 24 * 60 * 60 * 1000;
     const today = new Date();
     const targetDay = new Date(date);
+    today.setHours(0, 0, 0, 0);
+    targetDay.setHours(0, 0, 0, 0);
     const gap = Math.floor((targetDay.getTime() - today.getTime()) / DAY);
 
     if (gap <= alert && gap >= 0) {
