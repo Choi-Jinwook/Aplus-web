@@ -5,7 +5,12 @@ import { Button, CheckBox, Chip, Icon, Text } from "@shared/components";
 import {
   AccountAddModal,
   BudgetPlanModal,
+  TxnModal,
 } from "@shared/components/ModalContent";
+import {
+  FinancePredictedExpenses,
+  FinancePredictedIncomes,
+} from "@shared/types";
 import { getExpense } from "@shared/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -20,7 +25,6 @@ const Finance = () => {
     push,
   } = useRouter();
 
-  const [isChecked, setIsChecked] = useState(false);
   const [YYMM, setYYMM] = useState({ year: 0, month: 0 });
   const [expected, setExpected] = useState({
     income: 0,
@@ -29,6 +33,11 @@ const Finance = () => {
   });
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showBudgetPlanModal, setShowBudgetPlanModal] = useState(false);
+  const [showTxnModal, setShowTxnModal] = useState(false);
+  const [txnData, setTxnData] = useState<
+    FinancePredictedIncomes | FinancePredictedExpenses
+  >();
+  const [txnType, setTxnType] = useState("");
   const height = useRecoilValue(deviceHeight);
 
   const { data: financeInfo, refetch: infoRefetch } = useGetFinanceInfo(
@@ -41,8 +50,6 @@ const Finance = () => {
     push(`/${roomId}/finance/${type}`);
   };
 
-  const handleAddTransactionClick = () => {};
-
   const handleAccountModal = () => {
     setShowAccountModal((prev) => !prev);
   };
@@ -51,8 +58,26 @@ const Finance = () => {
     setShowBudgetPlanModal((prev) => !prev);
   };
 
-  const handleChange = () => {
-    setIsChecked((prev) => !prev);
+  const handleTxnModal = () => {
+    setShowTxnModal((prev) => !prev);
+  };
+
+  const handleClickCheckBox = (
+    hasChecked: boolean,
+    type: string,
+    index: number,
+  ) => {
+    if (hasChecked) return;
+
+    setTxnType(type);
+
+    if (type === "income") {
+      setTxnData(financeInfo?.predictedIncomes[index]);
+    } else {
+      setTxnData(financeInfo?.predictedExpenses[index]);
+    }
+
+    handleTxnModal();
   };
 
   useEffect(() => {
@@ -89,6 +114,16 @@ const Finance = () => {
         />
       )}
 
+      {showTxnModal && (
+        <TxnModal
+          handleTxnModal={handleTxnModal}
+          infoRefetch={infoRefetch}
+          data={txnData}
+          type={txnType}
+          accounts={financeInfo?.accounts}
+        />
+      )}
+
       <CashFlowContainer>
         <Text type="BodyBold" color={Colors.Gray600}>
           Financial Transaction
@@ -114,7 +149,7 @@ const Finance = () => {
           </CurrentCash>
           <Button
             buttonColor={Colors.Orange200}
-            onClick={handleAddTransactionClick}
+            onClick={() => handleClickRoute("transaction")}
           >
             Add Transaction
           </Button>
@@ -185,7 +220,7 @@ const Finance = () => {
                 Budget Plan
               </Text>
             </PlanTitlePadding>
-            <AddNewAccount onClick={handleBudgetPlanModal}>
+            <AddNewAccount>
               <Text type="LabelLight" color={Colors.Gray400}>
                 Edit
               </Text>
@@ -224,10 +259,7 @@ const Finance = () => {
                         <DepositInner>
                           <DepositInnerBox>
                             <CheckBoxContainer>
-                              <CheckBox
-                                value={isChecked}
-                                onChange={handleChange}
-                              />
+                              <CheckBox value={hasChecked} />
                             </CheckBoxContainer>
                             <DepositCheck>
                               <RemainMoney>
@@ -282,8 +314,10 @@ const Finance = () => {
                         <DepositInnerBox>
                           <CheckBoxContainer>
                             <CheckBox
-                              value={isChecked}
-                              onChange={handleChange}
+                              value={hasChecked}
+                              onClick={() =>
+                                handleClickCheckBox(hasChecked, "income", index)
+                              }
                             />
                           </CheckBoxContainer>
                           <DepositCheck>
@@ -338,8 +372,14 @@ const Finance = () => {
                         <DepositInnerBox>
                           <CheckBoxContainer>
                             <CheckBox
-                              value={isChecked}
-                              onChange={handleChange}
+                              value={hasChecked}
+                              onClick={() =>
+                                handleClickCheckBox(
+                                  hasChecked,
+                                  "expense",
+                                  index,
+                                )
+                              }
                             />
                           </CheckBoxContainer>
                           <DepositCheck>

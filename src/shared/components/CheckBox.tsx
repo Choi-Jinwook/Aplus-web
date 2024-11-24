@@ -6,19 +6,24 @@ import Icon from "./Icon";
 interface CheckBoxProps
   extends Omit<HTMLAttributes<HTMLInputElement>, "onChange"> {
   value: boolean;
-  onChange: () => void;
+  onClick?: () => void;
+  onChange?: () => void;
 }
 
 const CheckBox = ({
   value: initialValue,
+  onClick,
   onChange,
   ...props
 }: CheckBoxProps) => {
   const [value, setValue] = useState(initialValue);
 
   const handleChange = () => {
-    setValue((prev) => !prev);
-    onChange();
+    if (onChange) {
+      setValue((prev) => !prev);
+      onChange();
+    }
+    onClick?.();
   };
 
   return (

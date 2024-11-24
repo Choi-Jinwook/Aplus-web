@@ -156,7 +156,7 @@ export const usePostTransfer = () => {
     }) => {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/finance/accountTransferTxn?fromAccountId=${from}&toAccountId=${to}`,
-        { ...data },
+        data,
       );
 
       return res.data;
@@ -283,48 +283,28 @@ export const usePutSavingGoal = () => {
   });
 };
 
-export const usePutPredictedExpense = () => {
+export const usePutPredicted = () => {
   return useMutation({
     mutationFn: async ({
       roomNumber,
       accountId,
+      type,
       data,
     }: {
       roomNumber: string;
       accountId: string;
+      type: string;
       data: Omit<FinancePredictedExpenses, "expenseId">;
     }) => {
+      const txnType = type === "income" ? "Income" : "Expense";
       const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/finance/predictedExpense/${accountId}`,
-        { ...data },
+        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/finance/predicted${txnType}/${accountId}`,
+        data,
       );
 
       return res.data;
     },
     mutationKey: [QueryKey.finance.expectedExpense.put],
-    onSuccess: (data) => console.log(data),
-  });
-};
-
-export const usePutPredictedIncome = () => {
-  return useMutation({
-    mutationFn: async ({
-      roomNumber,
-      accountId,
-      data,
-    }: {
-      roomNumber: string;
-      accountId: string;
-      data: Omit<FinancePredictedIncomes, "incomeId">;
-    }) => {
-      const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/finance/predictedIncome/${accountId}`,
-        { ...data },
-      );
-
-      return res.data;
-    },
-    mutationKey: [QueryKey.finance.expectedIncome.put],
     onSuccess: (data) => console.log(data),
   });
 };

@@ -10,6 +10,7 @@ interface STextProps extends HTMLAttributes<HTMLSpanElement> {
   color?: string;
   fontSize?: number;
   lineHeight?: number;
+  ellipsis?: boolean;
 }
 
 const SText = ({
@@ -38,6 +39,13 @@ const SText = ({
 export default SText;
 
 const Text = styled.p<STextProps>`
+  ${({ ellipsis }) =>
+    ellipsis &&
+    `overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-break: break-all;
+  `}
   ${({ type }) => types[type]}
   ${({ weight }) => weight && `font-weight: ${weight};`}
   ${({ color }) => color && `color: ${color};`}

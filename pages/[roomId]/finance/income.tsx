@@ -80,8 +80,6 @@ const FinanceIncome = () => {
     }
   }, [formattedData]);
 
-  console.log(existingDate);
-
   return (
     <Container height={height}>
       {isOpenBottomSheet && (

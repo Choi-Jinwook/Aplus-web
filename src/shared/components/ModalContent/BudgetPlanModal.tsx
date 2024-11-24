@@ -319,7 +319,6 @@ const AmountDueDate = styled.div`
 const DueDateInputContainer = styled.div`
   display: flex;
   height: 44px;
-  border: 1px solid ${Colors.Gray100};
   border-radius: 8px;
   background-color: ${Colors.Gray50};
   padding: 8px;
