@@ -1,3 +1,3 @@
 const FinanceChange = () => {
-  return;
+  return <div></div>;
 };
