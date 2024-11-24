@@ -26,7 +26,6 @@ const Home = () => {
     String(roomId),
     String(user?.[0].memberId),
   );
-  console.log(homeData);
 
   useEffect(() => {
     refetch();

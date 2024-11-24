@@ -20,8 +20,6 @@ const Setting = () => {
   const height = useRecoilValue(deviceHeight);
 
   const handleRoleChange = (name: string, newRole: string) => {
-    console.log(newRole);
-
     setMembers((prev) =>
       prev.map((member) =>
         member.name === name ? { ...member, auth: newRole } : member,

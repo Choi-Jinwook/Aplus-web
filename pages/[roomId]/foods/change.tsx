@@ -19,7 +19,6 @@ const FoodChange = () => {
   const [foods, setFoods] = useState<FoodsBody | null>(null);
   const height = useRecoilValue(deviceHeight);
   const currentFood = useRecoilValue(currentChangeFood);
-  console.log(foods);
 
   // const { data: users } = useGetMember(String(roomId), { roomPassword: "" });
   const { mutateAsync: postFoods } = usePostFoods();

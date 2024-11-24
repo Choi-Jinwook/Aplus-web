@@ -61,7 +61,6 @@ const Food = () => {
   const handleSoon = (data: FoodsBody[]) => {
     setSoon(data);
   };
-  console.log(soon);
 
   useEffect(() => {
     refetch();
