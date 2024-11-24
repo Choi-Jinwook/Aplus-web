@@ -30,10 +30,15 @@ const EnterRoomFromMain = () => {
     if (!validate.name || !validate.password) return;
     if (isPending || isSuccess) return;
 
-    const res = await getRoomId(name);
+    const { data, status } = await getRoomId(name);
+
+    if (status === 403) {
+      setAlert(true);
+      return;
+    }
 
     const member = await getMember({
-      roomNumber: String(res),
+      roomNumber: String(data),
       roomPassword: password,
     });
 
@@ -43,7 +48,7 @@ const EnterRoomFromMain = () => {
     }
 
     setMember(member.data);
-    push(`/${res}/memberProfile`);
+    push(`/${data}/memberProfile`);
   };
 
   useEffect(() => {

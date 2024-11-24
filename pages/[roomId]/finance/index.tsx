@@ -135,7 +135,9 @@ const Finance = () => {
                 <Text type="LabelBold" color={Colors.Gray500}>
                   Income
                 </Text>
-                <Text type="H4">{`${financeInfo?.income.toLocaleString()}₩`}</Text>
+                <Text type="H4">{`${(
+                  financeInfo?.income ?? 0
+                ).toLocaleString()}₩`}</Text>
               </CurrentCashCardTitle>
             </CurrentCashCard>
             <CurrentCashCard onClick={() => handleClickRoute("expense")}>
@@ -143,7 +145,9 @@ const Finance = () => {
                 <Text type="LabelBold" color={Colors.Gray500}>
                   Expense
                 </Text>
-                <Text type="H4">{`${financeInfo?.expense.toLocaleString()}₩`}</Text>
+                <Text type="H4">{`${(
+                  financeInfo?.expense ?? 0
+                ).toLocaleString()}₩`}</Text>
               </CurrentCashCardTitle>
             </CurrentCashCard>
           </CurrentCash>

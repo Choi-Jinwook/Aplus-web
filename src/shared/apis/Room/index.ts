@@ -92,7 +92,7 @@ export const useGetRoomId = () => {
         { roomName: roomName },
       );
 
-      return res.data;
+      return res;
     },
     onSuccess: (data) => console.log(data),
   });
