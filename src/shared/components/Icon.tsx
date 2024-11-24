@@ -9,11 +9,24 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  ChoresBathroom,
+  ChoresDish,
+  ChoresEntrance,
+  ChoresGarden,
+  ChoresHousit,
+  ChoresKitchen,
+  ChoresLaundry,
+  ChoresLivingroom,
+  ChoresOffice,
+  ChoresToilet,
+  ChoresTrash,
+  ChoresVacuum,
   CircleInformation,
   CircleQuestion,
   CloseButton,
   DeleteButton,
   DotsHorizontal,
+  DotsVertical,
   EditButton,
   EyeClose,
   EyeOpen,
@@ -73,6 +86,30 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <ChevronRight size={size} color={color} />;
     case "Chevron_Up":
       return <ChevronUp size={size} color={color} />;
+    case "ChoresBathroom":
+      return <ChoresBathroom size={size} color={color} />;
+    case "ChoresDish":
+      return <ChoresDish size={size} color={color} />;
+    case "ChoresEntrance":
+      return <ChoresEntrance size={size} color={color} />;
+    case "ChoresGarden":
+      return <ChoresGarden size={size} color={color} />;
+    case "ChoresHousit":
+      return <ChoresHousit size={size} color={color} />;
+    case "ChoresKitchen":
+      return <ChoresKitchen size={size} color={color} />;
+    case "ChoresLaundry":
+      return <ChoresLaundry size={size} color={color} />;
+    case "ChoresLivingroom":
+      return <ChoresLivingroom size={size} color={color} />;
+    case "ChoresOffice":
+      return <ChoresOffice size={size} color={color} />;
+    case "ChoresToilet":
+      return <ChoresToilet size={size} color={color} />;
+    case "ChoresTrash":
+      return <ChoresTrash size={size} color={color} />;
+    case "ChoresVacuum":
+      return <ChoresVacuum size={size} color={color} />;
     case "Circle_Information":
       return <CircleInformation size={size} color={color} />;
     case "Circle_Question":
@@ -83,6 +120,8 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <DeleteButton size={size} color={color} />;
     case "Dots_Horizontal":
       return <DotsHorizontal size={size} color={color} />;
+    case "Dots_Vertical":
+      return <DotsVertical size={size} color={color} />;
     case "Edit_Button":
       return <EditButton size={size} color={color} />;
     case "Eye_Close":
