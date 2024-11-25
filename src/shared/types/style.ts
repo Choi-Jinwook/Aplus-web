@@ -65,6 +65,7 @@ export type IconType =
   | "Person_Add"
   | "Person"
   | "Plus_Button"
+  | "Redo"
   | "Settings"
   | "Toilet"
   | "TriangleDown"

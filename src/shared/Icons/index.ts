@@ -47,6 +47,7 @@ export { default as LogoMain } from "./LogoMain";
 export { default as PersonAdd } from "./PersonAdd";
 export { default as Person } from "./Person";
 export { default as PlusButton } from "./PlusButton";
+export { default as Redo } from "./Redo";
 export { default as Settings } from "./Settings";
 export { default as Toilet } from "./Toilet";
 export { default as TriangleDown } from "./TriangleDown";

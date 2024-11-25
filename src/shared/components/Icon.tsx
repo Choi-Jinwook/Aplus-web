@@ -48,6 +48,7 @@ import {
   Person,
   PersonAdd,
   PlusButton,
+  Redo,
   Settings,
   Toilet,
   TriangleDown,
@@ -164,6 +165,8 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <Person size={size} color={color} />;
     case "Plus_Button":
       return <PlusButton size={size} color={color} />;
+    case "Redo":
+      return <Redo size={size} color={color} />;
     case "Settings":
       return <Settings size={size} color={color} />;
     case "Toilet":
