@@ -14,8 +14,8 @@ const ChoresBathroom = ({ size = 32, color = "#A2AEBA" }: IconStyleProps) => {
         fill={color}
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M24.8 3.99967C23.3272 3.99967 22.1333 5.19358 22.1333 6.66634V10.6663H19.4667L19.4667 6.66634C19.4667 3.72082 21.8545 1.33301 24.8 1.33301C27.7455 1.33301 30.1333 3.72082 30.1333 6.66634V17.333H27.4667V6.66634C27.4667 5.19358 26.2728 3.99967 24.8 3.99967Z"
         fill={color}
       />
