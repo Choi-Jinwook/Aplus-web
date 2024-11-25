@@ -373,7 +373,3 @@ const AddNewButton = styled.div`
   ${Shadow.Medium};
   z-index: 9999;
 `;
-
-const AdjustHeight = styled.div`
-  height: 52px;
-`;

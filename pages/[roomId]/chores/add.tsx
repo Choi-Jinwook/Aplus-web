@@ -404,8 +404,6 @@ const ResponsibleContainer = styled.div`
   align-content: center;
 `;
 
-const Responsible = styled.div``;
-
 const ButtonContainer = styled.div`
   position: fixed;
   top: 9px;

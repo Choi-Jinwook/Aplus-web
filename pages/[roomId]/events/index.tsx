@@ -6,18 +6,21 @@ import { getMonth } from "@shared/utils";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { Colors } from "styles";
+import { Colors, Shadow } from "styles";
 
 const Event = () => {
   const {
     query: { roomId },
+    push,
   } = useRouter();
 
   const containerRef = useRef<HTMLElement | null>(null);
   const [showScroll2Top, setShowScroll2Top] = useState(false);
   const height = useRecoilValue(deviceHeight);
 
-  const { data: eventData } = useGetEvents(String(roomId));
+  const { data: eventData, refetch: eventRefetch } = useGetEvents(
+    String(roomId),
+  );
 
   const handleScroll2TopView = () => {
     const Y = window.scrollY;
@@ -26,6 +29,10 @@ const Event = () => {
     } else {
       setShowScroll2Top(false);
     }
+  };
+
+  const handleClickAddNew = () => {
+    push(`/${roomId}/events/add`);
   };
 
   useEffect(() => {
@@ -47,48 +54,76 @@ const Event = () => {
     };
   }, []);
 
+  useEffect(() => {
+    eventRefetch();
+  }, []);
+
   return (
-    <Container height={height} ref={containerRef}>
-      <ScrollTopContainer isShown={showScroll2Top}>
-        <Icon icon="Chevron_Up" color={Colors.Gray400} />
-        <Text type="LabelLight" color={Colors.Gray400}>
-          Scroll to see previous events
-        </Text>
-      </ScrollTopContainer>
-      <EventContainer>
-        {eventData &&
-          Object.entries(eventData).map(([year, months]) =>
-            Object.entries(months).map(([month, events]) => {
-              const monthName = getMonth(Number(month));
+    <>
+      {eventData && Object.keys(eventData).length !== 0 ? (
+        <Container height={height} ref={containerRef}>
+          <ScrollTopContainer isShown={showScroll2Top}>
+            <Icon icon="Chevron_Up" color={Colors.Gray400} />
+            <Text type="LabelLight" color={Colors.Gray400}>
+              Scroll to see previous events
+            </Text>
+          </ScrollTopContainer>
+          <EventContainer>
+            {eventData &&
+              Object.entries(eventData).map(([year, months]) =>
+                Object.entries(months).map(([month, events]) => {
+                  const monthName = getMonth(Number(month));
 
-              return (
-                <EventWrapper key={`${year}-${month}`} id={`${year}-${month}`}>
-                  <Text type="BodyBold" color={Colors.Gray500}>
-                    {monthName} {year}
-                  </Text>
-                  <Events>
-                    {events.map(({ eventId, eventName, eventDay, members }) => (
-                      <EventCard key={eventId}>
-                        <EventAlert>
-                          <Text type="BodyBold">{eventName}</Text>
-                          <Text type="LabelLight">{eventDay}</Text>
-                        </EventAlert>
-                        <MemberContainer>
-                          {members.map(({ memberId, memberName }) => (
-                            <Chip key={memberId}>{memberName}</Chip>
-                          ))}
-                        </MemberContainer>
-                      </EventCard>
-                    ))}
-                  </Events>
-                </EventWrapper>
-              );
-            }),
-          )}
-      </EventContainer>
+                  return (
+                    <EventWrapper
+                      key={`${year}-${month}`}
+                      id={`${year}-${month}`}
+                    >
+                      <Text type="BodyBold" color={Colors.Gray500}>
+                        {monthName} {year}
+                      </Text>
+                      <Events>
+                        {events.map(
+                          ({ eventId, eventName, eventDay, members }) => (
+                            <EventCard key={eventId}>
+                              <EventAlert>
+                                <Text type="BodyBold">{eventName}</Text>
+                                <Text type="LabelLight">{eventDay}</Text>
+                              </EventAlert>
+                              <MemberContainer>
+                                {members.map(({ memberId, memberName }) => (
+                                  <Chip key={memberId}>{memberName}</Chip>
+                                ))}
+                              </MemberContainer>
+                            </EventCard>
+                          ),
+                        )}
+                      </Events>
+                    </EventWrapper>
+                  );
+                }),
+              )}
+          </EventContainer>
 
-      <AdjustHeight />
-    </Container>
+          <AddNewButton onClick={handleClickAddNew}>
+            <Icon icon="Plus_Button" color={Colors.White} size={32} />
+          </AddNewButton>
+        </Container>
+      ) : (
+        <Empty height={height}>
+          <Text type="Body" color={Colors.Gray500}>
+            No events yet!
+          </Text>
+          <Text type="Body" color={Colors.Gray500}>
+            {`Add one and manage with HOUSIT :)`}
+          </Text>
+
+          <AddNewButton onClick={handleClickAddNew}>
+            <Icon icon="Plus_Button" color={Colors.White} size={32} />
+          </AddNewButton>
+        </Empty>
+      )}
+    </>
   );
 };
 
@@ -163,6 +198,31 @@ const MemberContainer = styled.div`
   align-items: center;
 `;
 
-const AdjustHeight = styled.div`
-  height: 66px;
+const AddNewButton = styled.div`
+  display: flex;
+  position: fixed;
+  width: 56px;
+  height: 56px;
+  bottom: 70px;
+  right: 20px;
+  border-radius: 28px;
+  background-color: ${Colors.Gray600};
+  padding: 16px;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  ${Shadow.Medium};
+  z-index: 9999;
+`;
+
+const Empty = styled.div<{ height: number | null }>`
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100vw;
+  height: ${({ height }) => height && `${height - 108}px`};
+  top: 48px;
+  background-color: ${Colors.Gray50};
+  justify-content: center;
+  align-items: center;
 `;
