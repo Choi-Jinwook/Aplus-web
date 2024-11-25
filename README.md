@@ -1,11 +1,13 @@
 ## Aplus-Web
 
-**This repository is for Capstone Design Project, 2024 Fall Semester.**
+**This is Team Aplus frontend repository for Capstone Design Project, 2024 Fall Semester.**
 **(prof. Hyungjoon Koo)**
 
 <hr />
 
 ## How to run
+
+### Please send email `jinwook.fe@gmail.com` to get environment variables and setup.
 
 1. Check if the node is installed
 
