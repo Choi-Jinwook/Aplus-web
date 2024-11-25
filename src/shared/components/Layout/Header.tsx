@@ -14,7 +14,9 @@ const Header = () => {
   } = useRouter();
   const currentPath = pathname.split("/")[2];
   const isChange =
-    pathname.split("/")[3] === "change" || pathname.split("/")[3] === "balance";
+    pathname.split("/")[3] === "change" ||
+    pathname.split("/")[3] === "balance" ||
+    pathname.split("/")[3] === "add";
   const paths = ["home", "foods", "finance", "events", "chores"];
 
   const handleClickLeft = () => {

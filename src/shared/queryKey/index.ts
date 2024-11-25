@@ -1,7 +1,7 @@
 export const QueryKey = {
   food: { get: "foodGet", post: "foodPost", put: "foodPut" },
   home: "Home",
-  chore: "Chore",
+  chore: { get: "ChoreGet", post: "ChorePost" },
   finance: {
     info: "financeInfo",
     history: "financeHistory",

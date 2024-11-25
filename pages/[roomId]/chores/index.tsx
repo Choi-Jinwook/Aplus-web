@@ -2,19 +2,25 @@ import styled from "@emotion/styled";
 import { useGetChores } from "@shared/apis/Chores";
 import { deviceHeight } from "@shared/atoms";
 import { Button, Chip, Icon, Text } from "@shared/components";
+import RandomRole from "@shared/components/ModalContent/RandomRole";
 import { ChoresBody, IconType } from "@shared/types";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { Colors, Shadow } from "styles";
 
 const Chore = () => {
   const {
     query: { roomId },
+    push,
   } = useRouter();
 
+  const [showRoleModal, setShowRoleModal] = useState(false);
   const height = useRecoilValue(deviceHeight);
 
-  const { data: choreData } = useGetChores(String(roomId));
+  const { data: choreData, refetch: choreRefetch } = useGetChores(
+    String(roomId),
+  );
 
   const getMembersRole = (data?: ChoresBody[]) => {
     if (data) {
@@ -26,8 +32,26 @@ const Chore = () => {
     }
   };
 
+  const handleClickAddNew = () => {
+    push(`/${roomId}/chores/add`);
+  };
+
+  const handleClickRandomModal = () => {
+    setShowRoleModal((prev) => !prev);
+  };
+
+  useEffect(() => {
+    choreRefetch();
+  }, []);
+
   return (
     <Container height={height}>
+      {showRoleModal && (
+        <RandomRole
+          handleRoleModal={handleClickRandomModal}
+          infoRefetch={choreRefetch}
+        />
+      )}
       <TodoSection>
         <Text type="BodyBold" color={Colors.Black}>
           Chores to do
@@ -57,7 +81,7 @@ const Chore = () => {
               );
             },
           )}
-          <AddNew>
+          <AddNew index={choreData?.length || 0} onClick={handleClickAddNew}>
             <Icon icon="Plus_Button" color={Colors.Gray600} />
             <Text type="Label" color={Colors.Gray600}>
               Add New
@@ -100,6 +124,7 @@ const Chore = () => {
           textType="LabelBold"
           buttonColor={Colors.Orange200}
           buttonSize="Normal"
+          onClick={handleClickRandomModal}
         >
           Assign Random Roles
         </Button>
@@ -148,10 +173,10 @@ const TodoCardContainer = styled.div`
 
 const TodoCardText = styled.div``;
 
-const AddNew = styled.div`
+const AddNew = styled.div<{ index: number }>`
   display: flex;
   flex-direction: column;
-  width: calc(50% - 4px);
+  width: ${({ index }) => (index % 2 === 0 ? `100%;` : "calc(50% - 4px);")} 
   border-radius: 16px;
   background-color: ${Colors.Blue100};
   padding: 20px 12px;

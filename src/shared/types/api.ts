@@ -20,6 +20,17 @@ export interface ChoreMembers {
   memberIcon: string | null;
 }
 
+export interface ChorePost {
+  choreArea: string;
+  color: string;
+  description: string;
+  icon: string;
+  choreDay: string;
+  choreFrequency: number;
+  enrolledDate: string;
+  memberIds: number[];
+}
+
 export interface ChoresBody {
   choreId: number;
   choreArea: string;
