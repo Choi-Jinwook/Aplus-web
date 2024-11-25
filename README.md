@@ -1,24 +1,25 @@
 ## Aplus-Web
 
-**2024년 가을학기 캡스톤디자인프로젝트 A조 프론트엔드 저장소입니다.**
+**This repository is for Capstone Design Project, 2024 Fall Semester.**
+**(prof. Hyungjoon Koo)**
 
 <hr />
 
-## 실행방법
+## How to run
 
-1. node 설치 확인
+1. Check if the node is installed
 
 ```terminal
 node -v
 ```
 
-2. yarn 설치 확인
+2. Check if the yarn is installed
 
 ```terminal
 yarn -v
 ```
 
-3. 저장소 복제 및 실행
+3. Clone the repository and Run as dev mode
 
 ```terminal
 git clone <repository link>
@@ -28,4 +29,8 @@ yarn install
 yarn dev
 ```
 
-4. <a>localhost:3000</a> 접속
+4. Go to <a>localhost:3000</a>
+
+## Notice
+
+The code quality is not **optimal** because additional features were continuously added, causing delays in the schedule, and the tight timeline left insufficient time for proper code design. **Please keep this in mind** when reviewing the code.
