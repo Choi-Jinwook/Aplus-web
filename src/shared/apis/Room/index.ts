@@ -72,12 +72,25 @@ export const useGetMember = () => {
       roomNumber: string;
       roomPassword: string;
     }) => {
-      const res = await axios.post<UserData[]>(
-        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/join`,
-        { roomPassword: roomPassword },
-      );
+      try {
+        const res = await axios.post<UserData[]>(
+          `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/join`,
+          { roomPassword: roomPassword },
+        );
 
-      return res;
+        return {
+          status: res.status,
+          data: res.data,
+        };
+      } catch (error: any) {
+        if (error.response) {
+          return {
+            status: error.response.status,
+            data: error.response.data,
+          };
+        }
+        throw error;
+      }
     },
     onSuccess: (data) => console.log(data),
   });

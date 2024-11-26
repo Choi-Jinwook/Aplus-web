@@ -28,7 +28,7 @@ const EnterRoomFromMain = () => {
 
   const handleClick = async () => {
     if (!validate.name || !validate.password) return;
-    if (isPending || isSuccess) return;
+    if (isPending) return;
 
     const { data, status } = await getRoomId(name);
 
@@ -41,6 +41,8 @@ const EnterRoomFromMain = () => {
       roomNumber: String(data),
       roomPassword: password,
     });
+
+    console.log(member.status);
 
     if (member.status === 403) {
       setAlert(true);
@@ -58,6 +60,8 @@ const EnterRoomFromMain = () => {
       password: password.length >= 6,
       name: name.trim().length >= 2,
     }));
+
+    if (alert) setAlert(false);
   }, [name, password]);
 
   return (
@@ -84,14 +88,7 @@ const EnterRoomFromMain = () => {
             onChange={handleChangePassword}
           />
           {alert && (
-            <Text
-              type="Label"
-              color={
-                validate.name && validate.password
-                  ? Colors.Gray400
-                  : Colors.State_Negative
-              }
-            >
+            <Text type="Label" color={Colors.State_Negative}>
               Incorrect password! Please try again
             </Text>
           )}
