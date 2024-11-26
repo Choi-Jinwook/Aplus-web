@@ -51,6 +51,10 @@ const FoodAdd = () => {
     setAmount((prev) => (type ? prev + 1 : Math.max(prev - 1, 0)));
   };
 
+  const handleChangeItemNum = (value: string) => {
+    setAmount(Number(value));
+  };
+
   const handleChangeDate = (type: boolean, value: string) => {
     if (type) {
       if (expirationDate !== "" && expirationDate < value) {
@@ -112,11 +116,27 @@ const FoodAdd = () => {
             </Text>
             <ItemAmountContainer>
               <AdjustItems isAmount={isAmount}>
-                <AmountButton onClick={() => handleClickAmount(false)}>
+                <AmountButton
+                  isLeft
+                  isAmount={isAmount}
+                  onClick={() => handleClickAmount(false)}
+                >
                   <Text type="Body">-</Text>
                 </AmountButton>
-                <Text type="Label">{amount}</Text>
-                <AmountButton onClick={() => handleClickAmount(true)}>
+                <ItemInputContainer>
+                  <ItemInput
+                    value={amount}
+                    placeholder="0"
+                    onChange={({ target: { value } }) =>
+                      handleChangeItemNum(value)
+                    }
+                  />
+                  {isAmount && <Text type="LabelLight">%</Text>}
+                </ItemInputContainer>
+                <AmountButton
+                  isAmount={isAmount}
+                  onClick={() => handleClickAmount(true)}
+                >
                   <Text type="Body">+</Text>
                 </AmountButton>
               </AdjustItems>
@@ -337,10 +357,31 @@ const AdjustItems = styled.div<{ isAmount: boolean }>`
   flex: 1 0 0;
 `;
 
-const AmountButton = styled.div`
+const AmountButton = styled.div<{ isAmount: boolean; isLeft?: boolean }>`
   width: 32px;
   height: 32px;
+  border-radius: ${({ isLeft }) => (isLeft ? `8px 0 0 8px;` : `0 8px 8px 0;`)} 
+  background-color: ${({ isAmount }) =>
+    isAmount ? Colors.Gray100 : Colors.Orange50};
   padding: 0 12px 4px 12px;
+`;
+
+const ItemInputContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  padding: 4px 12px;
+  align-items: center;
+`;
+
+const ItemInput = styled.input`
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  text-align: center;
+  outline: none;
 `;
 
 const ConvertButton = styled.div<{ isAmount: boolean }>`
