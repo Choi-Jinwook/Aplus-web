@@ -47,7 +47,7 @@ const EnterRoomFromMain = () => {
       return;
     }
 
-    setMember(member.data);
+    if (member.data) setMember(member.data);
     push(`/${data}/memberProfile`);
   };
 
