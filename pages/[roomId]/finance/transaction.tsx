@@ -132,7 +132,7 @@ const FinanceTransaction = () => {
   };
 
   useEffect(() => {
-    if (financeInfo) {
+    if (financeInfo && financeInfo.accounts.length !== 0) {
       setAccount({
         id: financeInfo.accounts[0].accountId,
         name: financeInfo.accounts[0].accountName,

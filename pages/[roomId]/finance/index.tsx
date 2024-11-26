@@ -47,6 +47,10 @@ const Finance = () => {
   );
 
   const handleClickRoute = (type: string) => {
+    if (type === "transaction") {
+      if (financeInfo && financeInfo.accounts.length === 0) return;
+    }
+
     push(`/${roomId}/finance/${type}`);
   };
 
