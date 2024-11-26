@@ -1,12 +1,12 @@
 import { QueryKey } from "@shared/queryKey";
-import { RoomBody, UserBody, UserData } from "@shared/types";
+import { RoomBody, RoomResponse, UserBody, UserData } from "@shared/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const usePostCreateRoom = () => {
   return useMutation({
     mutationFn: async (data: RoomBody) => {
-      const res = await axios.post(
+      const res = await axios.post<RoomResponse>(
         `${process.env.NEXT_PUBLIC_API_URL}/room`,
         data,
       );

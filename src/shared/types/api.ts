@@ -159,6 +159,11 @@ export interface RoomBody {
   masterMemberPassword: string | null;
 }
 
+export interface RoomResponse {
+  roomId: number;
+  masterMemberId: number;
+}
+
 export interface UserBody {
   memberName: string;
   memberPassword: string;

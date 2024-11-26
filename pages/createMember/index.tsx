@@ -1,6 +1,13 @@
 import styled from "@emotion/styled";
-import { usePostCreateRoom } from "@shared/apis";
-import { roomName, roomPassword, userName, userPassword } from "@shared/atoms";
+import { useGetMember, usePostCreateRoom } from "@shared/apis";
+import {
+  currentUser,
+  roomMembers,
+  roomName,
+  roomPassword,
+  userName,
+  userPassword,
+} from "@shared/atoms";
 import { Button, ControlledInput, Text } from "@shared/components";
 import { ERROR_MESSAGE } from "@shared/constants";
 import { useRouter } from "next/router";
@@ -14,8 +21,11 @@ const CreateMember = () => {
   const [passwordRoom, setPasswordRoom] = useRecoilState(roomPassword);
   const [name, setName] = useRecoilState(userName);
   const [password, setPassword] = useRecoilState(userPassword);
+  const [user, setUser] = useRecoilState(currentUser);
+  const [roomUser, setRoomUser] = useRecoilState(roomMembers);
   const [validate, setValidate] = useState({ name: false, password: false });
 
+  const { mutateAsync: getMember } = useGetMember();
   const { mutateAsync: postRoom, isPending, isSuccess } = usePostCreateRoom();
 
   const handleChangeName = useCallback((value: string) => {
@@ -39,7 +49,19 @@ const CreateMember = () => {
           description: "",
         });
 
-        push(`/${roomData.roomId}/home`);
+        if (roomData) {
+          const member = await getMember({
+            roomNumber: String(roomData.roomId),
+            roomPassword: passwordRoom,
+          });
+          setRoomUser(member.data);
+          setUser(
+            member.data.filter(
+              ({ memberId }) => memberId === roomData.masterMemberId,
+            ),
+          );
+          push(`/${roomData.roomId}/home`);
+        }
       } catch (error) {
         alert(ERROR_MESSAGE.NORMAL(error));
       }
