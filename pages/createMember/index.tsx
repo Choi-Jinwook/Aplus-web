@@ -54,13 +54,16 @@ const CreateMember = () => {
             roomNumber: String(roomData.roomId),
             roomPassword: passwordRoom,
           });
-          setRoomUser(member.data);
-          setUser(
-            member.data.filter(
-              ({ memberId }) => memberId === roomData.masterMemberId,
-            ),
-          );
-          push(`/${roomData.roomId}/home`);
+
+          if (member.data) {
+            setRoomUser(member.data);
+            setUser(
+              member.data.filter(
+                ({ memberId }) => memberId === roomData.masterMemberId,
+              ),
+            );
+            push(`/${roomData.roomId}/home`);
+          }
         }
       } catch (error) {
         alert(ERROR_MESSAGE.NORMAL(error));

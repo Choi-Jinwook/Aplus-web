@@ -86,7 +86,6 @@ export const useGetMember = () => {
         if (error.response) {
           return {
             status: error.response.status,
-            data: error.response.data,
           };
         }
         throw error;
