@@ -77,8 +77,8 @@ const FinanceBalance = () => {
         return acc;
       }, {});
 
-      const sum = historyData.reduce((acc, { amount }) => {
-        return acc + amount;
+      const sum = historyData.reduce((acc, { amount, txnType }) => {
+        return txnType === "DEPOSIT" ? acc + amount : acc - amount;
       }, 0);
 
       setFormattedHistory(sortedHistory);

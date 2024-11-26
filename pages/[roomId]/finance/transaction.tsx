@@ -96,7 +96,6 @@ const FinanceTransaction = () => {
 
   const handleClickSave = async () => {
     if (!checkValidate()) return;
-    console.log("zz");
 
     try {
       if (txnType === "Transfer") {
