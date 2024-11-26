@@ -42,8 +42,6 @@ const EnterRoomFromMain = () => {
       roomPassword: password,
     });
 
-    console.log(member.status);
-
     if (member.status === 403) {
       setAlert(true);
       return;

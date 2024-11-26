@@ -94,8 +94,6 @@ const ChoresAdd = () => {
 
     const choreDay = assignedDay
       .map((day, index) => {
-        console.log(day);
-
         if (day) return getDay(index);
       })
       .filter((value) => value !== undefined)
