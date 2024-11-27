@@ -17,6 +17,9 @@ const FoodAdd = () => {
   } = useRouter();
   const today = new Date();
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
   const [currentOption, setCurrentOption] = useState<Option>("Manual");
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
@@ -53,7 +56,11 @@ const FoodAdd = () => {
   const handleClickOption = (value: Option) => {
     setCurrentOption(value);
 
-    if (value === "Barcode") openCamera();
+    if (value === "Barcode") {
+      setIsError(false);
+      setIsLoading(true);
+      openCamera();
+    }
   };
 
   const handleClickPercentage = () => {
@@ -123,13 +130,25 @@ const FoodAdd = () => {
     if (typeof window !== "undefined") {
       if (window.AndroidBridge) {
         window.handleProductInfo = (productName, expirationDate) => {
+          console.log(productName);
+
           handleChangeFoodName(productName);
+          setIsError(false);
+          setIsLoading(false);
+        };
+        window.handleProductInfoError = (errorMessage) => {
+          console.log("errorMessage", errorMessage);
+          setIsError(true);
+          setErrMessage(`Barcode error: ${errorMessage}`);
+          setIsLoading(false);
         };
       } else {
         console.error("AndroidBridge is not available at useEffect.");
       }
     }
   }, []);
+
+  console.log(name);
 
   return (
     <Container height={height}>
@@ -337,6 +356,16 @@ const FoodAdd = () => {
         {dateWarn && (
           <Text type="LabelLight" color={Colors.State_Negative}>
             Wrong Date Input
+          </Text>
+        )}
+        {isLoading && (
+          <Text type="LabelLight" color={Colors.Orange200}>
+            Loading...
+          </Text>
+        )}
+        {isError && (
+          <Text type="LabelLight" color={Colors.Orange200}>
+            {errMessage}
           </Text>
         )}
 

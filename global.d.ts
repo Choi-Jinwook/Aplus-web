@@ -7,5 +7,6 @@ declare global {
     };
 
     handleProductInfo: (productName: string, expirationDate: string) => void;
+    handleProductInfoError: (errorMessage: any) => void;
   }
 }
