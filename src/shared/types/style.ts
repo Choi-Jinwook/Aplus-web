@@ -21,6 +21,7 @@ export type IconType =
   | "Arrow_Left"
   | "Arrow_Right"
   | "Arrow_Up"
+  | "Barcode"
   | "Check_Button"
   | "Chevron_Down"
   | "Chevron_Left"

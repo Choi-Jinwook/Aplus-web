@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
+  Barcode,
   CheckButton,
   ChevronDown,
   ChevronLeft,
@@ -77,6 +78,8 @@ const Icon = ({ icon, color = "#000000", size = 24 }: IconProps) => {
       return <ArrowRight size={size} color={color} />;
     case "Arrow_Up":
       return <ArrowUp size={size} color={color} />;
+    case "Barcode":
+      return <Barcode size={size} color={color} />;
     case "Check_Button":
       return <CheckButton size={size} color={color} />;
     case "Chevron_Down":

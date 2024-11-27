@@ -3,6 +3,7 @@ export { default as ArrowDown } from "./ArrowDown";
 export { default as ArrowLeft } from "./ArrowLeft";
 export { default as ArrowRight } from "./ArrowRight";
 export { default as ArrowUp } from "./ArrowUp";
+export { default as Barcode } from "./Barcode";
 export { default as CheckButton } from "./CheckButton";
 export { default as ChevronDown } from "./ChevronDown";
 export { default as ChevronLeft } from "./ChevronLeft";
