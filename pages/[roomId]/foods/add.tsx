@@ -1,12 +1,14 @@
 import styled from "@emotion/styled";
 import { usePostFoods } from "@shared/apis";
 import { deviceHeight, roomMembers } from "@shared/atoms";
-import { Chip, ControlledInput, Text } from "@shared/components";
+import { Chip, Icon, Text } from "@shared/components";
 import { StorageType } from "@shared/types";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { Colors, Shadow } from "styles";
+
+type Option = "Manual" | "Barcode";
 
 const FoodAdd = () => {
   const {
@@ -14,6 +16,8 @@ const FoodAdd = () => {
     push,
   } = useRouter();
   const today = new Date();
+
+  const [currentOption, setCurrentOption] = useState<Option>("Manual");
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
   const [storageType, setStorageType] = useState<StorageType>("refrigerated");
@@ -31,9 +35,26 @@ const FoodAdd = () => {
 
   const { mutateAsync: postFoods } = usePostFoods();
 
+  const openCamera = () => {
+    if (
+      window.AndroidBridge &&
+      typeof window.AndroidBridge.openCameraWithQuery === "function"
+    ) {
+      window.AndroidBridge.openCameraWithQuery(String(roomId));
+    } else {
+      console.error("AndroidBridge is not available.");
+    }
+  };
+
   const handleChangeFoodName = useCallback((value: string) => {
     setName(value);
   }, []);
+
+  const handleClickOption = (value: Option) => {
+    setCurrentOption(value);
+
+    if (value === "Barcode") openCamera();
+  };
 
   const handleClickPercentage = () => {
     setIsAmount((prev) => !prev);
@@ -80,7 +101,7 @@ const FoodAdd = () => {
       await postFoods({
         roomNumber: String(roomId),
         data: {
-          foodName: name,
+          foodName: String(name),
           isFavorite: false,
           isShared: owner === "All",
           createAt: purchaseDate,
@@ -98,200 +119,241 @@ const FoodAdd = () => {
     }
   };
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.AndroidBridge) {
+        window.handleProductInfo = (productName, expirationDate) => {
+          handleChangeFoodName(productName);
+        };
+      } else {
+        console.error("AndroidBridge is not available at useEffect.");
+      }
+    }
+  }, []);
+
   return (
     <Container height={height}>
-      <>
-        <TitleContainer>
-          <ControlledInput
-            showOutline
-            inputType="text"
-            placeholder="Food Name"
-            onChange={handleChangeFoodName}
+      <OptionSelector>
+        <OptionContainer
+          onClick={() => handleClickOption("Manual")}
+          isSelected={currentOption === "Manual"}
+        >
+          <Icon
+            icon="Edit_Button"
+            color={currentOption === "Manual" ? Colors.Gray600 : Colors.Gray400}
           />
-        </TitleContainer>
-        <FoodInfoContainer>
-          <NumOfItems>
-            <Text type="LabelLight" color={Colors.Gray600}>
-              Number of Items
-            </Text>
-            <ItemAmountContainer>
-              <AdjustItems isAmount={isAmount}>
-                <AmountButton
-                  isLeft
-                  isAmount={isAmount}
-                  onClick={() => handleClickAmount(false)}
-                >
-                  <Text type="Body">-</Text>
-                </AmountButton>
-                <ItemInputContainer>
-                  <ItemInput
-                    value={amount}
-                    placeholder="0"
-                    onChange={({ target: { value } }) =>
-                      handleChangeItemNum(value)
-                    }
-                  />
-                  {isAmount && <Text type="LabelLight">%</Text>}
-                </ItemInputContainer>
-                <AmountButton
-                  isAmount={isAmount}
-                  onClick={() => handleClickAmount(true)}
-                >
-                  <Text type="Body">+</Text>
-                </AmountButton>
-              </AdjustItems>
-              <ConvertButton
-                isAmount={!isAmount}
-                onClick={handleClickPercentage}
+          <Text
+            type="Label"
+            color={currentOption === "Manual" ? Colors.Gray600 : Colors.Gray400}
+          >
+            add manually
+          </Text>
+        </OptionContainer>
+        <OptionContainer
+          onClick={() => handleClickOption("Barcode")}
+          isSelected={currentOption === "Barcode"}
+        >
+          <Icon
+            icon="Barcode"
+            color={
+              currentOption === "Barcode" ? Colors.Gray600 : Colors.Gray400
+            }
+          />
+          <Text
+            ellipsis
+            type="Label"
+            color={
+              currentOption === "Barcode" ? Colors.Gray600 : Colors.Gray400
+            }
+          >
+            add via barcode
+          </Text>
+        </OptionContainer>
+      </OptionSelector>
+      <ChoreNameContainer>
+        <ChoreNameInput
+          value={name}
+          placeholder="Event Name"
+          onChange={({ target: { value } }) => handleChangeFoodName(value)}
+        />
+      </ChoreNameContainer>
+      <FoodInfoContainer>
+        <NumOfItems>
+          <Text type="LabelLight" color={Colors.Gray600}>
+            Number of Items
+          </Text>
+          <ItemAmountContainer>
+            <AdjustItems isAmount={isAmount}>
+              <AmountButton
+                isLeft
+                isAmount={isAmount}
+                onClick={() => handleClickAmount(false)}
               >
-                <Text type="Label">Show as percentage</Text>
-              </ConvertButton>
-            </ItemAmountContainer>
-          </NumOfItems>
+                <Text type="Body">-</Text>
+              </AmountButton>
+              <ItemInputContainer>
+                <ItemInput
+                  value={amount}
+                  placeholder="0"
+                  onChange={({ target: { value } }) =>
+                    handleChangeItemNum(value)
+                  }
+                />
+                {isAmount && <Text type="LabelLight">%</Text>}
+              </ItemInputContainer>
+              <AmountButton
+                isAmount={isAmount}
+                onClick={() => handleClickAmount(true)}
+              >
+                <Text type="Body">+</Text>
+              </AmountButton>
+            </AdjustItems>
+            <ConvertButton isAmount={!isAmount} onClick={handleClickPercentage}>
+              <Text type="Label">Show as percentage</Text>
+            </ConvertButton>
+          </ItemAmountContainer>
+        </NumOfItems>
 
-          <StorageMethod>
-            <Text type="LabelLight" color={Colors.Gray600}>
-              Storage Method
-            </Text>
-            <SegmentedPicker>
-              <MethodContainer
-                onClick={() => handleClickStorageMethod("refrigerated")}
-                isSelected={storageType === "refrigerated"}
-              >
-                <Text
-                  type="Label"
-                  color={
-                    storageType === "refrigerated"
-                      ? Colors.Gray600
-                      : Colors.Gray400
-                  }
-                >
-                  Refrigerated
-                </Text>
-              </MethodContainer>
-              <MethodContainer
-                onClick={() => handleClickStorageMethod("frozen")}
-                isSelected={storageType === "frozen"}
-              >
-                <Text
-                  type="Label"
-                  color={
-                    storageType === "frozen" ? Colors.Gray600 : Colors.Gray400
-                  }
-                >
-                  Frozen
-                </Text>
-              </MethodContainer>
-              <MethodContainer
-                onClick={() => handleClickStorageMethod("roomTemperature")}
-                isSelected={storageType === "roomTemperature"}
-              >
-                <Text
-                  type="Label"
-                  color={
-                    storageType === "roomTemperature"
-                      ? Colors.Gray600
-                      : Colors.Gray400
-                  }
-                >
-                  Room temp
-                </Text>
-              </MethodContainer>
-            </SegmentedPicker>
-          </StorageMethod>
-
-          <Owner>
-            <Text type="LabelLight" color={Colors.Gray600}>
-              Owner
-            </Text>
-            <Users>
-              <Chip
-                onClick={() => handleClickOwner("All")}
-                color={owner === "All" ? Colors.Orange200 : Colors.Gray400}
-                backgroundColor={
-                  owner === "All" ? Colors.Orange50 : Colors.Gray50
+        <StorageMethod>
+          <Text type="LabelLight" color={Colors.Gray600}>
+            Storage Method
+          </Text>
+          <SegmentedPicker>
+            <MethodContainer
+              onClick={() => handleClickStorageMethod("refrigerated")}
+              isSelected={storageType === "refrigerated"}
+            >
+              <Text
+                type="Label"
+                color={
+                  storageType === "refrigerated"
+                    ? Colors.Gray600
+                    : Colors.Gray400
                 }
               >
-                All
+                Refrigerated
+              </Text>
+            </MethodContainer>
+            <MethodContainer
+              onClick={() => handleClickStorageMethod("frozen")}
+              isSelected={storageType === "frozen"}
+            >
+              <Text
+                type="Label"
+                color={
+                  storageType === "frozen" ? Colors.Gray600 : Colors.Gray400
+                }
+              >
+                Frozen
+              </Text>
+            </MethodContainer>
+            <MethodContainer
+              onClick={() => handleClickStorageMethod("roomTemperature")}
+              isSelected={storageType === "roomTemperature"}
+            >
+              <Text
+                type="Label"
+                color={
+                  storageType === "roomTemperature"
+                    ? Colors.Gray600
+                    : Colors.Gray400
+                }
+              >
+                Room temp
+              </Text>
+            </MethodContainer>
+          </SegmentedPicker>
+        </StorageMethod>
+
+        <Owner>
+          <Text type="LabelLight" color={Colors.Gray600}>
+            Owner
+          </Text>
+          <Users>
+            <Chip
+              onClick={() => handleClickOwner("All")}
+              color={owner === "All" ? Colors.Orange200 : Colors.Gray400}
+              backgroundColor={
+                owner === "All" ? Colors.Orange50 : Colors.Gray50
+              }
+            >
+              All
+            </Chip>
+            {member?.map(({ memberId, memberName }) => (
+              <Chip
+                onClick={() => handleClickOwner(memberName)}
+                key={memberId}
+                color={owner === memberName ? Colors.Orange200 : Colors.Gray400}
+                backgroundColor={
+                  owner === memberName ? Colors.Orange50 : Colors.Gray50
+                }
+              >
+                {memberName}
               </Chip>
-              {member?.map(({ memberId, memberName }) => (
-                <Chip
-                  onClick={() => handleClickOwner(memberName)}
-                  key={memberId}
-                  color={
-                    owner === memberName ? Colors.Orange200 : Colors.Gray400
-                  }
-                  backgroundColor={
-                    owner === memberName ? Colors.Orange50 : Colors.Gray50
-                  }
-                >
-                  {memberName}
-                </Chip>
-              ))}
-            </Users>
-          </Owner>
+            ))}
+          </Users>
+        </Owner>
 
-          <FoodDate>
-            <DateContainer>
-              <Text type="LabelLight" color={Colors.Gray600}>
-                Purchase Date
-              </Text>
-              <DatePicker>
-                <DateInput
-                  value={
-                    purchaseDate === ""
-                      ? today.toISOString().split("T")[0]
-                      : purchaseDate
-                  }
-                  type="date"
-                  placeholder="YYYY-MM-DD"
-                  onChange={({ target: { value } }) =>
-                    handleChangeDate(true, value)
-                  }
-                />
-              </DatePicker>
-            </DateContainer>
-            <DateContainer>
-              <Text type="LabelLight" color={Colors.Gray600}>
-                Expiration Date
-              </Text>
-              <DatePicker>
-                <DateInput
-                  value={
-                    expirationDate === ""
-                      ? today.toISOString().split("T")[0]
-                      : expirationDate
-                  }
-                  type="date"
-                  placeholder="YYYY-MM-DD"
-                  onChange={({ target: { value } }) =>
-                    handleChangeDate(false, value)
-                  }
-                />
-              </DatePicker>
-            </DateContainer>
-          </FoodDate>
-          {dateWarn && (
-            <Text type="LabelLight" color={Colors.State_Negative}>
-              Wrong Date Input
+        <FoodDate>
+          <DateContainer>
+            <Text type="LabelLight" color={Colors.Gray600}>
+              Purchase Date
             </Text>
-          )}
+            <DatePicker>
+              <DateInput
+                value={
+                  purchaseDate === ""
+                    ? today.toISOString().split("T")[0]
+                    : purchaseDate
+                }
+                type="date"
+                placeholder="YYYY-MM-DD"
+                onChange={({ target: { value } }) =>
+                  handleChangeDate(true, value)
+                }
+              />
+            </DatePicker>
+          </DateContainer>
+          <DateContainer>
+            <Text type="LabelLight" color={Colors.Gray600}>
+              Expiration Date
+            </Text>
+            <DatePicker>
+              <DateInput
+                value={
+                  expirationDate === ""
+                    ? today.toISOString().split("T")[0]
+                    : expirationDate
+                }
+                type="date"
+                placeholder="YYYY-MM-DD"
+                onChange={({ target: { value } }) =>
+                  handleChangeDate(false, value)
+                }
+              />
+            </DatePicker>
+          </DateContainer>
+        </FoodDate>
+        {dateWarn && (
+          <Text type="LabelLight" color={Colors.State_Negative}>
+            Wrong Date Input
+          </Text>
+        )}
 
-          <SaveButton
-            isActive={
-              name !== "" &&
-              owner !== "" &&
-              purchaseDate !== "" &&
-              expirationDate !== ""
-            }
-            onClick={handleClickSave}
-          >
-            <Text type="Label" color={Colors.White}>
-              Save
-            </Text>
-          </SaveButton>
-        </FoodInfoContainer>
-      </>
+        <SaveButton
+          isActive={
+            name !== "" &&
+            owner !== "" &&
+            purchaseDate !== "" &&
+            expirationDate !== ""
+          }
+          onClick={handleClickSave}
+        >
+          <Text type="Label" color={Colors.White}>
+            Save
+          </Text>
+        </SaveButton>
+      </FoodInfoContainer>
     </Container>
   );
 };
@@ -315,11 +377,45 @@ const Container = styled.main<{ height: number | null }>`
   }
 `;
 
-const TitleContainer = styled.section`
+const OptionSelector = styled.section`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const OptionContainer = styled.div<{ isSelected: boolean }>`
+  display: flex;
+  width: 50%;
+  height: 36px;
+  border: 1px solid ${Colors.Gray100};
+  background-color: ${({ isSelected }) =>
+    isSelected ? Colors.Orange50 : Colors.White};
+  padding: 4px 16px;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ChoreNameContainer = styled.section`
+  display: flex;
+  height: 44px;
   border-radius: 16px;
   background-color: ${Colors.White};
-  padding: 8px 16px;
+  padding: 0px 16px;
+  gap: 10px;
+  align-items: center;
   ${Shadow.Small};
+`;
+
+const ChoreNameInput = styled.input`
+  width: 100%;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: -0.16px;
+  border: none;
+  outline: none;
 `;
 
 const FoodInfoContainer = styled.section`

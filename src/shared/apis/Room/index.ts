@@ -1,6 +1,6 @@
 import { QueryKey } from "@shared/queryKey";
 import { RoomBody, RoomResponse, UserBody, UserData } from "@shared/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
 export const usePostCreateRoom = () => {
