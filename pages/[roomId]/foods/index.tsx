@@ -54,7 +54,7 @@ const Food = () => {
   const handleClickFood = (category: string, index: number) => {
     if (foods) {
       setCurrentFood(foods[category][index]);
-      push(`/${roomId}/foods/change?category=${category}`);
+      // push(`/${roomId}/foods/change?category=${category}`);
     }
   };
 
