@@ -21,8 +21,10 @@ const FinanceTransaction = () => {
     push,
   } = useRouter();
 
+  const [isError, setIsError] = useState(false);
   const [txnType, setTxnType] = useState<TxnType>("Income");
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
+  const [isOpenTxnDropdown, setIsOpenTxnDropdown] = useState(false);
   const [account, setAccount] = useState({
     id: 0,
     name: "",
@@ -48,15 +50,25 @@ const FinanceTransaction = () => {
     setTxnType(value);
   };
 
-  const handleClickDropdown = () => {
-    setIsOpenDropdown((prev) => !prev);
+  const handleClickDropdown = (type: boolean) => {
+    if (type) {
+      setIsOpenDropdown((prev) => !prev);
+      setIsOpenTxnDropdown(false);
+
+      return;
+    }
+
+    setIsOpenDropdown(false);
+    setIsOpenTxnDropdown((prev) => !prev);
   };
 
   const handleChangeAccount = (id: number, value: string) => {
+    setIsError(false);
     setAccount({ id: id, name: value });
   };
 
   const handleChangeTxnAccount = (id: number, value: string) => {
+    setIsError(false);
     setTxnAccount({ id: id, name: value });
   };
 
@@ -99,10 +111,15 @@ const FinanceTransaction = () => {
 
     try {
       if (txnType === "Transfer") {
+        if (account.id === txnAccount.id) {
+          setIsError(true);
+          return;
+        }
+
         await postTransfer({
           roomNumber: String(roomId),
-          from: String(txnAccount.id),
-          to: String(account.id),
+          from: String(account.id),
+          to: String(txnAccount.id),
           data: {
             amount: Number(amount),
             txnType: "TRANSFER",
@@ -138,6 +155,10 @@ const FinanceTransaction = () => {
       });
     }
   }, [financeInfo]);
+
+  useEffect(() => {
+    setIsError(false);
+  }, [txnType]);
 
   return (
     <Container height={height}>
@@ -183,7 +204,7 @@ const FinanceTransaction = () => {
             <Text type="LabelLight" color={Colors.Gray600}>{`${
               txnType === "Transfer" ? "Withdrawal" : "Deposit"
             } Account`}</Text>
-            <AccountsContainer onClick={handleClickDropdown}>
+            <AccountsContainer onClick={() => handleClickDropdown(true)}>
               <AccountsWrapper>
                 <Text type="Body" color={Colors.Gray600} ellipsis>
                   {account.name}
@@ -223,21 +244,21 @@ const FinanceTransaction = () => {
               <Text type="LabelLight" color={Colors.Gray600}>
                 Deposit Account
               </Text>
-              <AccountsContainer onClick={handleClickDropdown}>
+              <AccountsContainer onClick={() => handleClickDropdown(false)}>
                 <AccountsWrapper>
                   <Text type="Body" color={Colors.Gray600} ellipsis>
-                    {account.name}
+                    {txnAccount.name}
                   </Text>
                   <Icon
-                    icon={isOpenDropdown ? "Chevron_Up" : "Chevron_Down"}
+                    icon={isOpenTxnDropdown ? "Chevron_Up" : "Chevron_Down"}
                     color={Colors.Gray300}
                   />
                 </AccountsWrapper>
-                {isOpenDropdown && (
+                {isOpenTxnDropdown && (
                   <DropDownMenu>
                     {financeInfo?.accounts.map(({ accountId, accountName }) => (
                       <MenuItems
-                        isSelected={account.name === accountName}
+                        isSelected={txnAccount.name === accountName}
                         key={accountId}
                         onClick={() =>
                           handleChangeTxnAccount(accountId, accountName)
@@ -247,7 +268,7 @@ const FinanceTransaction = () => {
                           <Text type="Body" color={Colors.Gray600} ellipsis>
                             {accountName}
                           </Text>
-                          {account.name === accountName && (
+                          {txnAccount.name === accountName && (
                             <Icon icon="Check_Button" color={Colors.Gray400} />
                           )}
                         </MenuItem>
@@ -304,14 +325,18 @@ const FinanceTransaction = () => {
               </DueDateInputContainer>
             </ContentWrapper>
           </AmountDueDate>
+
+          {isError && (
+            <Text type="Label" color={Colors.Orange200}>
+              Error: Transfer Accounts should not be same
+            </Text>
+          )}
         </ContentContainer>
       </Wrapper>
 
       <FixedArea>
         <Button
-          textColor={
-            description !== "" && account.id ? Colors.White : Colors.Gray500
-          }
+          textColor={checkValidate() ? Colors.White : Colors.Gray500}
           textType="BodyBold"
           buttonColor={checkValidate() ? Colors.Orange200 : Colors.Gray200}
           buttonSize="Normal"
@@ -412,12 +437,14 @@ const AccountsWrapper = styled.div`
 const DropDownMenu = styled.div`
   display: flex;
   position: absolute;
+  flex-direction: column;
   width: 100%;
   top: 52px;
   border: 1px solid ${Colors.Gray100};
   border-radius: 8px;
   background-color: ${Colors.White};
   ${Shadow.Medium};
+  z-index: 999;
 `;
 
 const MenuItems = styled.div<{ isSelected?: boolean }>`
