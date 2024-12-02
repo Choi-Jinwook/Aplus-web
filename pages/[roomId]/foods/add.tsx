@@ -129,8 +129,22 @@ const FoodAdd = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (window.AndroidBridge) {
-        window.handleProductInfo = (productName, expirationDate) => {
-          console.log(productName);
+        window.handleProductInfo = (productName, storageMethod) => {
+          console.log(productName, storageMethod);
+
+          if (storageMethod !== "") {
+            switch (storageMethod) {
+              case "냉장":
+                setStorageType("refrigerated");
+                return;
+              case "냉동":
+                setStorageType("frozen");
+                return;
+              default:
+                setStorageType("roomTemperature");
+                return;
+            }
+          }
 
           handleChangeFoodName(productName);
           setIsError(false);

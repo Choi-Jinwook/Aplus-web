@@ -6,7 +6,7 @@ declare global {
       openCameraWithQuery: (query: string) => void;
     };
 
-    handleProductInfo: (productName: string, expirationDate: string) => void;
+    handleProductInfo: (productName: string, storageMethod: string) => void;
     handleProductInfoError: (errorMessage: any) => void;
   }
 }
