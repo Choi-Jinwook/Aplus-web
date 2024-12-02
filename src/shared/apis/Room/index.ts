@@ -1,5 +1,5 @@
 import { QueryKey } from "@shared/queryKey";
-import { RoomBody, RoomResponse, UserBody, UserData } from "@shared/types";
+import { ChoreMembers, RoomBody, RoomResponse, UserBody } from "@shared/types";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -73,7 +73,7 @@ export const useGetMember = () => {
       roomPassword: string;
     }) => {
       try {
-        const res = await axios.post<UserData[]>(
+        const res = await axios.post<ChoreMembers[]>(
           `${process.env.NEXT_PUBLIC_API_URL}/room/${roomNumber}/join`,
           { roomPassword: roomPassword },
         );

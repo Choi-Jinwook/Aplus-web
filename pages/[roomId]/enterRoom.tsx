@@ -29,19 +29,15 @@ const EnterRoom = () => {
     if (isPending) return;
 
     try {
-      const { data, status } = await postMemberPassword({
+      await postMemberPassword({
         roomId: String(roomId),
         memberId: String(id),
         data: { memberPassword: password },
       });
 
-      if (status === 401) {
-        setIsError(true);
-        return;
-      }
-
       push(`/${roomId}/home`);
     } catch (error) {
+      setIsError(true);
       console.error(error);
     }
   };
@@ -50,6 +46,7 @@ const EnterRoom = () => {
     if (member) {
       const user = member.filter(({ memberId }) => memberId === Number(id));
       setUser(user);
+      if (!user[0].hasPassword) push(`/${roomId}/home`);
     }
   }, [member, id]);
 

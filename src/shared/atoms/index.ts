@@ -1,4 +1,4 @@
-import { FoodsBody, UserData } from "@shared/types";
+import { ChoreMembers, FoodsBody } from "@shared/types";
 import { atom } from "recoil";
 
 export const roomName = atom<string>({
@@ -21,7 +21,7 @@ export const userPassword = atom<string>({
   key: "userPassword",
 });
 
-export const currentUser = atom<UserData[] | null>({
+export const currentUser = atom<ChoreMembers[] | null>({
   default: null,
   key: "currentUser",
 });
@@ -36,7 +36,7 @@ export const currentChangeFood = atom<FoodsBody | null>({
   key: "currentChangeFood",
 });
 
-export const roomMembers = atom<UserData[] | null>({
+export const roomMembers = atom<ChoreMembers[] | null>({
   default: null,
   key: "roomMembers",
 });

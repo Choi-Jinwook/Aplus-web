@@ -41,11 +41,6 @@ const EnterRoomFromMain = () => {
 
     const { data, status } = await getRoomId(name);
 
-    if (status === 403) {
-      setAlert({ type: "roomPassword", status: true });
-      return;
-    }
-
     if (status === 400) {
       setAlert({ type: "roomName", status: true });
       return;
@@ -57,7 +52,7 @@ const EnterRoomFromMain = () => {
     });
 
     if (member.status === 403) {
-      setAlert({ type: "memberGet", status: true });
+      setAlert({ type: "roomPassword", status: true });
       return;
     }
 
