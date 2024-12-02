@@ -50,6 +50,8 @@ const FoodAdd = () => {
   };
 
   const handleChangeFoodName = useCallback((value: string) => {
+    if (isLoading) return;
+
     setName(value);
   }, []);
 
@@ -68,6 +70,8 @@ const FoodAdd = () => {
   };
 
   const handleClickStorageMethod = (type: StorageType) => {
+    if (isLoading) return;
+
     setStorageType(type);
   };
 
