@@ -109,3 +109,26 @@ export const useGetRoomId = () => {
     onSuccess: (data) => console.log(data),
   });
 };
+
+export const usePostMemberPassword = () => {
+  return useMutation({
+    mutationKey: [QueryKey.room.passowrd],
+    mutationFn: async ({
+      roomId,
+      memberId,
+      data,
+    }: {
+      roomId: string;
+      memberId: string;
+      data: { roomPassword: string };
+    }) => {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/room/${roomId}/memberId/${memberId}/join`,
+        data,
+      );
+
+      return res;
+    },
+    onSuccess: (data) => console.log(data),
+  });
+};

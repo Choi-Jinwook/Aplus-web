@@ -23,6 +23,11 @@ export const QueryKey = {
     eg: "getExpense",
   },
   event: { get: "eventGet", post: "eventPost" },
-  room: { get: "roomGet", post: "roomPost", roomId: "getRoomId" },
+  room: {
+    get: "roomGet",
+    post: "roomPost",
+    roomId: "getRoomId",
+    passowrd: "postPassword",
+  },
   user: { get: "userGet", post: "userPost", put: "userPut" },
 };

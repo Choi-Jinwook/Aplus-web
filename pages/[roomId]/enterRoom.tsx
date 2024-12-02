@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { usePostMemberPassword } from "@shared/apis";
 import { currentUser, roomMembers } from "@shared/atoms";
 import { Button, ControlledInput, Text } from "@shared/components";
 import { useRouter } from "next/router";
@@ -17,15 +18,29 @@ const EnterRoom = () => {
   const [user, setUser] = useRecoilState(currentUser);
   const [member, setMember] = useRecoilState(roomMembers);
 
+  const { mutateAsync: postMemberPassword } = usePostMemberPassword();
+
   const handleChangePassword = (value: string) => {
     setPassword(value);
   };
 
   const handleClick = async () => {
-    // TODO: Backend Error
-    // if (user && user[0].memberPassword === password) {
-    push(`/${roomId}/home`);
-    return;
+    try {
+      const { data, status } = await postMemberPassword({
+        roomId: String(roomId),
+        memberId: String(id),
+        data: { roomPassword: password },
+      });
+
+      if (status === 401) {
+        setIsError(true);
+        return;
+      }
+
+      push(`/${roomId}/home`);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
