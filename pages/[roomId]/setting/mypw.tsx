@@ -37,27 +37,25 @@ const MyPw = () => {
 
   const handleClickChange = async () => {
     if (user) {
-      if (password !== user[0].memberPassword) setPasswordError("current");
-      else if (newPassword.length < 4) setPasswordError("new");
-      else {
-        setPasswordError(null);
-
-        try {
-          await putUser({
-            roomNumber: String(roomId),
-            memberId: String(user[0].memberId),
-            data: {
-              memberIcon: user[0].memberIcon,
-              memberName: name,
-              memberPassword: newPassword,
-            },
-          });
-
-          push(`/${roomId}/home`);
-        } catch (error) {
-          console.error("putError", error);
-        }
-      }
+      // if (password !== user[0].memberPassword) setPasswordError("current");
+      // else if (newPassword.length < 4) setPasswordError("new");
+      // else {
+      //   setPasswordError(null);
+      //   try {
+      //     await putUser({
+      //       roomNumber: String(roomId),
+      //       memberId: String(user[0].memberId),
+      //       data: {
+      //         memberIcon: user[0].memberIcon,
+      //         memberName: name,
+      //         memberPassword: newPassword,
+      //       },
+      //     });
+      //     push(`/${roomId}/home`);
+      //   } catch (error) {
+      //     console.error("putError", error);
+      //   }
+      // }
     }
   };
 
