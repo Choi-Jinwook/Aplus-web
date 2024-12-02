@@ -24,7 +24,9 @@ yarn -v
 3. Clone the repository and Run as dev mode
 
 ```terminal
-git clone <repository link>
+git clone https://github.com/TeamA-Aplus-Capstone2024Fall/Aplus-web.git
+
+cd Aplus-web
 
 yarn install
 
