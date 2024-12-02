@@ -32,7 +32,7 @@ const EnterRoom = () => {
       const { data, status } = await postMemberPassword({
         roomId: String(roomId),
         memberId: String(id),
-        data: { roomPassword: password },
+        data: { memberPassword: password },
       });
 
       if (status === 401) {

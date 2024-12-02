@@ -120,7 +120,7 @@ export const usePostMemberPassword = () => {
     }: {
       roomId: string;
       memberId: string;
-      data: { roomPassword: string };
+      data: { memberPassword: string };
     }) => {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/room/${roomId}/memberId/${memberId}/join`,
