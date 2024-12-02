@@ -18,13 +18,16 @@ const EnterRoom = () => {
   const [user, setUser] = useRecoilState(currentUser);
   const [member, setMember] = useRecoilState(roomMembers);
 
-  const { mutateAsync: postMemberPassword } = usePostMemberPassword();
+  const { mutateAsync: postMemberPassword, isPending } =
+    usePostMemberPassword();
 
   const handleChangePassword = (value: string) => {
     setPassword(value);
   };
 
   const handleClick = async () => {
+    if (isPending) return;
+
     try {
       const { data, status } = await postMemberPassword({
         roomId: String(roomId),
