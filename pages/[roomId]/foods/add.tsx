@@ -12,7 +12,7 @@ type Option = "Manual" | "Barcode";
 
 const FoodAdd = () => {
   const {
-    query: { roomId, category },
+    query: { roomId },
     push,
   } = useRouter();
   const today = new Date();
@@ -134,8 +134,6 @@ const FoodAdd = () => {
     if (typeof window !== "undefined") {
       if (window.AndroidBridge) {
         window.handleProductInfo = (productName, storageMethod) => {
-          console.log(productName, storageMethod);
-
           if (storageMethod !== "") {
             switch (storageMethod) {
               case "냉장":
@@ -155,7 +153,6 @@ const FoodAdd = () => {
           setIsLoading(false);
         };
         window.handleProductInfoError = (errorMessage) => {
-          console.log("errorMessage", errorMessage);
           setIsError(true);
           setErrMessage(`Barcode error: ${errorMessage}`);
           setIsLoading(false);
@@ -165,8 +162,6 @@ const FoodAdd = () => {
       }
     }
   }, []);
-
-  console.log(name);
 
   return (
     <Container height={height}>
