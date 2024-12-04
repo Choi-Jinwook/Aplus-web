@@ -29,7 +29,7 @@ const EventsAdd = () => {
   const height = useRecoilValue(deviceHeight);
   const members = useRecoilValue(roomMembers);
 
-  const { mutateAsync: postEvents, isPending, isSuccess } = usePostEvents();
+  const { mutateAsync: postEvents, isPending } = usePostEvents();
 
   const checkValidate = () => {
     const vName = name !== "";
@@ -37,9 +37,8 @@ const EventsAdd = () => {
       participants?.length !== 0 || participants !== undefined;
     const vDate = date !== "";
     const vHHMM = hhmm.hour !== 0 && hhmm.minute !== 0;
-    const vNote = note !== "";
 
-    return vName && vParticipants && vDate && vHHMM && vNote;
+    return vName && vParticipants && vDate && vHHMM;
   };
 
   const handleChoreName = (value: string) => {
@@ -88,7 +87,7 @@ const EventsAdd = () => {
   };
 
   const handleClickAdd = async () => {
-    if (isPending || isSuccess) return;
+    if (isPending) return;
 
     if (participants) {
       const memberIds = participants.map(({ id }) => id);
