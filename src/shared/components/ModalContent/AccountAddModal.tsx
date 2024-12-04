@@ -34,18 +34,22 @@ const AccountAddModal = ({
   } = useRouter();
 
   const [accountNickname, setAccountNickname] = useState("");
-  const [accountBalance, setAccountBalance] = useState("");
+  const [accountBalance, setAccountBalance] = useState(0);
   const [selectedColor, setSelectedColor] = useState("#FF4133");
   const height = useRecoilValue(deviceHeight);
 
-  const { mutateAsync: postFinanceAccount } = usePostFinanceAccount();
-  const { mutateAsync: postIncomeExpense } = usePostIncomeExpense();
+  const { mutateAsync: postFinanceAccount, isPending: accountPending } =
+    usePostFinanceAccount();
+  const { mutateAsync: postIncomeExpense, isPending: typePending } =
+    usePostIncomeExpense();
 
   const handleChangeNickname = (value: string) => {
     setAccountNickname(value);
   };
 
-  const handleChangeBalance = (value: string) => {
+  const handleChangeBalance = (value: number) => {
+    if (value === 0) return;
+
     setAccountBalance(value);
   };
 
@@ -55,34 +59,40 @@ const AccountAddModal = ({
 
   const handleClickCancel = () => {
     setAccountNickname("");
-    setAccountBalance("");
+    setAccountBalance(0);
     handleAccountModal();
   };
 
   const handleClickAdd = async () => {
-    if (accountNickname !== "" && accountBalance !== "") {
-      try {
-        const res = await postFinanceAccount({
-          roomNumber: String(roomId),
-          data: { accountName: accountNickname, color: selectedColor },
-        });
+    if (
+      typePending ||
+      accountPending ||
+      accountNickname === "" ||
+      accountBalance === 0
+    )
+      return;
 
-        await postIncomeExpense({
-          roomNumber: String(roomId),
-          accountId: res,
-          data: {
-            amount: Number(accountBalance),
-            txnType: "DEPOSIT",
-            txnDate: new Date().toISOString().split("T")[0],
-            description: "Account Created",
-          },
-        });
+    try {
+      const res = await postFinanceAccount({
+        roomNumber: String(roomId),
+        data: { accountName: accountNickname, color: selectedColor },
+      });
 
-        handleAccountModal();
-        infoRefetch();
-      } catch (error) {
-        console.error(error);
-      }
+      await postIncomeExpense({
+        roomNumber: String(roomId),
+        accountId: res,
+        data: {
+          amount: accountBalance,
+          txnType: "DEPOSIT",
+          txnDate: new Date().toISOString().split("T")[0],
+          description: "Account Created",
+        },
+      });
+
+      handleAccountModal();
+      infoRefetch();
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -114,7 +124,7 @@ const AccountAddModal = ({
               inputType="text"
               inputMode="numeric"
               placeholder="0"
-              onChange={handleChangeBalance}
+              onChange={(value) => handleChangeBalance(Number(value))}
             />
           </NickName>
           <NickName>
@@ -143,7 +153,14 @@ const AccountAddModal = ({
               </Text>
             </AddAccountButton>
             <AddAccountButton onClick={handleClickAdd}>
-              <Text type="LabelBold" color={Colors.Orange300}>
+              <Text
+                type="LabelBold"
+                color={
+                  accountNickname !== "" && accountBalance !== 0
+                    ? Colors.Orange300
+                    : Colors.Gray400
+                }
+              >
                 Add
               </Text>
             </AddAccountButton>
