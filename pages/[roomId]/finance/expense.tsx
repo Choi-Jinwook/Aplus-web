@@ -3,7 +3,12 @@ import { useGetExpense, useGetFinanceInfo, useGetIncome } from "@shared/apis";
 import { deviceHeight } from "@shared/atoms";
 import { BottomSheet, Icon, Text } from "@shared/components";
 import { Txns } from "@shared/types";
-import { convertDate, getExistingDates, getMonth } from "@shared/utils";
+import {
+  convertDate,
+  getExistingDates,
+  getMonth,
+  getMonthlyBalance,
+} from "@shared/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -31,7 +36,7 @@ const FinanceExpense = () => {
     String(YYMM.year),
     String(YYMM.month),
   );
-  const { data: incomeData, refetch: incomeRefetch } = useGetExpense({
+  const { data: expenseData, refetch: expenseRefetch } = useGetExpense({
     roomNumber: String(roomId),
     year: String(YYMM.year),
     month: String(YYMM.month),
@@ -50,12 +55,12 @@ const FinanceExpense = () => {
   };
 
   useEffect(() => {
-    incomeRefetch();
+    expenseRefetch();
   }, []);
 
   useEffect(() => {
-    if (incomeData) {
-      const transformedData = incomeData.txns.reduce((acc, txn) => {
+    if (expenseData) {
+      const transformedData = expenseData.txns.reduce((acc, txn) => {
         const { txnDate, amount } = txn;
 
         if (!acc[txnDate]) {
@@ -70,7 +75,7 @@ const FinanceExpense = () => {
 
       setFormattedData(transformedData);
     }
-  }, [incomeData]);
+  }, [expenseData]);
 
   useEffect(() => {
     if (formattedData) {
@@ -99,7 +104,7 @@ const FinanceExpense = () => {
           <TotalContainer>
             <TotalWrapper>
               <Text type="H4">
-                {Number(incomeData?.totalExpense).toLocaleString()}
+                {Number(expenseData?.totalExpense).toLocaleString()}
               </Text>
               <Text type="H4">₩</Text>
             </TotalWrapper>
@@ -112,23 +117,24 @@ const FinanceExpense = () => {
           </TotalContainer>
 
           <DetailContainer>
-            {financeInfo?.accounts.map(
-              ({ accountId, accountName, balance }) => {
-                return (
-                  <DetailWrapper key={accountId}>
-                    <TotalWrapper>
-                      <Text type="LabelBold">
-                        {Number(balance).toLocaleString()}
-                      </Text>
-                      <Text type="LabelBold">₩</Text>
-                    </TotalWrapper>
-                    <Text type="Label" color={Colors.Gray400}>
-                      {accountName}
+            {financeInfo?.accounts.map(({ accountId, accountName }) => {
+              return (
+                <DetailWrapper key={accountId}>
+                  <TotalWrapper>
+                    <Text type="LabelBold">
+                      {getMonthlyBalance(
+                        accountId,
+                        expenseData,
+                      ).toLocaleString()}
                     </Text>
-                  </DetailWrapper>
-                );
-              },
-            )}
+                    <Text type="LabelBold">₩</Text>
+                  </TotalWrapper>
+                  <Text type="Label" color={Colors.Gray400}>
+                    {accountName}
+                  </Text>
+                </DetailWrapper>
+              );
+            })}
           </DetailContainer>
         </BriefWrapper>
       </BriefContainer>

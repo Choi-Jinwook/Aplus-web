@@ -3,7 +3,12 @@ import { useGetFinanceInfo, useGetIncome } from "@shared/apis";
 import { deviceHeight } from "@shared/atoms";
 import { BottomSheet, Icon, Text } from "@shared/components";
 import { Txns } from "@shared/types";
-import { convertDate, getExistingDates, getMonth } from "@shared/utils";
+import {
+  convertDate,
+  getExistingDates,
+  getMonth,
+  getMonthlyBalance,
+} from "@shared/utils";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -112,23 +117,24 @@ const FinanceIncome = () => {
           </TotalContainer>
 
           <DetailContainer>
-            {financeInfo?.accounts.map(
-              ({ accountId, accountName, balance }) => {
-                return (
-                  <DetailWrapper key={accountId}>
-                    <TotalWrapper>
-                      <Text type="LabelBold">
-                        {Number(balance).toLocaleString()}
-                      </Text>
-                      <Text type="LabelBold">₩</Text>
-                    </TotalWrapper>
-                    <Text type="Label" color={Colors.Gray400}>
-                      {accountName}
+            {financeInfo?.accounts.map(({ accountId, accountName }) => {
+              return (
+                <DetailWrapper key={accountId}>
+                  <TotalWrapper>
+                    <Text type="LabelBold">
+                      {getMonthlyBalance(
+                        accountId,
+                        incomeData,
+                      ).toLocaleString()}
                     </Text>
-                  </DetailWrapper>
-                );
-              },
-            )}
+                    <Text type="LabelBold">₩</Text>
+                  </TotalWrapper>
+                  <Text type="Label" color={Colors.Gray400}>
+                    {accountName}
+                  </Text>
+                </DetailWrapper>
+              );
+            })}
           </DetailContainer>
         </BriefWrapper>
       </BriefContainer>
