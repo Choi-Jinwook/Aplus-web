@@ -261,6 +261,7 @@ const Container = styled.main<{ height: number | null }>`
 
 const CardContainer = styled.section`
   display: flex;
+  min-height: fit-content;
   padding: 0 12px;
   gap: 8px;
   overflow-x: scroll;

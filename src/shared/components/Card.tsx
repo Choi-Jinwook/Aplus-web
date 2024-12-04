@@ -116,6 +116,7 @@ const FoodCardContainer = styled.div`
   flex-direction: column;
   min-width: 140px;
   max-width: fit-content;
+  height: 100%;
   border-radius: 16px;
   background-color: ${Colors.White};
   gap: 16px;
