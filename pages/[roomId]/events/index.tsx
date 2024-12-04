@@ -70,12 +70,14 @@ const Event = () => {
           </ScrollTopContainer>
           <EventContainer>
             {eventData &&
-              Object.entries(eventData).map(([year, months]) =>
+              Object.entries(eventData).map(([year, months], index) =>
                 Object.entries(months).map(([month, events]) => {
                   const monthName = getMonth(Number(month));
+                  const isLast = Object.entries(eventData).length - 1 === index;
 
                   return (
                     <EventWrapper
+                      isLast={isLast}
                       key={`${year}-${month}`}
                       id={`${year}-${month}`}
                     >
@@ -164,11 +166,13 @@ const EventContainer = styled.section`
   padding: 0px 12px;
 `;
 
-const EventWrapper = styled.div`
+const EventWrapper = styled.div<{ isLast: boolean }>`
   display: flex;
   flex-direction: column;
   padding-top: 20px;
   gap: 4px;
+
+  ${({ isLast }) => isLast && `padding-bottom: 20px;`}
 `;
 
 const Events = styled.div`
@@ -194,6 +198,7 @@ const EventAlert = styled.div`
 
 const MemberContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   align-items: center;
 `;

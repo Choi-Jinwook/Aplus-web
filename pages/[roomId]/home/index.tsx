@@ -333,5 +333,6 @@ const TitleWrapper = styled.div`
 
 const OwnerContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 `;
