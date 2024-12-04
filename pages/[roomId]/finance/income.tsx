@@ -74,16 +74,14 @@ const FinanceIncome = () => {
       }, {} as Record<string, { totalIncome: number; txns: Txns[] }>);
 
       setFormattedData(transformedData);
+
+      if (transformedData) {
+        const dates = Object.keys(transformedData).map((value) => value);
+
+        setExistingDate(getExistingDates(dates));
+      }
     }
   }, [incomeData]);
-
-  useEffect(() => {
-    if (formattedData) {
-      const dates = Object.keys(formattedData).map((value) => value);
-
-      setExistingDate(getExistingDates(dates));
-    }
-  }, [formattedData]);
 
   return (
     <Container height={height}>
