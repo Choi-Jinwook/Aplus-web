@@ -36,9 +36,8 @@ const EventsAdd = () => {
     const vParticipants =
       participants?.length !== 0 || participants !== undefined;
     const vDate = date !== "";
-    const vHHMM = hhmm.hour !== 0 && hhmm.minute !== 0;
 
-    return vName && vParticipants && vDate && vHHMM;
+    return vName && vParticipants && vDate;
   };
 
   const handleChoreName = (value: string) => {
@@ -75,7 +74,19 @@ const EventsAdd = () => {
   };
 
   const handleHHMM = (type: boolean, value: number) => {
-    if (String(value).length > 2) return;
+    if (String(value).length > 2 || (type && value > 24)) return;
+
+    if (type && value > 12) {
+      if (value === 24) {
+        setIsAM(true);
+        setHHMM((prev) => ({ ...prev, hour: 0 }));
+        return;
+      }
+
+      setIsAM(false);
+      setHHMM((prev) => ({ ...prev, hour: value - 12 }));
+      return;
+    }
 
     setHHMM((prev) =>
       type ? { ...prev, hour: value } : { ...prev, minute: value },
@@ -86,11 +97,21 @@ const EventsAdd = () => {
     setNote(value);
   };
 
+  const formatTime = (hour: number, minute: number) => {
+    const padZero = (num: number) => (num < 10 ? `0${num}` : `${num}`);
+
+    const formattedHour = padZero(hour);
+    const formattedMinute = padZero(minute);
+
+    return `${formattedHour}:${formattedMinute}`;
+  };
+
   const handleClickAdd = async () => {
     if (isPending) return;
 
     if (participants) {
       const memberIds = participants.map(({ id }) => id);
+      const formattedTime = formatTime(hhmm.hour, hhmm.minute);
 
       try {
         await postEvents({
@@ -99,7 +120,7 @@ const EventsAdd = () => {
             memberIds: memberIds,
             eventDay: date,
             eventName: name,
-            eventTime: `${hhmm.hour}:${hhmm.minute}`,
+            eventTime: formattedTime,
           },
         });
 
