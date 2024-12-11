@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
-import { deviceHeight } from "@shared/atoms";
+import { deviceHeight, roomMembers } from "@shared/atoms";
 import { Dropdown, HomeSection, Icon, Text } from "@shared/components";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { Colors } from "styles";
 
 const Setting = () => {
@@ -12,20 +12,16 @@ const Setting = () => {
     push,
   } = useRouter();
 
-  const [members, setMembers] = useState([
-    { name: "Mins00", auth: "Master" },
-    { name: "Jinwook", auth: "Member" },
-    { name: "Sooyoung", auth: "Member" },
-  ]);
+  const [members, setMembers] = useRecoilState(roomMembers);
   const height = useRecoilValue(deviceHeight);
 
-  const handleRoleChange = (name: string, newRole: string) => {
-    setMembers((prev) =>
-      prev.map((member) =>
-        member.name === name ? { ...member, auth: newRole } : member,
-      ),
-    );
-  };
+  // const handleRoleChange = (name: string, newRole: string) => {
+  //   setMembers((prev) =>
+  //     prev.map((member) =>
+  //       member.name === name ? { ...member, auth: newRole } : member,
+  //     ),
+  //   );
+  // };
 
   const handleClickChangePassword = (type: string) => {
     switch (type) {
@@ -57,7 +53,7 @@ const Setting = () => {
           <Text type="BodyBold">Finance</Text>
           <AlertWrapper>
             <AlertDay>
-              <Text type="BodyBold">1</Text>
+              <Text type="BodyBold">3</Text>
             </AlertDay>
             <Text type="Label" color={Colors.Gray400}>
               days before predicted transaction
@@ -69,7 +65,7 @@ const Setting = () => {
           <Text type="BodyBold">Chores</Text>
           <AlertWrapper>
             <AlertDay>
-              <Text type="BodyBold">5</Text>
+              <Text type="BodyBold">3</Text>
             </AlertDay>
             <Text type="Label" color={Colors.Gray400}>
               days before cleaning task
@@ -93,14 +89,14 @@ const Setting = () => {
       <MemberContainer>
         <Text type="H4">Members</Text>
         <MemberListContainer>
-          {members.map(({ name, auth }) => {
+          {members?.map(({ memberId, memberName }) => {
             return (
-              <MemberListWrapper key={name}>
-                <Text type="BodyBold">{`@${name}`}</Text>
+              <MemberListWrapper key={memberId}>
+                <Text type="BodyBold">{`@${memberName}`}</Text>
                 <Dropdown
                   list={["Master", "Member", "Expel"]}
-                  value={auth}
-                  onChange={(newRole) => handleRoleChange(name, newRole)}
+                  value="Member"
+                  // onChange={(newRole) => handleRoleChange(memberName, newRole)}
                 />
               </MemberListWrapper>
             );

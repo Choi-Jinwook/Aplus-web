@@ -6,7 +6,7 @@ import { useState } from "react";
 interface DropdownProps {
   value: string;
   list: string[];
-  onChange: (selectedOption: string) => void;
+  onChange?: (selectedOption: string) => void;
 }
 
 const Dropdown = ({ value, list, onChange }: DropdownProps) => {
@@ -17,7 +17,7 @@ const Dropdown = ({ value, list, onChange }: DropdownProps) => {
   };
 
   const handleOption = (selectedOption: string) => {
-    onChange(selectedOption);
+    onChange?.(selectedOption);
     setIsOpen(false);
   };
 
